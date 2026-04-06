@@ -156,6 +156,27 @@ export const trackingAPI = {
     request<any>("/tracking/location", { method: "POST", token, body: { latitude: lat, longitude: lng } }),
 };
 
+// ─── Shipping Rates ───
+export const ratesAPI = {
+  estimate: (token: string, body: {
+    pickup_pincode: string;
+    destination_country?: string;
+    destination_city?: string;
+    package_type: string;
+    weight_kg: number;
+    mobile: string;
+    mode: "international" | "domestic";
+    shipment_value?: number;
+  }) =>
+    request<any>("/rates/estimate", { method: "POST", token, body }),
+
+  getCities: (token: string, query: string) =>
+    request<any>(`/rates/cities?q=${encodeURIComponent(query)}`, { token }),
+
+  getCountries: (token: string) =>
+    request<any>("/rates/countries", { token }),
+};
+
 // ─── Health ───
 export const healthAPI = {
   check: () => request<any>("/health"),

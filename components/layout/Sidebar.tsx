@@ -13,6 +13,7 @@ import {
   LogOut,
   ChevronLeft,
   Menu,
+  Calculator,
 } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/lib/auth-context";
@@ -25,6 +26,7 @@ const navItems = [
   { href: "/payments", label: "Payments", icon: CreditCard },
   { href: "/customers", label: "Customers", icon: Users },
   { href: "/pricing", label: "Pricing", icon: Tags },
+  { href: "/cost-estimator", label: "Cost Estimator", icon: Calculator },
   { href: "/notifications", label: "Notifications", icon: Bell },
 ];
 
