@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { ratesAPI } from "@/lib/api";
 import {
@@ -14,14 +14,10 @@ import {
   CheckCircle2,
   Clock,
   IndianRupee,
-  Star,
-  Zap,
-  TrendingDown,
   AlertTriangle,
   RefreshCw,
   Search,
   ChevronDown,
-  X,
   FileText,
   Pill,
   UtensilsCrossed,
@@ -30,24 +26,25 @@ import {
   Gift,
   Briefcase,
   HelpCircle,
-  Flower2,
   DollarSign,
+  Send,
+  ArrowLeft,
+  Truck,
+  Shield,
+  Copy,
+  Check,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 // ─── Types ───
 type Mode = "international" | "domestic";
 
-interface CarrierQuote {
-  carrier_id: string;
-  carrier_name: string;
-  logo_url: string;
-  base_price_inr: number;
-  gst_inr: number;
-  total_price_inr: number;
-  estimated_delivery_days: { min: number; max: number };
-  is_express: boolean;
-  badge: "Recommended" | "Cheapest" | "Fastest" | null;
+interface ShippingEstimate {
+  base_price: number;
+  gst: number;
+  total_price: number;
+  estimated_days: { min: number; max: number };
+  service_type: string;
 }
 
 interface FormData {
@@ -144,44 +141,22 @@ const INDIAN_CITIES = [
   { city: "Agra", state: "UP", pincode: "282001" },
 ];
 
-// ─── Mock carrier data generator ───
-function generateMockQuotes(mode: Mode, weight: number): CarrierQuote[] {
-  const baseMultiplier = mode === "international" ? 3.5 : 1;
-  const weightMultiplier = weight <= 1 ? 1 : weight <= 5 ? 1.8 : weight <= 10 ? 2.5 : 3.5;
+// ─── Generate Dropzy estimate ───
+function generateEstimate(mode: Mode, weight: number, shipmentValue: number): ShippingEstimate {
+  const baseRatePerKg = mode === "international" ? 350 : 80;
+  const handlingFee = mode === "international" ? 250 : 50;
+  const basePrice = Math.round(handlingFee + weight * baseRatePerKg);
+  const gst = Math.round(basePrice * 0.18);
+  const minDays = mode === "international" ? 5 : 2;
+  const maxDays = mode === "international" ? 10 : 5;
 
-  const carriers = mode === "international"
-    ? [
-        { id: "dhl", name: "DHL Express", logo: "DHL" },
-        { id: "fedex", name: "FedEx International", logo: "FedEx" },
-        { id: "aramex", name: "Aramex", logo: "Aramex" },
-        { id: "ups", name: "UPS Worldwide", logo: "UPS" },
-      ]
-    : [
-        { id: "bluedart", name: "Blue Dart", logo: "BD" },
-        { id: "delhivery", name: "Delhivery", logo: "DLV" },
-        { id: "dtdc", name: "DTDC", logo: "DTDC" },
-        { id: "ekart", name: "Ekart Logistics", logo: "EK" },
-        { id: "xpressbees", name: "XpressBees", logo: "XB" },
-      ];
-
-  return carriers.map((carrier, i) => {
-    const basePrice = Math.round((150 + i * 80) * baseMultiplier * weightMultiplier);
-    const gst = Math.round(basePrice * 0.18);
-    const minDays = mode === "international" ? 3 + i : 1 + Math.floor(i / 2);
-    const maxDays = minDays + 2 + Math.floor(i / 2);
-
-    return {
-      carrier_id: carrier.id,
-      carrier_name: carrier.name,
-      logo_url: carrier.logo,
-      base_price_inr: basePrice,
-      gst_inr: gst,
-      total_price_inr: basePrice + gst,
-      estimated_delivery_days: { min: minDays, max: maxDays },
-      is_express: i < 2,
-      badge: i === 0 ? "Recommended" : i === carriers.length - 1 ? "Cheapest" : i === 1 ? "Fastest" : null,
-    };
-  });
+  return {
+    base_price: basePrice,
+    gst,
+    total_price: basePrice + gst,
+    estimated_days: { min: minDays, max: maxDays },
+    service_type: mode === "international" ? "International Shipping" : "Domestic Shipping",
+  };
 }
 
 // ─── Sub-components ───
@@ -354,11 +329,11 @@ export default function CostEstimatorPage() {
   });
   const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
   const [loading, setLoading] = useState(false);
-  const [quotes, setQuotes] = useState<CarrierQuote[] | null>(null);
-  const [sortBy, setSortBy] = useState<"recommended" | "price" | "time">("recommended");
-  const [filterExpress, setFilterExpress] = useState<"all" | "express" | "economy">("all");
+  const [estimate, setEstimate] = useState<ShippingEstimate | null>(null);
   const [showRestrictionWarning, setShowRestrictionWarning] = useState(false);
   const [apiError, setApiError] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   // Pre-fill mobile if logged in
   useEffect(() => {
@@ -383,9 +358,10 @@ export default function CostEstimatorPage() {
       weight_kg: 0,
       shipment_value: "",
     }));
-    setQuotes(null);
+    setEstimate(null);
     setErrors({});
     setApiError(false);
+    setSent(false);
   };
 
   // Check if restricted type
@@ -394,7 +370,6 @@ export default function CostEstimatorPage() {
     setShowRestrictionWarning(!!restricted);
   }, [form.package_type]);
 
-  // Weight options based on package type
   const weightOptions = form.package_type === "EXCESS_BAG" ? WEIGHT_OPTIONS_EXCESS : WEIGHT_OPTIONS;
 
   // Validate form
@@ -419,10 +394,10 @@ export default function CostEstimatorPage() {
     if (!validate()) return;
     setLoading(true);
     setApiError(false);
-    setQuotes(null);
+    setEstimate(null);
+    setSent(false);
 
     try {
-      // Try real API first
       if (token) {
         const res = await ratesAPI.estimate(token, {
           pickup_pincode: form.pickup_pincode,
@@ -434,38 +409,38 @@ export default function CostEstimatorPage() {
           mode,
           shipment_value: form.shipment_value ? parseFloat(form.shipment_value) : undefined,
         });
-        if (res.data?.quotes) {
-          setQuotes(res.data.quotes);
+        if (res.data?.estimate) {
+          setEstimate(res.data.estimate);
           setLoading(false);
           return;
         }
       }
     } catch {
-      // Fall back to mock data
+      // Fall back to generated estimate
     }
 
-    // Simulate API delay with mock data
-    await new Promise((r) => setTimeout(r, 2000));
-    setQuotes(generateMockQuotes(mode, form.weight_kg));
+    // Simulate API delay
+    await new Promise((r) => setTimeout(r, 1500));
+    setEstimate(generateEstimate(mode, form.weight_kg, parseFloat(form.shipment_value) || 0));
     setLoading(false);
   };
 
-  // Sort & filter quotes
-  const displayQuotes = quotes
-    ? [...quotes]
-        .filter((q) =>
-          filterExpress === "all" ? true : filterExpress === "express" ? q.is_express : !q.is_express
-        )
-        .sort((a, b) => {
-          if (sortBy === "price") return a.total_price_inr - b.total_price_inr;
-          if (sortBy === "time") return a.estimated_delivery_days.min - b.estimated_delivery_days.min;
-          // recommended: badge first, then price
-          const badgeOrder = { Recommended: 0, Fastest: 1, Cheapest: 2 };
-          const aScore = a.badge ? (badgeOrder[a.badge] ?? 3) : 3;
-          const bScore = b.badge ? (badgeOrder[b.badge] ?? 3) : 3;
-          return aScore - bScore || a.total_price_inr - b.total_price_inr;
-        })
-    : null;
+  // Handle send estimate to customer
+  const handleSendEstimate = () => {
+    setSent(true);
+    // In production, this would send via SMS/WhatsApp to the mobile number
+    setTimeout(() => setSent(false), 3000);
+  };
+
+  // Copy estimate summary
+  const handleCopyEstimate = () => {
+    const dest = mode === "international" ? form.destination_country : form.destination_city;
+    const pkgLabel = PACKAGE_TYPES.find((p) => p.id === form.package_type)?.label || form.package_type;
+    const text = `Dropzy Shipping Estimate\n${form.pickup_city} → ${dest}\nPackage: ${pkgLabel} | Weight: ${form.weight_kg} kg\n${form.shipment_value ? `Shipment Value: ₹${parseInt(form.shipment_value).toLocaleString("en-IN")}\n` : ""}Estimated Cost: ₹${estimate!.total_price.toLocaleString("en-IN")} (incl. GST)\nDelivery: ${estimate!.estimated_days.min}–${estimate!.estimated_days.max} Business Days`;
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   const isFormComplete =
     form.pickup_city &&
@@ -475,12 +450,12 @@ export default function CostEstimatorPage() {
     form.mobile.length === 10;
 
   return (
-    <div className="space-y-6 max-w-4xl">
+    <div className="space-y-6 max-w-3xl">
       {/* Header */}
       <div>
         <h2 className="text-lg font-semibold text-gray-900">Shipping Cost Estimator</h2>
         <p className="text-sm text-gray-500">
-          Get instant shipping rates for domestic and international parcels
+          Calculate shipping costs and send estimates to customers
         </p>
       </div>
 
@@ -513,7 +488,7 @@ export default function CostEstimatorPage() {
       </div>
 
       {/* Quote Form */}
-      {!quotes && (
+      {!estimate && !loading && (
         <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-5 animate-fade-in">
           {/* Pickup & Destination */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -549,7 +524,7 @@ export default function CostEstimatorPage() {
               Shipment Value (Approx.)
             </label>
             <div className="relative">
-              <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <IndianRupee className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
                 type="number"
                 value={form.shipment_value}
@@ -591,7 +566,6 @@ export default function CostEstimatorPage() {
               })}
             </div>
 
-            {/* Custom type input for OTHER */}
             {form.package_type === "OTHER" && (
               <input
                 type="text"
@@ -603,7 +577,6 @@ export default function CostEstimatorPage() {
               />
             )}
 
-            {/* Restriction warning */}
             {showRestrictionWarning && (
               <div className="mt-3 flex items-start gap-2 p-3 bg-amber-50 border border-amber-200 rounded-lg">
                 <AlertTriangle className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
@@ -679,186 +652,135 @@ export default function CostEstimatorPage() {
                 : "bg-gray-200 text-gray-400 cursor-not-allowed"
             )}
           >
-            {loading ? (
-              <>
-                <Loader2 className="w-5 h-5 animate-spin" />
-                Fetching Rates...
-              </>
-            ) : (
-              <>
-                {mode === "international" ? "Check International Rates" : "Check Domestic Rates"}
-                <ArrowRight className="w-5 h-5" />
-              </>
-            )}
+            {mode === "international" ? "Check International Rates" : "Check Domestic Rates"}
+            <ArrowRight className="w-5 h-5" />
           </button>
         </div>
       )}
 
-      {/* Loading Skeleton */}
-      {loading && !quotes && (
-        <div className="space-y-4">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="bg-white rounded-xl border border-gray-200 p-5 animate-pulse">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-gray-200 rounded-lg" />
-                <div className="flex-1 space-y-2">
-                  <div className="h-4 bg-gray-200 rounded w-1/3" />
-                  <div className="h-3 bg-gray-100 rounded w-1/4" />
-                </div>
-                <div className="text-right space-y-2">
-                  <div className="h-5 bg-gray-200 rounded w-20 ml-auto" />
-                  <div className="h-3 bg-gray-100 rounded w-16 ml-auto" />
-                </div>
-              </div>
+      {/* Loading State */}
+      {loading && (
+        <div className="bg-white rounded-xl border border-gray-200 p-12 flex flex-col items-center justify-center gap-4">
+          <div className="relative">
+            <div className="w-16 h-16 bg-brand-50 rounded-full flex items-center justify-center">
+              <Package className="w-8 h-8 text-brand-600" />
             </div>
-          ))}
+            <div className="absolute inset-0 w-16 h-16 border-4 border-brand-200 border-t-brand-600 rounded-full animate-spin" />
+          </div>
+          <p className="text-sm font-medium text-gray-600">Calculating shipping cost...</p>
         </div>
       )}
 
-      {/* Results */}
-      {quotes && !loading && (
+      {/* Estimate Result */}
+      {estimate && !loading && (
         <div className="space-y-4 animate-fade-in-up">
-          {/* Back + Summary */}
-          <div className="flex items-center justify-between">
-            <button
-              onClick={() => { setQuotes(null); setApiError(false); }}
-              className="flex items-center gap-1 text-sm text-brand-600 hover:text-brand-700 font-medium"
-            >
-              <ArrowRight className="w-4 h-4 rotate-180" />
-              Modify Search
-            </button>
-            <div className="text-sm text-gray-500">
-              {form.pickup_city} → {mode === "international" ? form.destination_country : form.destination_city}
-              <span className="mx-2">|</span>
-              {form.weight_kg} kg
-              <span className="mx-2">|</span>
-              {PACKAGE_TYPES.find((p) => p.id === form.package_type)?.label}
-            </div>
-          </div>
+          {/* Back button */}
+          <button
+            onClick={() => { setEstimate(null); setApiError(false); setSent(false); }}
+            className="flex items-center gap-1.5 text-sm text-brand-600 hover:text-brand-700 font-medium"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Modify Search
+          </button>
 
-          {/* Sort & Filter */}
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="text-xs font-semibold text-gray-500 uppercase">Sort by:</span>
-            {[
-              { key: "recommended", label: "Recommended", icon: Star },
-              { key: "price", label: "Price", icon: TrendingDown },
-              { key: "time", label: "Fastest", icon: Zap },
-            ].map(({ key, label, icon: Icon }) => (
-              <button
-                key={key}
-                onClick={() => setSortBy(key as any)}
-                className={cn(
-                  "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all",
-                  sortBy === key
-                    ? "bg-[#1E3A5F] text-white"
-                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                )}
-              >
-                <Icon className="w-3 h-3" /> {label}
-              </button>
-            ))}
-            <div className="border-l border-gray-200 pl-3 ml-1 flex gap-2">
-              {[
-                { key: "all", label: "All" },
-                { key: "express", label: "Express" },
-                { key: "economy", label: "Economy" },
-              ].map(({ key, label }) => (
-                <button
-                  key={key}
-                  onClick={() => setFilterExpress(key as any)}
-                  className={cn(
-                    "px-3 py-1.5 rounded-full text-xs font-medium transition-all",
-                    filterExpress === key
-                      ? "bg-[#E8732A] text-white"
-                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                  )}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Carrier Cards */}
-          {displayQuotes && displayQuotes.length > 0 ? (
-            displayQuotes.map((quote, idx) => (
-              <div
-                key={quote.carrier_id}
-                className={cn(
-                  "bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-all duration-200",
-                  quote.badge === "Recommended" && "ring-2 ring-brand-200 border-brand-300"
-                )}
-                style={{ animationDelay: `${idx * 80}ms` }}
-              >
-                <div className="flex items-center gap-4">
-                  {/* Carrier Logo */}
-                  <div className={cn(
-                    "w-14 h-14 rounded-xl flex items-center justify-center text-white font-bold text-sm flex-shrink-0",
-                    quote.carrier_id === "dhl" ? "bg-yellow-500" :
-                    quote.carrier_id === "fedex" ? "bg-purple-600" :
-                    quote.carrier_id === "bluedart" ? "bg-blue-600" :
-                    quote.carrier_id === "delhivery" ? "bg-red-500" :
-                    quote.carrier_id === "dtdc" ? "bg-indigo-600" :
-                    quote.carrier_id === "aramex" ? "bg-orange-500" :
-                    quote.carrier_id === "ups" ? "bg-amber-700" :
-                    quote.carrier_id === "ekart" ? "bg-blue-500" :
-                    "bg-gray-600"
-                  )}>
-                    {quote.logo_url}
-                  </div>
-
-                  {/* Carrier Info */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-semibold text-gray-900">{quote.carrier_name}</h3>
-                      {quote.badge && (
-                        <span className={cn(
-                          "px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide",
-                          quote.badge === "Recommended" ? "bg-brand-100 text-brand-700" :
-                          quote.badge === "Fastest" ? "bg-amber-100 text-amber-700" :
-                          "bg-green-100 text-green-700"
-                        )}>
-                          {quote.badge}
-                        </span>
-                      )}
-                      {quote.is_express && (
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide bg-purple-100 text-purple-700">
-                          Express
-                        </span>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-1 mt-1 text-sm text-gray-500">
-                      <Clock className="w-3.5 h-3.5" />
-                      {quote.estimated_delivery_days.min}–{quote.estimated_delivery_days.max} Business Days
-                    </div>
-                  </div>
-
-                  {/* Price & CTA */}
-                  <div className="text-right flex-shrink-0">
-                    <div className="flex items-center justify-end gap-1">
-                      <IndianRupee className="w-4 h-4 text-gray-700" />
-                      <span className="text-xl font-bold text-gray-900">
-                        {quote.total_price_inr.toLocaleString("en-IN")}
-                      </span>
-                    </div>
-                    <div className="text-xs text-gray-400 mt-0.5">
-                      Base: {quote.base_price_inr.toLocaleString("en-IN")} + GST: {quote.gst_inr.toLocaleString("en-IN")}
-                    </div>
-                    <button className="mt-2 px-5 py-1.5 bg-[#E8732A] text-white text-sm font-semibold rounded-lg hover:bg-[#d4661f] transition-colors">
-                      Book Now
-                    </button>
-                  </div>
+          {/* Estimate Card */}
+          <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+            {/* Header */}
+            <div className="bg-gradient-to-r from-[#1E3A5F] to-[#2a5080] px-6 py-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                  <Package className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-white font-semibold text-lg">Dropzy {estimate.service_type}</h3>
+                  <p className="text-white/70 text-sm">
+                    {form.pickup_city} → {mode === "international" ? form.destination_country : form.destination_city}
+                  </p>
                 </div>
               </div>
-            ))
-          ) : (
-            <div className="text-center py-12 bg-white rounded-xl border border-gray-200">
-              <p className="text-gray-500">No carriers match the current filter.</p>
-              <button onClick={() => setFilterExpress("all")} className="mt-2 text-brand-600 text-sm font-medium hover:underline">
-                Show all carriers
-              </button>
             </div>
-          )}
+
+            {/* Details */}
+            <div className="p-6 space-y-4">
+              {/* Route & Package Info */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="text-center p-3 bg-gray-50 rounded-lg">
+                  <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Package</p>
+                  <p className="text-sm font-medium text-gray-900 mt-1">{PACKAGE_TYPES.find((p) => p.id === form.package_type)?.label}</p>
+                </div>
+                <div className="text-center p-3 bg-gray-50 rounded-lg">
+                  <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Weight</p>
+                  <p className="text-sm font-medium text-gray-900 mt-1">{form.weight_kg} kg</p>
+                </div>
+                <div className="text-center p-3 bg-gray-50 rounded-lg">
+                  <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Delivery</p>
+                  <p className="text-sm font-medium text-gray-900 mt-1">{estimate.estimated_days.min}–{estimate.estimated_days.max} Days</p>
+                </div>
+                {form.shipment_value && (
+                  <div className="text-center p-3 bg-gray-50 rounded-lg">
+                    <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Declared Value</p>
+                    <p className="text-sm font-medium text-gray-900 mt-1">₹{parseInt(form.shipment_value).toLocaleString("en-IN")}</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Price Breakdown */}
+              <div className="border border-gray-100 rounded-lg p-4 space-y-3">
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">Base Shipping Charge</span>
+                  <span className="text-gray-900 font-medium">₹{estimate.base_price.toLocaleString("en-IN")}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">GST (18%)</span>
+                  <span className="text-gray-900 font-medium">₹{estimate.gst.toLocaleString("en-IN")}</span>
+                </div>
+                <div className="border-t border-gray-100 pt-3 flex justify-between">
+                  <span className="text-base font-bold text-gray-900">Total Estimated Cost</span>
+                  <span className="text-2xl font-bold text-[#E8732A]">₹{estimate.total_price.toLocaleString("en-IN")}</span>
+                </div>
+              </div>
+
+              {/* Features */}
+              <div className="flex flex-wrap gap-3 text-xs text-gray-500">
+                <span className="flex items-center gap-1"><Truck className="w-3.5 h-3.5" /> Door-to-door delivery</span>
+                <span className="flex items-center gap-1"><Shield className="w-3.5 h-3.5" /> Shipment insurance included</span>
+                <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> Real-time tracking</span>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-3 pt-2">
+                <button
+                  onClick={handleSendEstimate}
+                  disabled={sent}
+                  className={cn(
+                    "flex-1 flex items-center justify-center gap-2 py-3 rounded-lg text-sm font-bold transition-all duration-200",
+                    sent
+                      ? "bg-emerald-500 text-white"
+                      : "bg-[#E8732A] text-white hover:bg-[#d4661f] shadow-md hover:shadow-lg"
+                  )}
+                >
+                  {sent ? (
+                    <>
+                      <CheckCircle2 className="w-4 h-4" />
+                      Sent to {form.mobile}
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-4 h-4" />
+                      Send Estimate to Customer
+                    </>
+                  )}
+                </button>
+                <button
+                  onClick={handleCopyEstimate}
+                  className="flex items-center gap-2 px-4 py-3 bg-white border border-gray-200 rounded-lg text-sm font-medium hover:bg-gray-50 transition-all"
+                >
+                  {copied ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4 text-gray-500" />}
+                  {copied ? "Copied" : "Copy"}
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
@@ -866,8 +788,8 @@ export default function CostEstimatorPage() {
       {apiError && (
         <div className="bg-white rounded-xl border border-red-200 p-8 text-center">
           <AlertTriangle className="w-10 h-10 text-red-400 mx-auto mb-3" />
-          <h3 className="text-lg font-semibold text-gray-900">Unable to fetch rates</h3>
-          <p className="text-sm text-gray-500 mt-1">All carrier APIs timed out. Please try again.</p>
+          <h3 className="text-lg font-semibold text-gray-900">Unable to calculate estimate</h3>
+          <p className="text-sm text-gray-500 mt-1">Something went wrong. Please try again.</p>
           <div className="flex gap-3 justify-center mt-4">
             <button
               onClick={handleCheckRates}
@@ -875,12 +797,6 @@ export default function CostEstimatorPage() {
             >
               <RefreshCw className="w-4 h-4" /> Retry
             </button>
-            <a
-              href="mailto:support@dropzy.com"
-              className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-medium hover:bg-gray-50"
-            >
-              Contact Support
-            </a>
           </div>
         </div>
       )}
