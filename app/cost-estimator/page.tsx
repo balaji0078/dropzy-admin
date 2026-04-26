@@ -208,14 +208,14 @@ function CityTypeahead({
           onFocus={() => value.length >= 2 && setOpen(true)}
           placeholder={placeholder}
           className={cn(
-            "w-full pl-10 pr-4 py-2.5 border rounded-lg text-sm transition-all",
-            error ? "border-red-400 focus:ring-2 focus:ring-red-100" : "border-gray-200 focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
+            "w-full apple-input pl-10 pr-4 py-2.5 transition-all",
+            error ? "border-red-400 focus:ring-2 focus:ring-red-100" : "focus:border-[#007AFF] focus:ring-2 focus:ring-[#007AFF]/10"
           )}
         />
       </div>
       {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
       {open && filtered.length > 0 && (
-        <div className="absolute z-20 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+        <div className="absolute z-20 w-full mt-1 glass-card rounded-xl shadow-lg max-h-48 overflow-y-auto">
           {filtered.map((city) => (
             <button
               key={city.pincode}
@@ -265,8 +265,8 @@ function CountryDropdown({
       <button
         onClick={() => setOpen(!open)}
         className={cn(
-          "w-full flex items-center gap-2 px-3 py-2.5 border rounded-lg text-sm text-left transition-all",
-          error ? "border-red-400" : "border-gray-200 hover:border-gray-300"
+          "apple-input w-full flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm text-left transition-all",
+          error ? "border-red-400" : ""
         )}
       >
         <Globe className="w-4 h-4 text-gray-400 flex-shrink-0" />
@@ -277,8 +277,8 @@ function CountryDropdown({
       </button>
       {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
       {open && (
-        <div className="absolute z-20 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg">
-          <div className="p-2 border-b">
+        <div className="absolute z-20 w-full mt-1 glass-card rounded-xl shadow-lg">
+          <div className="p-2" style={{ borderBottom: "1px solid rgba(0,0,0,0.06)" }}>
             <div className="relative">
               <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
               <input
@@ -286,7 +286,7 @@ function CountryDropdown({
                 placeholder="Search country..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-8 pr-3 py-1.5 text-sm border border-gray-200 rounded-md"
+                className="apple-input w-full pl-8 pr-3 py-1.5 text-sm rounded-md"
                 autoFocus
               />
             </div>
@@ -453,8 +453,8 @@ export default function CostEstimatorPage() {
     <div className="space-y-6 max-w-3xl">
       {/* Header */}
       <div>
-        <h2 className="text-lg font-semibold text-gray-900">Shipping Cost Estimator</h2>
-        <p className="text-sm text-gray-500">
+        <h2 className="section-title">Shipping Cost Estimator</h2>
+        <p className="section-subtitle">
           Calculate shipping costs and send estimates to customers
         </p>
       </div>
@@ -489,7 +489,7 @@ export default function CostEstimatorPage() {
 
       {/* Quote Form */}
       {!estimate && !loading && (
-        <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-5 animate-fade-in">
+        <div className="glass-card p-6 space-y-5 animate-fade-in">
           {/* Pickup & Destination */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <CityTypeahead
@@ -530,7 +530,7 @@ export default function CostEstimatorPage() {
                 value={form.shipment_value}
                 onChange={(e) => setForm({ ...form, shipment_value: e.target.value })}
                 placeholder="Enter approximate value in INR"
-                className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:border-brand-500 focus:ring-2 focus:ring-brand-100 transition-all"
+                className="apple-input w-full pl-10 pr-4 py-2.5 text-sm"
               />
             </div>
           </div>
@@ -552,12 +552,12 @@ export default function CostEstimatorPage() {
                     className={cn(
                       "relative flex flex-col items-center gap-1.5 p-3 rounded-xl text-xs font-medium transition-all duration-200 border-2",
                       isSelected
-                        ? "border-emerald-500 bg-emerald-50 text-emerald-700"
-                        : "border-gray-100 bg-gray-50 text-gray-600 hover:border-gray-200 hover:bg-white"
+                        ? "border-[#34C759] bg-[#34C759]/10 text-[#34C759]"
+                        : "border-gray-200 glass-card-static text-gray-600 hover:border-gray-300"
                     )}
                   >
                     {isSelected && (
-                      <CheckCircle2 className="absolute -top-1.5 -right-1.5 w-4 h-4 text-emerald-500 bg-white rounded-full" />
+                      <CheckCircle2 className="absolute -top-1.5 -right-1.5 w-4 h-4 text-[#34C759] bg-white rounded-full" />
                     )}
                     <Icon className="w-5 h-5" />
                     <span className="text-center leading-tight">{pkg.label}</span>
@@ -601,8 +601,8 @@ export default function CostEstimatorPage() {
                   value={form.weight_kg || ""}
                   onChange={(e) => setForm({ ...form, weight_kg: parseFloat(e.target.value) || 0 })}
                   className={cn(
-                    "w-full pl-10 pr-4 py-2.5 border rounded-lg text-sm appearance-none bg-white transition-all",
-                    errors.weight_kg ? "border-red-400" : "border-gray-200 focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
+                    "apple-input w-full pl-10 pr-4 py-2.5 text-sm appearance-none transition-all",
+                    errors.weight_kg ? "border-red-400" : ""
                   )}
                 >
                   <option value="">Select weight</option>
@@ -631,9 +631,9 @@ export default function CostEstimatorPage() {
                   onChange={(e) => setForm({ ...form, mobile: e.target.value.replace(/\D/g, "").slice(0, 10) })}
                   placeholder="10-digit mobile number"
                   className={cn(
-                    "w-full pr-4 py-2.5 border rounded-lg text-sm transition-all",
+                    "apple-input w-full pr-4 py-2.5 text-sm transition-all",
                     mode === "international" ? "pl-16" : "pl-10",
-                    errors.mobile ? "border-red-400" : "border-gray-200 focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
+                    errors.mobile ? "border-red-400" : ""
                   )}
                 />
               </div>
@@ -646,9 +646,9 @@ export default function CostEstimatorPage() {
             onClick={handleCheckRates}
             disabled={!isFormComplete || loading}
             className={cn(
-              "w-full flex items-center justify-center gap-2 py-3 rounded-lg text-base font-bold transition-all duration-200",
+              "apple-btn w-full flex items-center justify-center gap-2 py-3 rounded-xl text-base font-bold transition-all duration-200",
               isFormComplete && !loading
-                ? "bg-[#E8732A] text-white hover:bg-[#d4661f] shadow-md hover:shadow-lg"
+                ? "apple-btn-primary"
                 : "bg-gray-200 text-gray-400 cursor-not-allowed"
             )}
           >
@@ -660,12 +660,12 @@ export default function CostEstimatorPage() {
 
       {/* Loading State */}
       {loading && (
-        <div className="bg-white rounded-xl border border-gray-200 p-12 flex flex-col items-center justify-center gap-4">
+        <div className="glass-card p-12 flex flex-col items-center justify-center gap-4">
           <div className="relative">
-            <div className="w-16 h-16 bg-brand-50 rounded-full flex items-center justify-center">
-              <Package className="w-8 h-8 text-brand-600" />
+            <div className="w-16 h-16 bg-[#007AFF]/10 rounded-full flex items-center justify-center">
+              <Package className="w-8 h-8 text-[#007AFF]" />
             </div>
-            <div className="absolute inset-0 w-16 h-16 border-4 border-brand-200 border-t-brand-600 rounded-full animate-spin" />
+            <div className="absolute inset-0 w-16 h-16 border-4 border-[#007AFF]/20 border-t-[#007AFF] rounded-full animate-spin" />
           </div>
           <p className="text-sm font-medium text-gray-600">Calculating shipping cost...</p>
         </div>
@@ -684,7 +684,7 @@ export default function CostEstimatorPage() {
           </button>
 
           {/* Estimate Card */}
-          <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+          <div className="glass-card overflow-hidden">
             {/* Header */}
             <div className="bg-gradient-to-r from-[#1E3A5F] to-[#2a5080] px-6 py-4">
               <div className="flex items-center gap-3">
@@ -704,20 +704,20 @@ export default function CostEstimatorPage() {
             <div className="p-6 space-y-4">
               {/* Route & Package Info */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="text-center p-3 bg-gray-50 rounded-lg">
+                <div className="text-center p-3 glass-card-static rounded-lg">
                   <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Package</p>
                   <p className="text-sm font-medium text-gray-900 mt-1">{PACKAGE_TYPES.find((p) => p.id === form.package_type)?.label}</p>
                 </div>
-                <div className="text-center p-3 bg-gray-50 rounded-lg">
+                <div className="text-center p-3 glass-card-static rounded-lg">
                   <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Weight</p>
                   <p className="text-sm font-medium text-gray-900 mt-1">{form.weight_kg} kg</p>
                 </div>
-                <div className="text-center p-3 bg-gray-50 rounded-lg">
+                <div className="text-center p-3 glass-card-static rounded-lg">
                   <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Delivery</p>
                   <p className="text-sm font-medium text-gray-900 mt-1">{estimate.estimated_days.min}–{estimate.estimated_days.max} Days</p>
                 </div>
                 {form.shipment_value && (
-                  <div className="text-center p-3 bg-gray-50 rounded-lg">
+                  <div className="text-center p-3 glass-card-static rounded-lg">
                     <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Declared Value</p>
                     <p className="text-sm font-medium text-gray-900 mt-1">₹{parseInt(form.shipment_value).toLocaleString("en-IN")}</p>
                   </div>
@@ -725,7 +725,7 @@ export default function CostEstimatorPage() {
               </div>
 
               {/* Price Breakdown */}
-              <div className="border border-gray-100 rounded-lg p-4 space-y-3">
+              <div className="glass-card-static rounded-lg p-4 space-y-3">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-500">Base Shipping Charge</span>
                   <span className="text-gray-900 font-medium">₹{estimate.base_price.toLocaleString("en-IN")}</span>
@@ -734,7 +734,7 @@ export default function CostEstimatorPage() {
                   <span className="text-gray-500">GST (18%)</span>
                   <span className="text-gray-900 font-medium">₹{estimate.gst.toLocaleString("en-IN")}</span>
                 </div>
-                <div className="border-t border-gray-100 pt-3 flex justify-between">
+                <div className="pt-3 flex justify-between" style={{ borderTop: "1px solid rgba(0,0,0,0.06)" }}>
                   <span className="text-base font-bold text-gray-900">Total Estimated Cost</span>
                   <span className="text-2xl font-bold text-[#E8732A]">₹{estimate.total_price.toLocaleString("en-IN")}</span>
                 </div>
@@ -753,10 +753,10 @@ export default function CostEstimatorPage() {
                   onClick={handleSendEstimate}
                   disabled={sent}
                   className={cn(
-                    "flex-1 flex items-center justify-center gap-2 py-3 rounded-lg text-sm font-bold transition-all duration-200",
+                    "apple-btn flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all duration-200",
                     sent
-                      ? "bg-emerald-500 text-white"
-                      : "bg-[#E8732A] text-white hover:bg-[#d4661f] shadow-md hover:shadow-lg"
+                      ? "bg-[#34C759] text-white"
+                      : "apple-btn-primary"
                   )}
                 >
                   {sent ? (
@@ -773,7 +773,7 @@ export default function CostEstimatorPage() {
                 </button>
                 <button
                   onClick={handleCopyEstimate}
-                  className="flex items-center gap-2 px-4 py-3 bg-white border border-gray-200 rounded-lg text-sm font-medium hover:bg-gray-50 transition-all"
+                  className="apple-btn apple-btn-secondary flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium transition-all"
                 >
                   {copied ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4 text-gray-500" />}
                   {copied ? "Copied" : "Copy"}
@@ -786,14 +786,14 @@ export default function CostEstimatorPage() {
 
       {/* API Error State */}
       {apiError && (
-        <div className="bg-white rounded-xl border border-red-200 p-8 text-center">
+        <div className="glass-card border-red-200 p-8 text-center">
           <AlertTriangle className="w-10 h-10 text-red-400 mx-auto mb-3" />
           <h3 className="text-lg font-semibold text-gray-900">Unable to calculate estimate</h3>
           <p className="text-sm text-gray-500 mt-1">Something went wrong. Please try again.</p>
           <div className="flex gap-3 justify-center mt-4">
             <button
               onClick={handleCheckRates}
-              className="flex items-center gap-2 px-4 py-2 bg-brand-600 text-white rounded-lg text-sm font-medium hover:bg-brand-700"
+              className="apple-btn apple-btn-primary flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium"
             >
               <RefreshCw className="w-4 h-4" /> Retry
             </button>

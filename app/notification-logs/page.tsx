@@ -157,7 +157,7 @@ export default function NotificationLogsPage() {
       </div>
 
       {/* Filter and Search */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
+      <div className="glass-card p-6 space-y-4">
         <div className="flex items-center gap-2 mb-4">
           <Search className="w-5 h-5 text-gray-400" />
           <input
@@ -196,7 +196,7 @@ export default function NotificationLogsPage() {
           <select
             value={dateRange}
             onChange={(e) => setDateRange(e.target.value)}
-            className="px-4 py-2 text-sm bg-white border border-gray-200 rounded-lg text-gray-900 hover:bg-gray-50"
+            className="apple-input px-4 py-2 text-sm rounded-xl"
           >
             <option value="today">Today</option>
             <option value="7days">Last 7 Days</option>
@@ -206,10 +206,10 @@ export default function NotificationLogsPage() {
       </div>
 
       {/* Notifications Table */}
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+      <div className="glass-card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead style={{ borderBottom: "1px solid rgba(0,0,0,0.06)" }}>
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                   Timestamp
@@ -234,7 +234,7 @@ export default function NotificationLogsPage() {
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200">
+            <tbody style={{ borderTop: "1px solid rgba(0,0,0,0.06)" }}>
               {filteredNotifications.length > 0 ? (
                 filteredNotifications.map((notif) => (
                   <tr key={notif.id} className="hover:bg-gray-50 transition-colors">
@@ -277,7 +277,7 @@ export default function NotificationLogsPage() {
                           setSelectedNotification(notif);
                           setShowModal(true);
                         }}
-                        className="px-3 py-1.5 bg-brand-600 text-white rounded-lg text-xs font-medium hover:bg-brand-700 transition-colors flex items-center gap-1"
+                        className="apple-btn apple-btn-primary px-3 py-1.5 rounded-xl text-xs font-medium transition-colors flex items-center gap-1"
                       >
                         <Eye className="w-3.5 h-3.5" />
                         View
@@ -307,7 +307,7 @@ export default function NotificationLogsPage() {
         {selectedNotification && (
           <div className="space-y-6">
             {/* Header Info */}
-            <div className="flex items-start justify-between pb-4 border-b border-gray-200">
+            <div className="flex items-start justify-between pb-4" style={{ borderBottom: "1px solid rgba(0,0,0,0.06)" }}>
               <div>
                 <div className="flex items-center gap-2 mb-2">
                   {selectedNotification.channel === "whatsapp" ? (
@@ -377,7 +377,7 @@ export default function NotificationLogsPage() {
                 <h3 className="text-xs font-semibold text-gray-500 uppercase mb-3">
                   Message Content
                 </h3>
-                <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <div className="p-4 glass-card-static rounded-lg">
                   <p className="text-sm text-gray-900 leading-relaxed">
                     {selectedNotification.message}
                   </p>
@@ -396,9 +396,9 @@ export default function NotificationLogsPage() {
                   <StatusBadge status={selectedNotification.status} />
                 </div>
                 {selectedNotification.read_receipt && (
-                  <div className="flex items-center justify-between p-3 bg-emerald-50 rounded-lg border border-emerald-200">
-                    <span className="text-sm text-emerald-700 font-medium">Read Receipt</span>
-                    <p className="text-xs text-emerald-600">
+                  <div className="flex items-center justify-between p-3 glass-card-static rounded-lg border-[#34C759]/20">
+                    <span className="text-sm text-[#34C759] font-medium">Read Receipt</span>
+                    <p className="text-xs text-[#34C759]">
                       {formatDateTime(selectedNotification.read_receipt)}
                     </p>
                   </div>

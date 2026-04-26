@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import dynamic from "next/dynamic";
 import { useAuth } from "@/lib/auth-context";
 import StatsCard from "@/components/ui/StatsCard";
@@ -13,17 +13,30 @@ import {
   Users,
   MapPin,
   Activity,
+  ArrowUpRight,
+  TrendingUp,
 } from "lucide-react";
 
-// Dynamically import map to avoid SSR issues with Leaflet
 const DashboardFleetMap = dynamic(
   () => import("@/components/ui/DashboardFleetMap"),
-  { ssr: false, loading: () => (
-    <div className="w-full h-[400px] rounded-lg bg-gray-100 flex items-center justify-center">
-      <div className="text-gray-500 text-sm">Loading map...</div>
-    </div>
-  )}
+  {
+    ssr: false,
+    loading: () => (
+      <div className="w-full h-[400px] rounded-2xl flex items-center justify-center"
+        style={{ background: "rgba(0, 0, 0, 0.02)" }}
+      >
+        <div className="flex flex-col items-center gap-2">
+          <div
+            className="w-6 h-6 rounded-full border-2 border-t-transparent animate-spin"
+            style={{ borderColor: "#007AFF", borderTopColor: "transparent" }}
+          />
+          <span className="text-[12px] text-gray-400">Loading map...</span>
+        </div>
+      </div>
+    ),
+  }
 );
+
 import {
   LineChart,
   Line,
@@ -37,10 +50,10 @@ import {
   PieChart,
   Pie,
   Cell,
-  Legend,
+  Area,
+  AreaChart,
 } from "recharts";
 
-// Mock data for delivery trends
 const deliveryTrends = [
   { day: "Mon", booked: 320, delivered: 240 },
   { day: "Tue", booked: 380, delivered: 290 },
@@ -51,7 +64,6 @@ const deliveryTrends = [
   { day: "Sun", booked: 410, delivered: 380 },
 ];
 
-// Mock data for route utilization
 const routeUtilization = [
   { route: "HYD → MUM", parcels: 380 },
   { route: "BLR → DEL", parcels: 320 },
@@ -60,167 +72,144 @@ const routeUtilization = [
   { route: "MUM → BLR", parcels: 180 },
 ];
 
-// Mock data for parcel status distribution
 const parcelStatusData = [
-  { name: "Booked", value: 420, color: "#3b82f6" },
-  { name: "Accepted", value: 310, color: "#06b6d4" },
-  { name: "In Transit", value: 342, color: "#8b5cf6" },
-  { name: "Arrived at Office", value: 180, color: "#f59e0b" },
-  { name: "Ready for Pickup", value: 150, color: "#ec4899" },
-  { name: "Delivered", value: 1445, color: "#22c55e" },
+  { name: "Booked", value: 420, color: "#007AFF" },
+  { name: "Accepted", value: 310, color: "#5AC8FA" },
+  { name: "In Transit", value: 342, color: "#5856D6" },
+  { name: "At Office", value: 180, color: "#FF9500" },
+  { name: "Ready", value: 150, color: "#FF2D55" },
+  { name: "Delivered", value: 1445, color: "#34C759" },
 ];
 
-// Mock recent parcels data
 const mockRecentParcels = [
-  {
-    id: "DPZ-2026-00001",
-    sender: "Rajesh Kumar",
-    receiver: "Priya Singh",
-    route: "HYD → MUM",
-    status: "in_transit",
-    lastUpdate: "2026-04-26 14:30",
-  },
-  {
-    id: "DPZ-2026-00002",
-    sender: "Amit Patel",
-    receiver: "Neha Gupta",
-    route: "BLR → DEL",
-    status: "accepted",
-    lastUpdate: "2026-04-26 13:45",
-  },
-  {
-    id: "DPZ-2026-00003",
-    sender: "Sanjay Reddy",
-    receiver: "Kavya Sharma",
-    route: "CHE → PUN",
-    status: "delivered",
-    lastUpdate: "2026-04-26 12:15",
-  },
-  {
-    id: "DPZ-2026-00004",
-    sender: "Deepak Verma",
-    receiver: "Anjali Joshi",
-    route: "MUM → BLR",
-    status: "ready_for_pickup",
-    lastUpdate: "2026-04-26 11:20",
-  },
-  {
-    id: "DPZ-2026-00005",
-    sender: "Vikram Singh",
-    receiver: "Pooja Mishra",
-    route: "KOL → AHM",
-    status: "arrived_at_office",
-    lastUpdate: "2026-04-26 10:50",
-  },
-  {
-    id: "DPZ-2026-00006",
-    sender: "Akshay Desai",
-    receiver: "Divya Iyer",
-    route: "HYD → MUM",
-    status: "in_transit",
-    lastUpdate: "2026-04-26 09:30",
-  },
-  {
-    id: "DPZ-2026-00007",
-    sender: "Suresh Nair",
-    receiver: "Meera Dutta",
-    route: "BLR → DEL",
-    status: "booked",
-    lastUpdate: "2026-04-26 08:45",
-  },
-  {
-    id: "DPZ-2026-00008",
-    sender: "Harish Kulkarni",
-    receiver: "Sneha Rao",
-    route: "CHE → PUN",
-    status: "accepted",
-    lastUpdate: "2026-04-26 07:55",
-  },
-  {
-    id: "DPZ-2026-00009",
-    sender: "Ramesh Iyer",
-    receiver: "Anjali Nair",
-    route: "MUM → BLR",
-    status: "delivered",
-    lastUpdate: "2026-04-26 06:20",
-  },
-  {
-    id: "DPZ-2026-00010",
-    sender: "Naveen Kumar",
-    receiver: "Ritika Saxena",
-    route: "KOL → AHM",
-    status: "in_transit",
-    lastUpdate: "2026-04-25 22:10",
-  },
+  { id: "DPZ-2026-00001", sender: "Rajesh Kumar", receiver: "Priya Singh", route: "HYD → MUM", status: "in_transit", lastUpdate: "2026-04-26 14:30" },
+  { id: "DPZ-2026-00002", sender: "Amit Patel", receiver: "Neha Gupta", route: "BLR → DEL", status: "accepted", lastUpdate: "2026-04-26 13:45" },
+  { id: "DPZ-2026-00003", sender: "Sanjay Reddy", receiver: "Kavya Sharma", route: "CHE → PUN", status: "delivered", lastUpdate: "2026-04-26 12:15" },
+  { id: "DPZ-2026-00004", sender: "Deepak Verma", receiver: "Anjali Joshi", route: "MUM → BLR", status: "ready_for_pickup", lastUpdate: "2026-04-26 11:20" },
+  { id: "DPZ-2026-00005", sender: "Vikram Singh", receiver: "Pooja Mishra", route: "KOL → AHM", status: "arrived_at_office", lastUpdate: "2026-04-26 10:50" },
+  { id: "DPZ-2026-00006", sender: "Akshay Desai", receiver: "Divya Iyer", route: "HYD → MUM", status: "in_transit", lastUpdate: "2026-04-26 09:30" },
+  { id: "DPZ-2026-00007", sender: "Suresh Nair", receiver: "Meera Dutta", route: "BLR → DEL", status: "booked", lastUpdate: "2026-04-26 08:45" },
+  { id: "DPZ-2026-00008", sender: "Harish Kulkarni", receiver: "Sneha Rao", route: "CHE → PUN", status: "accepted", lastUpdate: "2026-04-26 07:55" },
 ];
 
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (!active || !payload) return null;
+  return (
+    <div
+      style={{
+        background: "rgba(255, 255, 255, 0.95)",
+        backdropFilter: "blur(20px)",
+        border: "1px solid rgba(0, 0, 0, 0.06)",
+        borderRadius: "12px",
+        padding: "10px 14px",
+        boxShadow: "0 8px 32px rgba(0, 0, 0, 0.08)",
+      }}
+    >
+      <p className="text-[11px] font-semibold text-gray-400 uppercase mb-1">{label}</p>
+      {payload.map((p: any, i: number) => (
+        <p key={i} className="text-[13px] font-semibold" style={{ color: p.color }}>
+          {p.name}: {p.value}
+        </p>
+      ))}
+    </div>
+  );
+};
 
 export default function DashboardPage() {
   const { token } = useAuth();
 
   return (
     <div className="space-y-6">
-      {/* KPI Cards Row */}
+      {/* Welcome Banner */}
+      <div
+        className="p-6 rounded-3xl relative overflow-hidden"
+        style={{
+          background: "linear-gradient(135deg, #007AFF 0%, #5856D6 50%, #AF52DE 100%)",
+          boxShadow: "0 8px 32px rgba(0, 122, 255, 0.2)",
+        }}
+      >
+        <div className="absolute inset-0 opacity-10"
+          style={{
+            backgroundImage: "radial-gradient(circle at 20% 80%, rgba(255,255,255,0.3), transparent 50%), radial-gradient(circle at 80% 20%, rgba(255,255,255,0.2), transparent 50%)",
+          }}
+        />
+        <div className="relative z-10">
+          <p className="text-white/70 text-[13px] font-medium">Welcome back</p>
+          <h2 className="text-white text-[22px] font-bold tracking-tight mt-0.5">Dropzy Operations Center</h2>
+          <p className="text-white/60 text-[13px] mt-1">Everything running smoothly today</p>
+        </div>
+        <div className="absolute right-6 top-1/2 -translate-y-1/2 flex gap-3">
+          <div className="bg-white/10 backdrop-blur-md rounded-2xl px-4 py-3 text-center">
+            <p className="text-white text-[20px] font-bold">98.2%</p>
+            <p className="text-white/60 text-[11px] font-medium">On-Time Rate</p>
+          </div>
+          <div className="bg-white/10 backdrop-blur-md rounded-2xl px-4 py-3 text-center">
+            <p className="text-white text-[20px] font-bold">4.8</p>
+            <p className="text-white/60 text-[11px] font-medium">Avg Rating</p>
+          </div>
+        </div>
+      </div>
+
+      {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
         <StatsCard
           title="Total Parcels"
           value="2,847"
           change={14.2}
           icon={Package}
-          iconBg="bg-blue-50"
-          iconColor="text-blue-600"
+          gradient="linear-gradient(135deg, #007AFF, #5AC8FA)"
         />
         <StatsCard
           title="In Transit"
           value="342"
           change={8.5}
           icon={Activity}
-          iconBg="bg-purple-50"
-          iconColor="text-purple-600"
+          gradient="linear-gradient(135deg, #5856D6, #AF52DE)"
         />
         <StatsCard
           title="Delivered Today"
           value="189"
           change={12.1}
           icon={Package}
-          iconBg="bg-green-50"
-          iconColor="text-green-600"
+          gradient="linear-gradient(135deg, #34C759, #30D158)"
         />
         <StatsCard
           title="Revenue"
           value={formatCurrency(482350)}
           change={18.3}
           icon={CreditCard}
-          iconBg="bg-amber-50"
-          iconColor="text-amber-600"
+          gradient="linear-gradient(135deg, #FF9500, #FFCC00)"
         />
         <StatsCard
           title="Active Buses"
           value="28"
           change={5.2}
           icon={Truck}
-          iconBg="bg-cyan-50"
-          iconColor="text-cyan-600"
+          gradient="linear-gradient(135deg, #5AC8FA, #007AFF)"
         />
         <StatsCard
           title="Active Agents"
           value="15"
           change={2.8}
           icon={Users}
-          iconBg="bg-pink-50"
-          iconColor="text-pink-600"
+          gradient="linear-gradient(135deg, #FF2D55, #FF6482)"
         />
       </div>
 
-      {/* Live Fleet Map Section */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6">
+      {/* Live Fleet Map */}
+      <div className="glass-card-static p-6">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h3 className="text-base font-semibold text-gray-900">Live Fleet Map</h3>
-            <p className="text-sm text-gray-500">Real-time bus positions updating every 3 seconds</p>
+            <h3 className="section-title">Live Fleet Map</h3>
+            <p className="section-subtitle mt-0.5">Real-time bus positions updating every 3 seconds</p>
           </div>
-          <a href="/fleet" className="text-sm text-brand-600 hover:text-brand-700 font-medium">
-            Full Fleet View →
+          <a
+            href="/fleet"
+            className="flex items-center gap-1.5 text-[13px] font-semibold transition-colors"
+            style={{ color: "#007AFF" }}
+          >
+            Full Fleet View
+            <ArrowUpRight className="w-3.5 h-3.5" />
           </a>
         </div>
         <DashboardFleetMap />
@@ -229,78 +218,77 @@ export default function DashboardPage() {
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Delivery Trends */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
+        <div className="glass-card-static p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h3 className="text-base font-semibold text-gray-900">Delivery Trends</h3>
-              <p className="text-sm text-gray-500">Last 7 days</p>
+              <h3 className="section-title">Delivery Trends</h3>
+              <p className="section-subtitle mt-0.5">Last 7 days performance</p>
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full" style={{ background: "#007AFF" }} />
+                <span className="text-[11px] text-gray-400">Booked</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full" style={{ background: "#34C759" }} />
+                <span className="text-[11px] text-gray-400">Delivered</span>
+              </div>
             </div>
           </div>
           <ResponsiveContainer width="100%" height={250}>
-            <LineChart data={deliveryTrends}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-              <XAxis dataKey="day" tick={{ fontSize: 12 }} stroke="#94a3b8" />
-              <YAxis tick={{ fontSize: 12 }} stroke="#94a3b8" />
-              <Tooltip
-                contentStyle={{
-                  borderRadius: "8px",
-                  border: "1px solid #e5e7eb",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                }}
-              />
-              <Legend />
-              <Line
-                type="monotone"
-                dataKey="booked"
-                stroke="#3b82f6"
-                strokeWidth={2}
-                dot={{ fill: "#3b82f6", r: 4 }}
-                activeDot={{ r: 6 }}
-              />
-              <Line
-                type="monotone"
-                dataKey="delivered"
-                stroke="#22c55e"
-                strokeWidth={2}
-                dot={{ fill: "#22c55e", r: 4 }}
-                activeDot={{ r: 6 }}
-              />
-            </LineChart>
+            <AreaChart data={deliveryTrends}>
+              <defs>
+                <linearGradient id="blueGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#007AFF" stopOpacity={0.15} />
+                  <stop offset="100%" stopColor="#007AFF" stopOpacity={0} />
+                </linearGradient>
+                <linearGradient id="greenGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#34C759" stopOpacity={0.15} />
+                  <stop offset="100%" stopColor="#34C759" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.04)" vertical={false} />
+              <XAxis dataKey="day" tick={{ fontSize: 11, fill: "#8E8E93" }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 11, fill: "#8E8E93" }} axisLine={false} tickLine={false} />
+              <Tooltip content={<CustomTooltip />} />
+              <Area type="monotone" dataKey="booked" stroke="#007AFF" strokeWidth={2.5} fill="url(#blueGrad)" dot={false} activeDot={{ r: 5, fill: "#007AFF", stroke: "white", strokeWidth: 2 }} />
+              <Area type="monotone" dataKey="delivered" stroke="#34C759" strokeWidth={2.5} fill="url(#greenGrad)" dot={false} activeDot={{ r: 5, fill: "#34C759", stroke: "white", strokeWidth: 2 }} />
+            </AreaChart>
           </ResponsiveContainer>
         </div>
 
         {/* Route Utilization */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
+        <div className="glass-card-static p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h3 className="text-base font-semibold text-gray-900">Route Utilization</h3>
-              <p className="text-sm text-gray-500">Top 5 routes by parcel count</p>
+              <h3 className="section-title">Route Utilization</h3>
+              <p className="section-subtitle mt-0.5">Top 5 routes by parcel count</p>
             </div>
           </div>
           <ResponsiveContainer width="100%" height={250}>
-            <BarChart data={routeUtilization}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-              <XAxis dataKey="route" tick={{ fontSize: 11 }} stroke="#94a3b8" angle={-15} textAnchor="end" height={80} />
-              <YAxis tick={{ fontSize: 12 }} stroke="#94a3b8" />
-              <Tooltip
-                contentStyle={{
-                  borderRadius: "8px",
-                  border: "1px solid #e5e7eb",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                }}
-              />
-              <Bar dataKey="parcels" fill="#06b6d4" radius={[8, 8, 0, 0]} />
+            <BarChart data={routeUtilization} barSize={32}>
+              <defs>
+                <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#007AFF" stopOpacity={1} />
+                  <stop offset="100%" stopColor="#5856D6" stopOpacity={0.8} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.04)" vertical={false} />
+              <XAxis dataKey="route" tick={{ fontSize: 10, fill: "#8E8E93" }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 11, fill: "#8E8E93" }} axisLine={false} tickLine={false} />
+              <Tooltip content={<CustomTooltip />} />
+              <Bar dataKey="parcels" fill="url(#barGrad)" radius={[8, 8, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
       </div>
 
       {/* Parcel Status Distribution */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6">
+      <div className="glass-card-static p-6">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h3 className="text-base font-semibold text-gray-900">Parcel Status Distribution</h3>
-            <p className="text-sm text-gray-500">All parcels across lifecycle</p>
+            <h3 className="section-title">Parcel Status Distribution</h3>
+            <p className="section-subtitle mt-0.5">All parcels across lifecycle</p>
           </div>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -311,32 +299,35 @@ export default function DashboardPage() {
                   data={parcelStatusData}
                   cx="50%"
                   cy="50%"
-                  innerRadius={60}
-                  outerRadius={100}
-                  paddingAngle={2}
+                  innerRadius={65}
+                  outerRadius={105}
+                  paddingAngle={3}
                   dataKey="value"
+                  strokeWidth={0}
                 >
                   {parcelStatusData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
+                <Tooltip content={<CustomTooltip />} />
               </PieChart>
             </ResponsiveContainer>
           </div>
           <div className="lg:col-span-2">
-            <div className="grid grid-cols-2 gap-4 h-full">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               {parcelStatusData.map((item) => (
-                <div key={item.name} className="bg-gray-50 rounded-lg p-4 flex flex-col justify-center">
+                <div
+                  key={item.name}
+                  className="rounded-2xl p-4 transition-all duration-200 hover:scale-[1.02]"
+                  style={{ background: `${item.color}08`, border: `1px solid ${item.color}15` }}
+                >
                   <div className="flex items-center gap-2 mb-2">
-                    <span
-                      className="w-3 h-3 rounded-full"
-                      style={{ backgroundColor: item.color }}
-                    />
-                    <p className="text-sm font-medium text-gray-700">{item.name}</p>
+                    <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }} />
+                    <p className="text-[12px] font-medium text-gray-500">{item.name}</p>
                   </div>
-                  <p className="text-2xl font-bold text-gray-900">{item.value.toLocaleString()}</p>
-                  <p className="text-xs text-gray-500 mt-1">
-                    {((item.value / parcelStatusData.reduce((a, b) => a + b.value, 0)) * 100).toFixed(1)}%
+                  <p className="text-[22px] font-bold text-gray-900 tracking-tight">{item.value.toLocaleString()}</p>
+                  <p className="text-[11px] text-gray-400 mt-0.5">
+                    {((item.value / parcelStatusData.reduce((a, b) => a + b.value, 0)) * 100).toFixed(1)}% of total
                   </p>
                 </div>
               ))}
@@ -345,40 +336,47 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Recent Parcels Table */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6">
-        <div className="flex items-center justify-between mb-6">
+      {/* Recent Parcels */}
+      <div className="glass-card-static p-6">
+        <div className="flex items-center justify-between mb-5">
           <div>
-            <h3 className="text-base font-semibold text-gray-900">Recent Parcels</h3>
-            <p className="text-sm text-gray-500">Latest 10 parcels</p>
+            <h3 className="section-title">Recent Parcels</h3>
+            <p className="section-subtitle mt-0.5">Latest shipments</p>
           </div>
-          <a href="/parcels" className="text-sm text-brand-600 hover:text-brand-700 font-medium">
-            View all →
+          <a
+            href="/parcels"
+            className="flex items-center gap-1.5 text-[13px] font-semibold transition-colors"
+            style={{ color: "#007AFF" }}
+          >
+            View all
+            <ArrowUpRight className="w-3.5 h-3.5" />
           </a>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="apple-table">
             <thead>
-              <tr className="border-b border-gray-200">
-                <th className="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase">Tracking ID</th>
-                <th className="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase">Sender</th>
-                <th className="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase">Receiver</th>
-                <th className="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase">Route</th>
-                <th className="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase">Status</th>
-                <th className="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase">Last Update</th>
+              <tr>
+                <th>Tracking ID</th>
+                <th>Sender</th>
+                <th>Receiver</th>
+                <th>Route</th>
+                <th>Status</th>
+                <th>Last Update</th>
               </tr>
             </thead>
             <tbody>
               {mockRecentParcels.map((parcel) => (
-                <tr key={parcel.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                  <td className="py-3 px-4 text-sm font-medium text-gray-900">{parcel.id}</td>
-                  <td className="py-3 px-4 text-sm text-gray-600">{parcel.sender}</td>
-                  <td className="py-3 px-4 text-sm text-gray-600">{parcel.receiver}</td>
-                  <td className="py-3 px-4 text-sm text-gray-600">{parcel.route}</td>
-                  <td className="py-3 px-4">
-                    <StatusBadge status={parcel.status} />
+                <tr key={parcel.id}>
+                  <td className="font-semibold text-gray-900">{parcel.id}</td>
+                  <td className="text-gray-600">{parcel.sender}</td>
+                  <td className="text-gray-600">{parcel.receiver}</td>
+                  <td>
+                    <span className="px-2 py-1 rounded-lg text-[12px] font-medium" style={{ background: "rgba(0, 122, 255, 0.06)", color: "#007AFF" }}>
+                      {parcel.route}
+                    </span>
                   </td>
-                  <td className="py-3 px-4 text-sm text-gray-600">{parcel.lastUpdate}</td>
+                  <td><StatusBadge status={parcel.status} /></td>
+                  <td className="text-gray-400 text-[12px]">{parcel.lastUpdate}</td>
                 </tr>
               ))}
             </tbody>

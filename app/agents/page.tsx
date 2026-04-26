@@ -106,7 +106,7 @@ export default function AgentsPage() {
       </div>
 
       {/* Filter and Search */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
+      <div className="glass-card p-6 space-y-4">
         <div className="flex items-center gap-2 mb-4">
           <Search className="w-5 h-5 text-gray-400" />
           <input
@@ -130,10 +130,10 @@ export default function AgentsPage() {
       </div>
 
       {/* Agents Table */}
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+      <div className="glass-card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead style={{ borderBottom: "1px solid rgba(0,0,0,0.06)" }}>
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                   Name
@@ -161,7 +161,7 @@ export default function AgentsPage() {
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200">
+            <tbody style={{ borderTop: "1px solid rgba(0,0,0,0.06)" }}>
               {filteredAgents.length > 0 ? (
                 filteredAgents.map((agent) => (
                   <tr key={agent.id} className="hover:bg-gray-50 transition-colors">
@@ -195,7 +195,7 @@ export default function AgentsPage() {
                           setSelectedAgent(agent);
                           setShowModal(true);
                         }}
-                        className="px-3 py-1.5 bg-brand-600 text-white rounded-lg text-xs font-medium hover:bg-brand-700 transition-colors"
+                        className="apple-btn apple-btn-primary text-xs px-3 py-1.5"
                       >
                         View
                       </button>
@@ -258,41 +258,25 @@ export default function AgentsPage() {
             <div>
               <h3 className="text-sm font-semibold text-gray-900 mb-4">Performance Metrics</h3>
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-blue-50 rounded-lg p-4">
-                  <p className="text-xs text-blue-700 uppercase tracking-wide mb-1">
-                    This Week
-                  </p>
-                  <p className="text-2xl font-bold text-blue-900">
-                    {selectedAgent.parcels_week}
-                  </p>
-                  <p className="text-xs text-blue-600">parcels handled</p>
+                <div className="glass-card-static rounded-xl p-4">
+                  <p className="text-[12px] font-semibold text-gray-600 uppercase tracking-wider mb-1">This Week</p>
+                  <p className="text-[22px] font-bold text-gray-900">{selectedAgent.parcels_week}</p>
+                  <p className="text-[12px] text-gray-500">parcels handled</p>
                 </div>
-                <div className="bg-purple-50 rounded-lg p-4">
-                  <p className="text-xs text-purple-700 uppercase tracking-wide mb-1">
-                    This Month
-                  </p>
-                  <p className="text-2xl font-bold text-purple-900">
-                    {selectedAgent.parcels_month}
-                  </p>
-                  <p className="text-xs text-purple-600">parcels handled</p>
+                <div className="glass-card-static rounded-xl p-4">
+                  <p className="text-[12px] font-semibold text-gray-600 uppercase tracking-wider mb-1">This Month</p>
+                  <p className="text-[22px] font-bold text-gray-900">{selectedAgent.parcels_month}</p>
+                  <p className="text-[12px] text-gray-500">parcels handled</p>
                 </div>
-                <div className="bg-amber-50 rounded-lg p-4">
-                  <p className="text-xs text-amber-700 uppercase tracking-wide mb-1">
-                    Avg Handling Time
-                  </p>
-                  <p className="text-2xl font-bold text-amber-900">
-                    {selectedAgent.avg_handling_time}
-                  </p>
-                  <p className="text-xs text-amber-600">minutes</p>
+                <div className="glass-card-static rounded-xl p-4">
+                  <p className="text-[12px] font-semibold text-gray-600 uppercase tracking-wider mb-1">Avg Handling Time</p>
+                  <p className="text-[22px] font-bold text-gray-900">{selectedAgent.avg_handling_time}</p>
+                  <p className="text-[12px] text-gray-500">minutes</p>
                 </div>
-                <div className="bg-emerald-50 rounded-lg p-4">
-                  <p className="text-xs text-emerald-700 uppercase tracking-wide mb-1">
-                    Customer Rating
-                  </p>
-                  <p className="text-2xl font-bold text-emerald-900">
-                    {selectedAgent.rating}
-                  </p>
-                  <p className="text-xs text-emerald-600">out of 5</p>
+                <div className="glass-card-static rounded-xl p-4">
+                  <p className="text-[12px] font-semibold text-gray-600 uppercase tracking-wider mb-1">Customer Rating</p>
+                  <p className="text-[22px] font-bold text-gray-900">{selectedAgent.rating}</p>
+                  <p className="text-[12px] text-gray-500">out of 5</p>
                 </div>
               </div>
             </div>
@@ -300,7 +284,7 @@ export default function AgentsPage() {
             {/* RFID Scanner Status */}
             <div>
               <h3 className="text-sm font-semibold text-gray-900 mb-3">RFID Scanner Status</h3>
-              <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
+              <div className="flex items-center gap-3 p-4 glass-card-static rounded-xl">
                 {selectedAgent.rfid_status ? (
                   <>
                     <Wifi className="w-5 h-5 text-emerald-600" />
@@ -323,7 +307,7 @@ export default function AgentsPage() {
                   {selectedAgent.recent_activity.map((activity: any, idx: number) => (
                     <div
                       key={idx}
-                      className="flex items-start gap-4 p-3 bg-gray-50 rounded-lg border border-gray-200"
+                      className="flex items-start gap-4 p-3 glass-card-static rounded-lg"
                     >
                       <Package className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
                       <div className="flex-1 min-w-0">

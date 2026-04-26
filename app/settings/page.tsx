@@ -196,13 +196,13 @@ export default function SettingsPage() {
       )}
 
       {/* Tab Navigation */}
-      <div className="bg-white rounded-xl border border-gray-200 p-1">
+      <div className="glass-card p-1">
         <div className="flex gap-1 flex-wrap">
           <button
             onClick={() => setActiveTab("general")}
-            className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+            className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-colors ${
               activeTab === "general"
-                ? "bg-brand-600 text-white"
+                ? "bg-[#007AFF] text-white"
                 : "text-gray-600 hover:bg-gray-50"
             }`}
           >
@@ -247,13 +247,13 @@ export default function SettingsPage() {
 
       {/* General Tab */}
       {activeTab === "general" && (
-        <div className="bg-white rounded-xl border border-gray-200 p-8">
+        <div className="glass-card p-8">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-lg font-semibold text-gray-900">General Settings</h2>
             {!editingGeneral && (
               <button
                 onClick={() => setEditingGeneral(true)}
-                className="px-4 py-2 bg-brand-600 text-white rounded-lg text-sm font-medium hover:bg-brand-700 flex items-center gap-2"
+                className="apple-btn apple-btn-primary px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2"
               >
                 <Edit2 className="w-4 h-4" />
                 Edit
@@ -272,7 +272,7 @@ export default function SettingsPage() {
                   type="text"
                   value={tempGeneralSettings.company_name}
                   onChange={(e) => handleGeneralChange("company_name", e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-600"
+                  className="apple-input w-full px-4 py-2 rounded-xl"
                 />
               ) : (
                 <p className="text-gray-900 font-medium">
@@ -291,7 +291,7 @@ export default function SettingsPage() {
                   type="email"
                   value={tempGeneralSettings.contact_email}
                   onChange={(e) => handleGeneralChange("contact_email", e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-600"
+                  className="apple-input w-full px-4 py-2 rounded-xl"
                 />
               ) : (
                 <p className="text-gray-900 font-medium">
@@ -310,7 +310,7 @@ export default function SettingsPage() {
                   type="tel"
                   value={tempGeneralSettings.contact_phone}
                   onChange={(e) => handleGeneralChange("contact_phone", e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-600"
+                  className="apple-input w-full px-4 py-2 rounded-xl"
                 />
               ) : (
                 <p className="text-gray-900 font-medium">
@@ -328,7 +328,7 @@ export default function SettingsPage() {
                 <select
                   value={tempGeneralSettings.timezone}
                   onChange={(e) => handleGeneralChange("timezone", e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-600"
+                  className="apple-input w-full px-4 py-2 rounded-xl"
                 >
                   <option value="Asia/Kolkata">Asia/Kolkata (IST)</option>
                   <option value="UTC">UTC</option>
@@ -349,7 +349,7 @@ export default function SettingsPage() {
                 <select
                   value={tempGeneralSettings.currency}
                   onChange={(e) => handleGeneralChange("currency", e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-600"
+                  className="apple-input w-full px-4 py-2 rounded-xl"
                 >
                   <option value="INR">INR</option>
                   <option value="USD">USD</option>
@@ -363,17 +363,17 @@ export default function SettingsPage() {
 
             {/* Action Buttons */}
             {editingGeneral && (
-              <div className="flex gap-3 pt-4 border-t border-gray-200">
+              <div className="flex gap-3 pt-4" style={{ borderTop: "1px solid rgba(0,0,0,0.06)" }}>
                 <button
                   onClick={saveGeneralSettings}
-                  className="px-4 py-2 bg-brand-600 text-white rounded-lg text-sm font-medium hover:bg-brand-700 flex items-center gap-2"
+                  className="apple-btn apple-btn-primary px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2"
                 >
                   <Save className="w-4 h-4" />
                   Save Changes
                 </button>
                 <button
                   onClick={cancelGeneralEdit}
-                  className="px-4 py-2 bg-gray-100 text-gray-900 rounded-lg text-sm font-medium hover:bg-gray-200 flex items-center gap-2"
+                  className="apple-btn apple-btn-secondary px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2"
                 >
                   <X className="w-4 h-4" />
                   Cancel
@@ -390,7 +390,7 @@ export default function SettingsPage() {
           {templates.map((template) => (
             <div
               key={template.id}
-              className="bg-white rounded-xl border border-gray-200 p-6"
+              className="glass-card p-6"
             >
               {editingTemplate === template.id ? (
                 <div className="space-y-4">
@@ -404,7 +404,7 @@ export default function SettingsPage() {
                       onChange={(e) =>
                         setTempTemplate({ ...tempTemplate, name: e.target.value })
                       }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-600"
+                      className="apple-input w-full px-4 py-2 rounded-xl"
                     />
                   </div>
 
@@ -417,7 +417,7 @@ export default function SettingsPage() {
                       onChange={(e) =>
                         setTempTemplate({ ...tempTemplate, channel: e.target.value })
                       }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-600"
+                      className="apple-input w-full px-4 py-2 rounded-xl"
                     >
                       <option value="sms">SMS Only</option>
                       <option value="whatsapp">WhatsApp Only</option>
@@ -434,7 +434,7 @@ export default function SettingsPage() {
                       onChange={(e) =>
                         setTempTemplate({ ...tempTemplate, text: e.target.value })
                       }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-600"
+                      className="apple-input w-full px-4 py-2 rounded-xl"
                       rows={4}
                     />
                     <p className="text-xs text-gray-500 mt-2">
@@ -442,17 +442,17 @@ export default function SettingsPage() {
                     </p>
                   </div>
 
-                  <div className="flex gap-3 pt-4 border-t border-gray-200">
+                  <div className="flex gap-3 pt-4" style={{ borderTop: "1px solid rgba(0,0,0,0.06)" }}>
                     <button
                       onClick={saveTemplate}
-                      className="px-4 py-2 bg-brand-600 text-white rounded-lg text-sm font-medium hover:bg-brand-700 flex items-center gap-2"
+                      className="apple-btn apple-btn-primary px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2"
                     >
                       <Save className="w-4 h-4" />
                       Save Template
                     </button>
                     <button
                       onClick={cancelTemplateEdit}
-                      className="px-4 py-2 bg-gray-100 text-gray-900 rounded-lg text-sm font-medium hover:bg-gray-200 flex items-center gap-2"
+                      className="apple-btn apple-btn-secondary px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2"
                     >
                       <X className="w-4 h-4" />
                       Cancel
@@ -477,13 +477,13 @@ export default function SettingsPage() {
                     </div>
                     <button
                       onClick={() => startEditTemplate(template.id)}
-                      className="px-3 py-1.5 bg-brand-100 text-brand-700 rounded-lg text-xs font-medium hover:bg-brand-200 flex items-center gap-1"
+                      className="apple-btn apple-btn-secondary px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-1"
                     >
                       <Edit2 className="w-3.5 h-3.5" />
                       Edit
                     </button>
                   </div>
-                  <p className="text-sm text-gray-700 leading-relaxed bg-gray-50 p-3 rounded-lg">
+                  <p className="text-sm text-gray-700 leading-relaxed glass-card-static p-3 rounded-lg">
                     {template.text}
                   </p>
                 </div>
@@ -495,13 +495,13 @@ export default function SettingsPage() {
 
       {/* Pricing Tab */}
       {activeTab === "pricing" && (
-        <div className="bg-white rounded-xl border border-gray-200 p-8">
+        <div className="glass-card p-8">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-lg font-semibold text-gray-900">Pricing Settings</h2>
             {!editingPricing && (
               <button
                 onClick={() => setEditingPricing(true)}
-                className="px-4 py-2 bg-brand-600 text-white rounded-lg text-sm font-medium hover:bg-brand-700 flex items-center gap-2"
+                className="apple-btn apple-btn-primary px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2"
               >
                 <Edit2 className="w-4 h-4" />
                 Edit
@@ -520,7 +520,7 @@ export default function SettingsPage() {
                   type="number"
                   value={tempPricingSettings.base_rate}
                   onChange={(e) => handlePricingChange("base_rate", e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-600"
+                  className="apple-input w-full px-4 py-2 rounded-xl"
                 />
               ) : (
                 <p className="text-gray-900 font-medium">
@@ -540,7 +540,7 @@ export default function SettingsPage() {
                   type="number"
                   value={tempPricingSettings.per_km_rate}
                   onChange={(e) => handlePricingChange("per_km_rate", e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-600"
+                  className="apple-input w-full px-4 py-2 rounded-xl"
                 />
               ) : (
                 <p className="text-gray-900 font-medium">
@@ -560,7 +560,7 @@ export default function SettingsPage() {
                   type="number"
                   value={tempPricingSettings.gst_percentage}
                   onChange={(e) => handlePricingChange("gst_percentage", e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-600"
+                  className="apple-input w-full px-4 py-2 rounded-xl"
                 />
               ) : (
                 <p className="text-gray-900 font-medium">
@@ -572,17 +572,17 @@ export default function SettingsPage() {
 
             {/* Action Buttons */}
             {editingPricing && (
-              <div className="flex gap-3 pt-4 border-t border-gray-200">
+              <div className="flex gap-3 pt-4" style={{ borderTop: "1px solid rgba(0,0,0,0.06)" }}>
                 <button
                   onClick={savePricingSettings}
-                  className="px-4 py-2 bg-brand-600 text-white rounded-lg text-sm font-medium hover:bg-brand-700 flex items-center gap-2"
+                  className="apple-btn apple-btn-primary px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2"
                 >
                   <Save className="w-4 h-4" />
                   Save Changes
                 </button>
                 <button
                   onClick={cancelPricingEdit}
-                  className="px-4 py-2 bg-gray-100 text-gray-900 rounded-lg text-sm font-medium hover:bg-gray-200 flex items-center gap-2"
+                  className="apple-btn apple-btn-secondary px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2"
                 >
                   <X className="w-4 h-4" />
                   Cancel
@@ -599,7 +599,7 @@ export default function SettingsPage() {
           {integrations.map((integration) => (
             <div
               key={integration.name}
-              className="bg-white rounded-xl border border-gray-200 p-6 flex items-center justify-between"
+              className="glass-card p-6 flex items-center justify-between"
             >
               <div className="flex items-center gap-4">
                 <div

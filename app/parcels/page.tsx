@@ -10,6 +10,12 @@ import { Search, Filter, X, MapPin, Phone, Mail, Package, Scale, Clock, Plus, Ch
 import { INDIA_PINCODES, INDIA_STATES, getCityCode, searchPincodes } from "@/lib/india-pincodes";
 import type { IndianLocation } from "@/lib/india-pincodes";
 
+// Apple design tokens
+const APPLE_BLUE = "#007AFF";
+const APPLE_GREEN = "#34C759";
+const APPLE_ORANGE = "#FF9500";
+const APPLE_PURPLE = "#5856D6";
+
 const PARCEL_STATUSES = [
   { id: "all", label: "All" },
   { id: "booked", label: "Booked" },
@@ -294,18 +300,18 @@ function ParcelDetailModal({ parcel, onClose }: ParcelDetailModalProps) {
     <Modal open={!!parcel} onClose={onClose} title={parcel?.trackingId || "Parcel Details"}>
       <div className="max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-gray-900">{parcel.trackingId}</h2>
-          <button onClick={onClose} className="p-1 hover:bg-gray-100 rounded">
-            <X className="w-5 h-5" />
+          <h2 className="text-[22px] font-bold text-gray-900">{parcel.trackingId}</h2>
+          <button onClick={onClose} className="p-1 hover:opacity-70 rounded-xl transition-opacity">
+            <X className="w-5 h-5 text-gray-500" />
           </button>
         </div>
 
         <div className="space-y-6">
           {/* Sender & Receiver */}
           <div className="grid grid-cols-2 gap-6">
-            <div className="bg-gray-50 rounded-lg p-4">
-              <h3 className="font-semibold text-gray-900 mb-3">Sender</h3>
-              <div className="space-y-2 text-sm">
+            <div className="glass-card-static p-4 rounded-xl">
+              <h3 className="font-semibold text-gray-900 mb-3 text-[13px]">Sender</h3>
+              <div className="space-y-2 text-[13px]">
                 <div className="flex items-start gap-2">
                   <span className="text-gray-500">Name:</span>
                   <span className="font-medium text-gray-900">{parcel.sender.name}</span>
@@ -337,9 +343,9 @@ function ParcelDetailModal({ parcel, onClose }: ParcelDetailModalProps) {
               </div>
             </div>
 
-            <div className="bg-gray-50 rounded-lg p-4">
-              <h3 className="font-semibold text-gray-900 mb-3">Receiver</h3>
-              <div className="space-y-2 text-sm">
+            <div className="glass-card-static p-4 rounded-xl">
+              <h3 className="font-semibold text-gray-900 mb-3 text-[13px]">Receiver</h3>
+              <div className="space-y-2 text-[13px]">
                 <div className="flex items-start gap-2">
                   <span className="text-gray-500">Name:</span>
                   <span className="font-medium text-gray-900">{parcel.receiver.name}</span>
@@ -373,30 +379,30 @@ function ParcelDetailModal({ parcel, onClose }: ParcelDetailModalProps) {
           </div>
 
           {/* Package Details */}
-          <div className="bg-blue-50 border border-blue-100 rounded-lg p-4">
-            <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-              <Package className="w-4 h-4" />
+          <div className="glass-card-static p-4 rounded-xl" style={{ borderBottom: "1px solid rgba(0,122,255,0.12)" }}>
+            <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2 text-[13px]">
+              <Package className="w-4 h-4" style={{ color: APPLE_BLUE }} />
               Package Details
             </h3>
-            <div className="grid grid-cols-2 gap-4 text-sm">
+            <div className="grid grid-cols-2 gap-4 text-[13px]">
               <div>
-                <span className="text-gray-500">Type:</span>
+                <span className="text-gray-500 text-[12px]">Type:</span>
                 <p className="font-medium text-gray-900">{parcel.packageType}</p>
               </div>
               <div>
-                <span className="text-gray-500">Weight:</span>
+                <span className="text-gray-500 text-[12px]">Weight:</span>
                 <p className="font-medium text-gray-900">{parcel.weight} kg</p>
               </div>
               <div>
-                <span className="text-gray-500">Dimensions:</span>
+                <span className="text-gray-500 text-[12px]">Dimensions:</span>
                 <p className="font-medium text-gray-900">{parcel.dimensions}</p>
               </div>
               <div>
-                <span className="text-gray-500">Value:</span>
+                <span className="text-gray-500 text-[12px]">Value:</span>
                 <p className="font-medium text-gray-900">₹{parcel.value.toLocaleString()}</p>
               </div>
               <div className="col-span-2">
-                <span className="text-gray-500">E-way Bill:</span>
+                <span className="text-gray-500 text-[12px]">E-way Bill:</span>
                 <p className="font-medium text-gray-900">{parcel.ewayBill}</p>
               </div>
             </div>
@@ -404,8 +410,8 @@ function ParcelDetailModal({ parcel, onClose }: ParcelDetailModalProps) {
 
           {/* Status Timeline */}
           <div>
-            <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-              <Clock className="w-4 h-4" />
+            <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2 text-[13px]">
+              <Clock className="w-4 h-4" style={{ color: APPLE_BLUE }} />
               Delivery Timeline
             </h3>
             <div className="relative">
@@ -421,26 +427,27 @@ function ParcelDetailModal({ parcel, onClose }: ParcelDetailModalProps) {
                   <div key={phase} className="flex gap-4 mb-4 last:mb-0">
                     <div className="flex flex-col items-center">
                       <div
-                        className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${
-                          isCompleted
-                            ? "bg-green-500 text-white"
-                            : "bg-gray-300 text-gray-600"
-                        }`}
+                        className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white"
+                        style={{
+                          backgroundColor: isCompleted ? APPLE_GREEN : "rgba(0,0,0,0.08)",
+                          color: isCompleted ? "white" : "rgba(0,0,0,0.4)",
+                        }}
                       >
                         {index + 1}
                       </div>
                       {index < PARCEL_PHASES.length - 1 && (
                         <div
-                          className={`w-0.5 h-12 ${
-                            isCompleted ? "bg-green-500" : "bg-gray-300"
-                          }`}
+                          className="w-0.5 h-12"
+                          style={{
+                            backgroundColor: isCompleted ? APPLE_GREEN : "rgba(0,0,0,0.08)",
+                          }}
                         />
                       )}
                     </div>
                     <div className="flex-1 pt-1">
-                      <p className="font-medium text-gray-900">{phaseLabel}</p>
+                      <p className="font-medium text-gray-900 text-[13px]">{phaseLabel}</p>
                       {timelineEntry && (
-                        <p className="text-sm text-gray-500">{timelineEntry.timestamp}</p>
+                        <p className="text-[12px] text-gray-500">{timelineEntry.timestamp}</p>
                       )}
                     </div>
                   </div>
@@ -451,20 +458,20 @@ function ParcelDetailModal({ parcel, onClose }: ParcelDetailModalProps) {
 
           {/* Communications Log */}
           <div>
-            <h3 className="font-semibold text-gray-900 mb-3">Communications</h3>
+            <h3 className="font-semibold text-gray-900 mb-3 text-[13px]">Communications</h3>
             <div className="space-y-3">
               {parcel.communications.length > 0 ? (
                 parcel.communications.map((comm, idx) => (
-                  <div key={idx} className="border border-gray-200 rounded-lg p-3 text-sm">
+                  <div key={idx} className="glass-card-static p-3 rounded-lg" style={{ borderBottom: "1px solid rgba(0,0,0,0.06)" }}>
                     <div className="flex items-center justify-between mb-1">
-                      <span className="font-medium text-gray-900">{comm.type}</span>
-                      <span className="text-xs text-gray-500">{comm.timestamp}</span>
+                      <span className="font-medium text-gray-900 text-[13px]">{comm.type}</span>
+                      <span className="text-[11px] text-gray-500">{comm.timestamp}</span>
                     </div>
-                    <p className="text-gray-700">{comm.message}</p>
+                    <p className="text-gray-700 text-[13px]">{comm.message}</p>
                   </div>
                 ))
               ) : (
-                <p className="text-gray-500 text-sm">No communications yet</p>
+                <p className="text-gray-500 text-[13px]">No communications yet</p>
               )}
             </div>
           </div>
@@ -472,7 +479,7 @@ function ParcelDetailModal({ parcel, onClose }: ParcelDetailModalProps) {
 
         <button
           onClick={onClose}
-          className="w-full mt-6 bg-brand-600 text-white py-2 rounded-lg hover:bg-brand-700 font-medium"
+          className="w-full mt-6 apple-btn apple-btn-primary py-2 rounded-xl font-medium text-[13px]"
         >
           Close
         </button>
@@ -586,12 +593,12 @@ export default function ParcelsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Parcel Management</h1>
-          <p className="text-sm text-gray-500 mt-1">Manage parcel lifecycle and track deliveries</p>
+          <h1 className="text-[28px] font-bold text-gray-900">Parcel Management</h1>
+          <p className="text-[13px] text-gray-500 mt-1">Manage parcel lifecycle and track deliveries</p>
         </div>
         <button
           onClick={() => setShowNewParcel(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-brand-600 text-white rounded-lg hover:bg-brand-700 font-medium text-sm transition-colors"
+          className="flex items-center gap-2 px-4 py-2 apple-btn apple-btn-primary rounded-xl font-medium text-[13px] transition-colors"
         >
           <Plus className="w-4 h-4" />
           New Parcel
@@ -599,7 +606,7 @@ export default function ParcelsPage() {
       </div>
 
       {/* Search and Filter Bar */}
-      <div className="bg-white rounded-xl border border-gray-200 p-4">
+      <div className="glass-card-static p-4 rounded-xl">
         <div className="flex flex-col lg:flex-row gap-4">
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -608,21 +615,26 @@ export default function ParcelsPage() {
               placeholder="Search by tracking ID, sender/receiver name, city, or pincode..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+              className="apple-input w-full pl-10 pr-4 py-2 text-[13px]"
+              style={{ background: "rgba(0,0,0,0.03)", border: "1px solid rgba(0,0,0,0.06)" }}
             />
           </div>
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium border transition-colors ${
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[13px] font-medium border transition-colors ${
               showFilters || activeFilterCount > 0
-                ? "border-brand-300 bg-brand-50 text-brand-700"
-                : "border-gray-300 text-gray-700 hover:bg-gray-50"
+                ? "text-white"
+                : "text-gray-700 hover:opacity-80"
             }`}
+            style={{
+              backgroundColor: showFilters || activeFilterCount > 0 ? APPLE_BLUE : "rgba(0,0,0,0.04)",
+              borderColor: showFilters || activeFilterCount > 0 ? APPLE_BLUE : "transparent",
+            }}
           >
             <Filter className="w-4 h-4" />
             Location Filters
             {activeFilterCount > 0 && (
-              <span className="bg-brand-600 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+              <span className="text-white text-[11px] w-5 h-5 rounded-full flex items-center justify-center font-bold" style={{ backgroundColor: APPLE_BLUE }}>
                 {activeFilterCount}
               </span>
             )}
@@ -631,13 +643,14 @@ export default function ParcelsPage() {
 
         {/* Location Filter Dropdowns */}
         {showFilters && (
-          <div className="mt-4 pt-4 border-t border-gray-100">
+          <div className="mt-4 pt-4" style={{ borderTop: "1px solid rgba(0,0,0,0.06)" }}>
             <div className="flex items-center justify-between mb-3">
-              <h4 className="text-sm font-medium text-gray-700">Filter by Location</h4>
+              <h4 className="text-[13px] font-medium text-gray-700">Filter by Location</h4>
               {activeFilterCount > 0 && (
                 <button
                   onClick={clearAllFilters}
-                  className="text-xs text-brand-600 hover:text-brand-700 font-medium"
+                  className="text-[12px] hover:opacity-70 font-medium transition-opacity"
+                  style={{ color: APPLE_BLUE }}
                 >
                   Clear all filters
                 </button>
@@ -667,16 +680,19 @@ export default function ParcelsPage() {
         )}
 
         {/* Status Tabs */}
-        <div className="flex flex-wrap gap-2 mt-4">
+        <div className="flex flex-wrap gap-1 mt-4 p-1 rounded-xl" style={{ background: "rgba(0,0,0,0.04)" }}>
           {PARCEL_STATUSES.map((status) => (
             <button
               key={status.id}
               onClick={() => setSelectedStatus(status.id)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              className={`px-4 py-2 rounded-lg text-[13px] font-medium transition-colors ${
                 selectedStatus === status.id
-                  ? "bg-brand-600 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  ? "bg-white text-gray-900"
+                  : "text-gray-500 hover:opacity-80"
               }`}
+              style={{
+                boxShadow: selectedStatus === status.id ? "0 1px 3px rgba(0,0,0,0.1)" : "none",
+              }}
             >
               {status.label}
             </button>
@@ -684,26 +700,26 @@ export default function ParcelsPage() {
         </div>
 
         {/* Results count */}
-        <div className="mt-4 text-sm text-gray-600">
+        <div className="mt-4 text-[13px] text-gray-600">
           Showing {filteredParcels.length} parcels {selectedStatus !== "all" && `with status "${selectedStatus}"`}
           {activeFilterCount > 0 && " (location filters active)"}
         </div>
       </div>
 
       {/* Parcels Table */}
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+      <div className="glass-card-static rounded-xl overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="w-full apple-table">
             <thead>
-              <tr className="border-b border-gray-200 bg-gray-50">
-                <th className="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase">Tracking ID</th>
-                <th className="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase">Pickup City</th>
-                <th className="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase">Destination</th>
-                <th className="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase">Route</th>
-                <th className="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase">Package Type</th>
-                <th className="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase">Weight</th>
-                <th className="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase">Status</th>
-                <th className="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase">Booked Date</th>
+              <tr style={{ borderBottom: "1px solid rgba(0,0,0,0.06)" }} className="bg-transparent">
+                <th className="text-left py-3 px-4 text-[12px] font-semibold text-gray-600 uppercase tracking-wider">Tracking ID</th>
+                <th className="text-left py-3 px-4 text-[12px] font-semibold text-gray-600 uppercase tracking-wider">Pickup City</th>
+                <th className="text-left py-3 px-4 text-[12px] font-semibold text-gray-600 uppercase tracking-wider">Destination</th>
+                <th className="text-left py-3 px-4 text-[12px] font-semibold text-gray-600 uppercase tracking-wider">Route</th>
+                <th className="text-left py-3 px-4 text-[12px] font-semibold text-gray-600 uppercase tracking-wider">Package Type</th>
+                <th className="text-left py-3 px-4 text-[12px] font-semibold text-gray-600 uppercase tracking-wider">Weight</th>
+                <th className="text-left py-3 px-4 text-[12px] font-semibold text-gray-600 uppercase tracking-wider">Status</th>
+                <th className="text-left py-3 px-4 text-[12px] font-semibold text-gray-600 uppercase tracking-wider">Booked Date</th>
               </tr>
             </thead>
             <tbody>
@@ -711,18 +727,19 @@ export default function ParcelsPage() {
                 <tr
                   key={parcel.id}
                   onClick={() => setSelectedParcel(parcel)}
-                  className="border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors"
+                  className="cursor-pointer transition-colors hover:opacity-75"
+                  style={{ borderBottom: "1px solid rgba(0,0,0,0.03)" }}
                 >
-                  <td className="py-3 px-4 text-sm font-medium text-brand-600">{parcel.trackingId}</td>
-                  <td className="py-3 px-4 text-sm text-gray-900">{parcel.sender.city} - {parcel.sender.pincode}</td>
-                  <td className="py-3 px-4 text-sm text-gray-900">{parcel.receiver.city} - {parcel.receiver.pincode}</td>
-                  <td className="py-3 px-4 text-sm text-gray-600">{parcel.route}</td>
-                  <td className="py-3 px-4 text-sm text-gray-600">{parcel.packageType}</td>
-                  <td className="py-3 px-4 text-sm text-gray-600">{parcel.weight} kg</td>
+                  <td className="py-3 px-4 text-[13px] font-medium" style={{ color: APPLE_BLUE }}>{parcel.trackingId}</td>
+                  <td className="py-3 px-4 text-[13px] text-gray-900">{parcel.sender.city} - {parcel.sender.pincode}</td>
+                  <td className="py-3 px-4 text-[13px] text-gray-900">{parcel.receiver.city} - {parcel.receiver.pincode}</td>
+                  <td className="py-3 px-4 text-[13px] text-gray-600">{parcel.route}</td>
+                  <td className="py-3 px-4 text-[13px] text-gray-600">{parcel.packageType}</td>
+                  <td className="py-3 px-4 text-[13px] text-gray-600">{parcel.weight} kg</td>
                   <td className="py-3 px-4">
                     <StatusBadge status={parcel.status} />
                   </td>
-                  <td className="py-3 px-4 text-sm text-gray-600">{formatDate(parcel.bookedDate)}</td>
+                  <td className="py-3 px-4 text-[13px] text-gray-600">{formatDate(parcel.bookedDate)}</td>
                 </tr>
               ))}
             </tbody>
@@ -732,8 +749,8 @@ export default function ParcelsPage() {
         {filteredParcels.length === 0 && (
           <div className="text-center py-12 text-gray-500">
             <Package className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-            <p className="text-lg font-medium">No parcels found</p>
-            <p className="text-sm">Try adjusting your search or filters</p>
+            <p className="text-[15px] font-medium">No parcels found</p>
+            <p className="text-[13px]">Try adjusting your search or filters</p>
           </div>
         )}
       </div>
@@ -745,17 +762,17 @@ export default function ParcelsPage() {
       <Modal open={showNewParcel} onClose={() => setShowNewParcel(false)} title="Book New Parcel">
         <div className="max-w-2xl w-full max-h-[85vh] overflow-y-auto">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold text-gray-900">Book New Parcel</h2>
-            <button onClick={() => setShowNewParcel(false)} className="p-1 hover:bg-gray-100 rounded">
-              <X className="w-5 h-5" />
+            <h2 className="text-[22px] font-bold text-gray-900">Book New Parcel</h2>
+            <button onClick={() => setShowNewParcel(false)} className="p-1 hover:opacity-70 rounded-xl transition-opacity">
+              <X className="w-5 h-5 text-gray-500" />
             </button>
           </div>
 
           <div className="space-y-6">
             {/* Pickup Location */}
-            <div className="bg-green-50 border border-green-100 rounded-lg p-4">
-              <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-green-600" />
+            <div className="glass-card-static p-4 rounded-xl" style={{ borderBottom: "1px solid rgba(0,122,255,0.12)" }}>
+              <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2 text-[13px]">
+                <MapPin className="w-4 h-4" style={{ color: APPLE_GREEN }} />
                 Pickup Location
               </h3>
               <SearchableDropdown
@@ -769,31 +786,31 @@ export default function ParcelsPage() {
                 const [city, pin] = newParcelPickup.split("|");
                 const loc = INDIA_PINCODES.find((l) => l.pincode === pin && l.city === city);
                 return loc ? (
-                  <div className="mt-2 text-xs text-gray-500 bg-white rounded p-2">
+                  <div className="mt-2 text-[11px] text-gray-500 bg-white rounded-lg p-2">
                     {loc.city}, {loc.district}, {loc.state} — {loc.pincode}
                   </div>
                 ) : null;
               })()}
               <div className="grid grid-cols-2 gap-3 mt-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Sender Name</label>
-                  <input type="text" placeholder="Full name" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
+                  <label className="block text-[12px] font-semibold text-gray-600 uppercase tracking-wider mb-1">Sender Name</label>
+                  <input type="text" placeholder="Full name" className="apple-input w-full px-3 py-2 text-[13px]" style={{ background: "rgba(0,0,0,0.03)", border: "1px solid rgba(0,0,0,0.06)" }} />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-                  <input type="text" placeholder="+91-XXXXXXXXXX" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
+                  <label className="block text-[12px] font-semibold text-gray-600 uppercase tracking-wider mb-1">Phone</label>
+                  <input type="text" placeholder="+91-XXXXXXXXXX" className="apple-input w-full px-3 py-2 text-[13px]" style={{ background: "rgba(0,0,0,0.03)", border: "1px solid rgba(0,0,0,0.06)" }} />
                 </div>
               </div>
               <div className="mt-3">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
-                <input type="text" placeholder="Full address" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
+                <label className="block text-[12px] font-semibold text-gray-600 uppercase tracking-wider mb-1">Address</label>
+                <input type="text" placeholder="Full address" className="apple-input w-full px-3 py-2 text-[13px]" style={{ background: "rgba(0,0,0,0.03)", border: "1px solid rgba(0,0,0,0.06)" }} />
               </div>
             </div>
 
             {/* Destination */}
-            <div className="bg-blue-50 border border-blue-100 rounded-lg p-4">
-              <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-blue-600" />
+            <div className="glass-card-static p-4 rounded-xl" style={{ borderBottom: "1px solid rgba(0,122,255,0.12)" }}>
+              <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2 text-[13px]">
+                <MapPin className="w-4 h-4" style={{ color: APPLE_BLUE }} />
                 Destination
               </h3>
               <SearchableDropdown
@@ -807,37 +824,37 @@ export default function ParcelsPage() {
                 const [city, pin] = newParcelDestination.split("|");
                 const loc = INDIA_PINCODES.find((l) => l.pincode === pin && l.city === city);
                 return loc ? (
-                  <div className="mt-2 text-xs text-gray-500 bg-white rounded p-2">
+                  <div className="mt-2 text-[11px] text-gray-500 bg-white rounded-lg p-2">
                     {loc.city}, {loc.district}, {loc.state} — {loc.pincode}
                   </div>
                 ) : null;
               })()}
               <div className="grid grid-cols-2 gap-3 mt-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Receiver Name</label>
-                  <input type="text" placeholder="Full name" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
+                  <label className="block text-[12px] font-semibold text-gray-600 uppercase tracking-wider mb-1">Receiver Name</label>
+                  <input type="text" placeholder="Full name" className="apple-input w-full px-3 py-2 text-[13px]" style={{ background: "rgba(0,0,0,0.03)", border: "1px solid rgba(0,0,0,0.06)" }} />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-                  <input type="text" placeholder="+91-XXXXXXXXXX" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
+                  <label className="block text-[12px] font-semibold text-gray-600 uppercase tracking-wider mb-1">Phone</label>
+                  <input type="text" placeholder="+91-XXXXXXXXXX" className="apple-input w-full px-3 py-2 text-[13px]" style={{ background: "rgba(0,0,0,0.03)", border: "1px solid rgba(0,0,0,0.06)" }} />
                 </div>
               </div>
               <div className="mt-3">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
-                <input type="text" placeholder="Full address" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
+                <label className="block text-[12px] font-semibold text-gray-600 uppercase tracking-wider mb-1">Address</label>
+                <input type="text" placeholder="Full address" className="apple-input w-full px-3 py-2 text-[13px]" style={{ background: "rgba(0,0,0,0.03)", border: "1px solid rgba(0,0,0,0.06)" }} />
               </div>
             </div>
 
             {/* Package Details */}
-            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-              <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+            <div className="glass-card-static p-4 rounded-xl" style={{ background: "rgba(0,0,0,0.02)" }}>
+              <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2 text-[13px]">
                 <Package className="w-4 h-4" />
                 Package Details
               </h3>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Package Type</label>
-                  <select className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                  <label className="block text-[12px] font-semibold text-gray-600 uppercase tracking-wider mb-1">Package Type</label>
+                  <select className="apple-input w-full px-3 py-2 text-[13px]" style={{ background: "rgba(0,0,0,0.03)", border: "1px solid rgba(0,0,0,0.06)" }}>
                     <option value="">Select type...</option>
                     <option value="Electronics">Electronics</option>
                     <option value="Documents">Documents</option>
@@ -852,16 +869,16 @@ export default function ParcelsPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Weight (kg)</label>
-                  <input type="number" step="0.1" placeholder="0.0" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
+                  <label className="block text-[12px] font-semibold text-gray-600 uppercase tracking-wider mb-1">Weight (kg)</label>
+                  <input type="number" step="0.1" placeholder="0.0" className="apple-input w-full px-3 py-2 text-[13px]" style={{ background: "rgba(0,0,0,0.03)", border: "1px solid rgba(0,0,0,0.06)" }} />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Dimensions (cm)</label>
-                  <input type="text" placeholder="L x W x H" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
+                  <label className="block text-[12px] font-semibold text-gray-600 uppercase tracking-wider mb-1">Dimensions (cm)</label>
+                  <input type="text" placeholder="L x W x H" className="apple-input w-full px-3 py-2 text-[13px]" style={{ background: "rgba(0,0,0,0.03)", border: "1px solid rgba(0,0,0,0.06)" }} />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Declared Value (₹)</label>
-                  <input type="number" placeholder="0" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
+                  <label className="block text-[12px] font-semibold text-gray-600 uppercase tracking-wider mb-1">Declared Value (₹)</label>
+                  <input type="number" placeholder="0" className="apple-input w-full px-3 py-2 text-[13px]" style={{ background: "rgba(0,0,0,0.03)", border: "1px solid rgba(0,0,0,0.06)" }} />
                 </div>
               </div>
             </div>
@@ -871,14 +888,14 @@ export default function ParcelsPage() {
               const [pCity, pPin] = newParcelPickup.split("|");
               const [dCity, dPin] = newParcelDestination.split("|");
               return (
-                <div className="bg-purple-50 border border-purple-100 rounded-lg p-4">
-                  <h3 className="font-semibold text-gray-900 mb-2">Route Preview</h3>
-                  <div className="flex items-center gap-3 text-sm">
-                    <span className="bg-green-100 text-green-800 px-2 py-1 rounded font-medium">{pCity} ({pPin})</span>
+                <div className="glass-card-static p-4 rounded-xl" style={{ background: "rgba(88,86,214,0.06)" }}>
+                  <h3 className="font-semibold text-gray-900 mb-2 text-[13px]">Route Preview</h3>
+                  <div className="flex items-center gap-3 text-[13px]">
+                    <span className="text-white px-2 py-1 rounded-lg font-medium" style={{ backgroundColor: APPLE_GREEN }}>{pCity} ({pPin})</span>
                     <span className="text-gray-400">→</span>
-                    <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded font-medium">{dCity} ({dPin})</span>
+                    <span className="text-white px-2 py-1 rounded-lg font-medium" style={{ backgroundColor: APPLE_BLUE }}>{dCity} ({dPin})</span>
                   </div>
-                  <p className="text-xs text-gray-500 mt-2">
+                  <p className="text-[11px] text-gray-500 mt-2">
                     Route code: {getCityCode(pCity)}-{pPin} → {getCityCode(dCity)}-{dPin}
                   </p>
                 </div>
@@ -889,7 +906,7 @@ export default function ParcelsPage() {
           <div className="flex gap-3 mt-6">
             <button
               onClick={() => setShowNewParcel(false)}
-              className="flex-1 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium text-sm"
+              className="flex-1 py-2 apple-btn apple-btn-secondary rounded-xl font-medium text-[13px]"
             >
               Cancel
             </button>
@@ -900,7 +917,7 @@ export default function ParcelsPage() {
                 setNewParcelPickup("");
                 setNewParcelDestination("");
               }}
-              className="flex-1 py-2 bg-brand-600 text-white rounded-lg hover:bg-brand-700 font-medium text-sm"
+              className="flex-1 py-2 apple-btn apple-btn-primary rounded-xl font-medium text-[13px]"
             >
               Book Parcel
             </button>

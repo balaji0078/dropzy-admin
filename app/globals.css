@@ -2,15 +2,66 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─── Apple-Inspired Design System ─── */
+
 @layer base {
+  :root {
+    --glass-bg: rgba(255, 255, 255, 0.72);
+    --glass-border: rgba(255, 255, 255, 0.6);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+    --surface-primary: #FFFFFF;
+    --surface-secondary: #F9FAFB;
+    --surface-tertiary: #F2F2F7;
+    --text-primary: #1C1C1E;
+    --text-secondary: #636366;
+    --text-tertiary: #8E8E93;
+    --accent-blue: #007AFF;
+    --accent-indigo: #5856D6;
+    --accent-purple: #AF52DE;
+    --accent-pink: #FF2D55;
+    --accent-green: #34C759;
+    --accent-orange: #FF9500;
+    --accent-red: #FF3B30;
+    --accent-teal: #5AC8FA;
+    --radius-sm: 10px;
+    --radius-md: 14px;
+    --radius-lg: 18px;
+    --radius-xl: 22px;
+  }
+
+  * {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
   body {
-    @apply bg-gray-50 text-gray-900 antialiased;
+    @apply text-gray-900 antialiased;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 50%, #f0f2f5 100%);
+    background-attachment: fixed;
+    font-feature-settings: 'kern' 1, 'liga' 1;
+    letter-spacing: -0.01em;
+  }
+
+  /* Smooth scrollbars */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.25);
   }
 }
 
 /* ─── Animations ─── */
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
+  from { opacity: 0; transform: translateY(12px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 @keyframes fadeIn {
@@ -18,12 +69,12 @@
   to   { opacity: 1; }
 }
 @keyframes slideInRight {
-  from { opacity: 0; transform: translateX(30px); }
+  from { opacity: 0; transform: translateX(16px); }
   to   { opacity: 1; transform: translateX(0); }
 }
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
-  50%      { transform: translateY(-12px); }
+  50%      { transform: translateY(-8px); }
 }
 @keyframes pulse-ring {
   0%   { transform: scale(0.8); opacity: 0.5; }
@@ -33,23 +84,23 @@
   0%   { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 }
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
 @keyframes truck-drive {
   0%   { transform: translateX(-100%); }
   100% { transform: translateX(400%); }
 }
-@keyframes gradient-shift {
-  0%, 100% { background-position: 0% 50%; }
-  50%      { background-position: 100% 50%; }
-}
 
-.animate-fade-in-up    { animation: fadeInUp 0.6s ease-out forwards; }
-.animate-fade-in       { animation: fadeIn 0.5s ease-out forwards; }
-.animate-slide-in-right{ animation: slideInRight 0.5s ease-out forwards; }
+.animate-fade-in-up    { animation: fadeInUp 0.5s ease-out forwards; }
+.animate-fade-in       { animation: fadeIn 0.4s ease-out forwards; }
+.animate-slide-in-right{ animation: slideInRight 0.4s ease-out forwards; }
 .animate-float         { animation: float 3s ease-in-out infinite; }
 .animate-pulse-ring    { animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite; }
 .animate-shimmer       { animation: shimmer 2s linear infinite; background-size: 200% 100%; }
 .animate-truck         { animation: truck-drive 8s linear infinite; }
-.animate-gradient      { animation: gradient-shift 6s ease infinite; background-size: 200% 200%; }
+.animate-gradient      { animation: gradientShift 6s ease infinite; background-size: 200% 200%; }
 
 .animation-delay-100 { animation-delay: 0.1s; }
 .animation-delay-200 { animation-delay: 0.2s; }
@@ -58,26 +109,126 @@
 .animation-delay-500 { animation-delay: 0.5s; }
 
 @layer components {
-  .sidebar-link {
-    @apply flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors;
-  }
-  .sidebar-link-active {
-    @apply bg-brand-600 text-white;
-  }
-  .sidebar-link-inactive {
-    @apply text-gray-600 hover:bg-gray-100 hover:text-gray-900;
-  }
-
-  /* Login page input focus glow */
-  .input-glow:focus {
-    box-shadow: 0 0 0 3px rgba(27, 108, 245, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
-  }
-
-  /* Glass morphism card */
+  /* ─── Glass Card System ─── */
   .glass-card {
-    background: rgba(255, 255, 255, 0.85);
+    background: var(--glass-bg);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    border-radius: var(--radius-lg);
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .glass-card:hover {
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.09);
+    transform: translateY(-1px);
+  }
+
+  .glass-card-static {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    border-radius: var(--radius-lg);
+  }
+
+  .glass-surface {
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
     border: 1px solid rgba(255, 255, 255, 0.5);
+  }
+
+  /* ─── Sidebar ─── */
+  .sidebar-link {
+    @apply flex items-center gap-3 px-3 py-2 rounded-xl text-[13px] font-medium transition-all duration-200;
+  }
+  .sidebar-link-active {
+    background: var(--accent-blue);
+    color: white;
+    box-shadow: 0 2px 8px rgba(0, 122, 255, 0.3);
+  }
+  .sidebar-link-inactive {
+    @apply text-gray-600;
+  }
+  .sidebar-link-inactive:hover {
+    background: rgba(0, 0, 0, 0.04);
+    color: var(--text-primary);
+  }
+
+  /* ─── Apple-style Input ─── */
+  .apple-input {
+    @apply w-full px-4 py-2.5 text-sm rounded-xl border transition-all duration-200;
+    border-color: rgba(0, 0, 0, 0.08);
+    background: rgba(255, 255, 255, 0.8);
+  }
+  .apple-input:focus {
+    @apply outline-none;
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.12);
+    background: white;
+  }
+
+  /* ─── Apple-style Button ─── */
+  .apple-btn {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-xl transition-all duration-200;
+  }
+  .apple-btn-primary {
+    background: var(--accent-blue);
+    color: white;
+    box-shadow: 0 2px 8px rgba(0, 122, 255, 0.25);
+  }
+  .apple-btn-primary:hover {
+    background: #0071EB;
+    box-shadow: 0 4px 16px rgba(0, 122, 255, 0.35);
+    transform: translateY(-1px);
+  }
+  .apple-btn-primary:active {
+    transform: translateY(0);
+  }
+  .apple-btn-secondary {
+    background: rgba(0, 0, 0, 0.04);
+    color: var(--text-primary);
+  }
+  .apple-btn-secondary:hover {
+    background: rgba(0, 0, 0, 0.08);
+  }
+
+  /* ─── Login input glow ─── */
+  .input-glow:focus {
+    box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+
+  /* ─── Section title ─── */
+  .section-title {
+    @apply text-[15px] font-semibold tracking-tight;
+    color: var(--text-primary);
+  }
+  .section-subtitle {
+    @apply text-[13px];
+    color: var(--text-tertiary);
+  }
+
+  /* ─── Apple-style Table ─── */
+  .apple-table {
+    @apply w-full;
+  }
+  .apple-table thead tr {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  }
+  .apple-table thead th {
+    @apply text-left py-3 px-4 text-[11px] font-semibold uppercase tracking-wider;
+    color: var(--text-tertiary);
+  }
+  .apple-table tbody tr {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+    transition: background 0.15s ease;
+  }
+  .apple-table tbody tr:hover {
+    background: rgba(0, 122, 255, 0.03);
+  }
+  .apple-table tbody td {
+    @apply py-3 px-4 text-sm;
   }
 }

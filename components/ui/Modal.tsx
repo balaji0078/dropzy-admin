@@ -32,16 +32,46 @@ export default function Modal({ open, onClose, title, children, size = "md" }: M
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/50" onClick={onClose} />
-      <div className={`relative bg-white rounded-2xl shadow-xl w-full ${sizeClasses[size]} mx-4 max-h-[85vh] flex flex-col`}>
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
-          <button onClick={onClose} className="p-1 rounded-lg hover:bg-gray-100 text-gray-400">
-            <X className="w-5 h-5" />
+    <div className="fixed inset-0 z-[100] flex items-center justify-center animate-fade-in">
+      {/* Backdrop */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background: "rgba(0, 0, 0, 0.3)",
+          backdropFilter: "blur(8px)",
+          WebkitBackdropFilter: "blur(8px)",
+        }}
+        onClick={onClose}
+      />
+
+      {/* Modal */}
+      <div
+        className={`relative w-full ${sizeClasses[size]} mx-4 max-h-[85vh] flex flex-col animate-scale-in`}
+        style={{
+          background: "rgba(255, 255, 255, 0.92)",
+          backdropFilter: "blur(40px)",
+          WebkitBackdropFilter: "blur(40px)",
+          borderRadius: "20px",
+          boxShadow: "0 24px 80px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.6) inset",
+          border: "1px solid rgba(255, 255, 255, 0.5)",
+        }}
+      >
+        {/* Header */}
+        <div
+          className="flex items-center justify-between px-6 py-4"
+          style={{ borderBottom: "1px solid rgba(0, 0, 0, 0.06)" }}
+        >
+          <h2 className="text-[16px] font-semibold tracking-tight text-gray-900">{title}</h2>
+          <button
+            onClick={onClose}
+            className="p-1.5 rounded-xl hover:bg-black/[0.05] text-gray-400 transition-colors"
+          >
+            <X className="w-4 h-4" />
           </button>
         </div>
-        <div className="px-6 py-4 overflow-y-auto">{children}</div>
+
+        {/* Body */}
+        <div className="px-6 py-5 overflow-y-auto">{children}</div>
       </div>
     </div>
   );
