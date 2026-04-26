@@ -1,0 +1,577 @@
+"use client";
+
+import { useState, useMemo } from "react";
+import { useAuth } from "@/lib/auth-context";
+import StatusBadge from "@/components/ui/StatusBadge";
+import Modal from "@/components/ui/Modal";
+import { formatDate } from "@/lib/utils";
+import { Search, Filter, X, MapPin, Phone, Mail, Package, Scale, Clock } from "lucide-react";
+
+const PARCEL_STATUSES = [
+  { id: "all", label: "All" },
+  { id: "booked", label: "Booked" },
+  { id: "accepted", label: "Accepted" },
+  { id: "in_transit", label: "In Transit" },
+  { id: "arrived_at_office", label: "Arrived at Office" },
+  { id: "ready_for_pickup", label: "Ready for Pickup" },
+  { id: "delivered", label: "Delivered" },
+  { id: "cancelled", label: "Cancelled" },
+];
+
+const PARCEL_PHASES = [
+  "booked",
+  "accepted",
+  "in_transit",
+  "arrived_at_office",
+  "ready_for_pickup",
+  "delivered",
+];
+
+const MOCK_PARCELS = [
+  {
+    id: "DPZ-2026-00001",
+    trackingId: "DPZ-2026-00001",
+    sender: { name: "Rajesh Kumar", city: "Hyderabad", phone: "+91-9876543210", email: "rajesh@example.com", address: "123 Main St" },
+    receiver: { name: "Priya Singh", city: "Mumbai", phone: "+91-9876543211", email: "priya@example.com", address: "456 Park Ave" },
+    route: "HYD → MUM",
+    packageType: "Electronics",
+    weight: 2.5,
+    dimensions: "20x15x10 cm",
+    value: 15000,
+    ewayBill: "12345678901234",
+    status: "in_transit",
+    bookedDate: "2026-04-20",
+    timeline: [
+      { phase: "booked", timestamp: "2026-04-20 10:30" },
+      { phase: "accepted", timestamp: "2026-04-20 11:15" },
+      { phase: "in_transit", timestamp: "2026-04-21 08:00" },
+    ],
+    communications: [
+      { type: "SMS", message: "Your parcel has been booked", timestamp: "2026-04-20 10:35" },
+      { type: "WhatsApp", message: "Your parcel is in transit", timestamp: "2026-04-21 08:05" },
+    ],
+  },
+  {
+    id: "DPZ-2026-00002",
+    trackingId: "DPZ-2026-00002",
+    sender: { name: "Amit Patel", city: "Bangalore", phone: "+91-9876543212", email: "amit@example.com", address: "789 Tech Park" },
+    receiver: { name: "Neha Gupta", city: "Delhi", phone: "+91-9876543213", email: "neha@example.com", address: "101 Business Plaza" },
+    route: "BLR → DEL",
+    packageType: "Documents",
+    weight: 0.5,
+    dimensions: "30x20x5 cm",
+    value: 5000,
+    ewayBill: "12345678901235",
+    status: "accepted",
+    bookedDate: "2026-04-25",
+    timeline: [
+      { phase: "booked", timestamp: "2026-04-25 14:00" },
+      { phase: "accepted", timestamp: "2026-04-25 15:30" },
+    ],
+    communications: [
+      { type: "SMS", message: "Your parcel has been booked", timestamp: "2026-04-25 14:05" },
+    ],
+  },
+  {
+    id: "DPZ-2026-00003",
+    trackingId: "DPZ-2026-00003",
+    sender: { name: "Sanjay Reddy", city: "Chennai", phone: "+91-9876543214", email: "sanjay@example.com", address: "202 Tech Drive" },
+    receiver: { name: "Kavya Sharma", city: "Pune", phone: "+91-9876543215", email: "kavya@example.com", address: "303 Business Street" },
+    route: "CHE → PUN",
+    packageType: "Clothing",
+    weight: 1.2,
+    dimensions: "25x20x15 cm",
+    value: 3500,
+    ewayBill: "12345678901236",
+    status: "delivered",
+    bookedDate: "2026-04-18",
+    timeline: [
+      { phase: "booked", timestamp: "2026-04-18 09:00" },
+      { phase: "accepted", timestamp: "2026-04-18 10:00" },
+      { phase: "in_transit", timestamp: "2026-04-19 08:00" },
+      { phase: "arrived_at_office", timestamp: "2026-04-24 15:00" },
+      { phase: "ready_for_pickup", timestamp: "2026-04-24 16:30" },
+      { phase: "delivered", timestamp: "2026-04-25 18:00" },
+    ],
+    communications: [
+      { type: "SMS", message: "Your parcel has been booked", timestamp: "2026-04-18 09:05" },
+      { type: "WhatsApp", message: "Your parcel is in transit", timestamp: "2026-04-19 08:10" },
+      { type: "SMS", message: "Your parcel arrived at office", timestamp: "2026-04-24 15:10" },
+      { type: "SMS", message: "Ready for pickup", timestamp: "2026-04-24 16:35" },
+      { type: "WhatsApp", message: "Your parcel has been delivered", timestamp: "2026-04-25 18:05" },
+    ],
+  },
+  {
+    id: "DPZ-2026-00004",
+    trackingId: "DPZ-2026-00004",
+    sender: { name: "Deepak Verma", city: "Mumbai", phone: "+91-9876543216", email: "deepak@example.com", address: "404 Market Complex" },
+    receiver: { name: "Anjali Joshi", city: "Bangalore", phone: "+91-9876543217", email: "anjali@example.com", address: "505 Commerce Center" },
+    route: "MUM → BLR",
+    packageType: "Furniture",
+    weight: 5.0,
+    dimensions: "100x50x50 cm",
+    value: 25000,
+    ewayBill: "12345678901237",
+    status: "ready_for_pickup",
+    bookedDate: "2026-04-22",
+    timeline: [
+      { phase: "booked", timestamp: "2026-04-22 11:00" },
+      { phase: "accepted", timestamp: "2026-04-22 12:00" },
+      { phase: "in_transit", timestamp: "2026-04-23 09:00" },
+      { phase: "arrived_at_office", timestamp: "2026-04-24 18:00" },
+      { phase: "ready_for_pickup", timestamp: "2026-04-25 10:00" },
+    ],
+    communications: [
+      { type: "SMS", message: "Your parcel has been booked", timestamp: "2026-04-22 11:05" },
+      { type: "WhatsApp", message: "Your parcel is in transit", timestamp: "2026-04-23 09:10" },
+      { type: "SMS", message: "Ready for pickup", timestamp: "2026-04-25 10:05" },
+    ],
+  },
+  {
+    id: "DPZ-2026-00005",
+    trackingId: "DPZ-2026-00005",
+    sender: { name: "Vikram Singh", city: "Kolkata", phone: "+91-9876543218", email: "vikram@example.com", address: "606 Shopping Mall" },
+    receiver: { name: "Pooja Mishra", city: "Ahmedabad", phone: "+91-9876543219", email: "pooja@example.com", address: "707 Trade Center" },
+    route: "KOL → AHM",
+    packageType: "Books",
+    weight: 3.0,
+    dimensions: "40x30x20 cm",
+    value: 8500,
+    ewayBill: "12345678901238",
+    status: "arrived_at_office",
+    bookedDate: "2026-04-23",
+    timeline: [
+      { phase: "booked", timestamp: "2026-04-23 13:00" },
+      { phase: "accepted", timestamp: "2026-04-23 14:15" },
+      { phase: "in_transit", timestamp: "2026-04-24 09:00" },
+      { phase: "arrived_at_office", timestamp: "2026-04-25 16:30" },
+    ],
+    communications: [
+      { type: "SMS", message: "Your parcel has been booked", timestamp: "2026-04-23 13:05" },
+      { type: "WhatsApp", message: "Your parcel is in transit", timestamp: "2026-04-24 09:10" },
+      { type: "SMS", message: "Your parcel arrived at office", timestamp: "2026-04-25 16:35" },
+    ],
+  },
+  {
+    id: "DPZ-2026-00006",
+    trackingId: "DPZ-2026-00006",
+    sender: { name: "Akshay Desai", city: "Hyderabad", phone: "+91-9876543220", email: "akshay@example.com", address: "808 Plaza Tower" },
+    receiver: { name: "Divya Iyer", city: "Mumbai", phone: "+91-9876543221", email: "divya@example.com", address: "909 High Street" },
+    route: "HYD → MUM",
+    packageType: "Cosmetics",
+    weight: 0.8,
+    dimensions: "15x12x10 cm",
+    value: 2500,
+    ewayBill: "12345678901239",
+    status: "in_transit",
+    bookedDate: "2026-04-26",
+    timeline: [
+      { phase: "booked", timestamp: "2026-04-26 08:00" },
+      { phase: "accepted", timestamp: "2026-04-26 09:30" },
+      { phase: "in_transit", timestamp: "2026-04-26 10:00" },
+    ],
+    communications: [
+      { type: "SMS", message: "Your parcel has been booked", timestamp: "2026-04-26 08:05" },
+      { type: "WhatsApp", message: "Your parcel is in transit", timestamp: "2026-04-26 10:05" },
+    ],
+  },
+  {
+    id: "DPZ-2026-00007",
+    trackingId: "DPZ-2026-00007",
+    sender: { name: "Suresh Nair", city: "Bangalore", phone: "+91-9876543222", email: "suresh@example.com", address: "1010 Silk Street" },
+    receiver: { name: "Meera Dutta", city: "Delhi", phone: "+91-9876543223", email: "meera@example.com", address: "1111 Innovation Drive" },
+    route: "BLR → DEL",
+    packageType: "Toys",
+    weight: 2.0,
+    dimensions: "35x25x20 cm",
+    value: 4500,
+    ewayBill: "12345678901240",
+    status: "booked",
+    bookedDate: "2026-04-26",
+    timeline: [
+      { phase: "booked", timestamp: "2026-04-26 15:00" },
+    ],
+    communications: [
+      { type: "SMS", message: "Your parcel has been booked", timestamp: "2026-04-26 15:05" },
+    ],
+  },
+  {
+    id: "DPZ-2026-00008",
+    trackingId: "DPZ-2026-00008",
+    sender: { name: "Harish Kulkarni", city: "Chennai", phone: "+91-9876543224", email: "harish@example.com", address: "1212 Craft Lane" },
+    receiver: { name: "Sneha Rao", city: "Pune", phone: "+91-9876543225", email: "sneha@example.com", address: "1313 Design Street" },
+    route: "CHE → PUN",
+    packageType: "Art Supplies",
+    weight: 1.5,
+    dimensions: "30x25x15 cm",
+    value: 3000,
+    ewayBill: "12345678901241",
+    status: "accepted",
+    bookedDate: "2026-04-26",
+    timeline: [
+      { phase: "booked", timestamp: "2026-04-26 12:00" },
+      { phase: "accepted", timestamp: "2026-04-26 13:30" },
+    ],
+    communications: [
+      { type: "SMS", message: "Your parcel has been booked", timestamp: "2026-04-26 12:05" },
+    ],
+  },
+];
+
+// Generate additional mock parcels to reach 50
+const generateMockParcels = () => {
+  const cities = ["Hyderabad", "Mumbai", "Delhi", "Bangalore", "Chennai", "Pune", "Kolkata", "Ahmedabad"];
+  const senderNames = ["Rajesh", "Amit", "Sanjay", "Deepak", "Vikram", "Akshay", "Suresh", "Harish", "Ramesh", "Naveen"];
+  const receiverNames = ["Priya", "Neha", "Kavya", "Anjali", "Pooja", "Divya", "Meera", "Sneha", "Anjali", "Ritika"];
+  const packageTypes = ["Electronics", "Documents", "Clothing", "Furniture", "Books", "Cosmetics", "Toys", "Art Supplies", "Gifts", "Food"];
+  const statuses = ["booked", "accepted", "in_transit", "arrived_at_office", "ready_for_pickup", "delivered"];
+
+  const parcels = [...MOCK_PARCELS];
+
+  for (let i = 8; i < 50; i++) {
+    const senderCity = cities[Math.floor(Math.random() * cities.length)];
+    const receiverCity = cities[Math.floor(Math.random() * cities.length)];
+    const status = statuses[Math.floor(Math.random() * statuses.length)];
+    const senderName = senderNames[Math.floor(Math.random() * senderNames.length)];
+    const receiverName = receiverNames[Math.floor(Math.random() * receiverNames.length)];
+
+    parcels.push({
+      id: `DPZ-2026-${String(i + 1).padStart(5, "0")}`,
+      trackingId: `DPZ-2026-${String(i + 1).padStart(5, "0")}`,
+      sender: {
+        name: `${senderName} ${["Kumar", "Patel", "Singh", "Sharma", "Verma"][i % 5]}`,
+        city: senderCity,
+        phone: `+91-${9800000000 + i}`,
+        email: `sender${i}@example.com`,
+        address: `${100 + i} Address Street`,
+      },
+      receiver: {
+        name: `${receiverName} ${["Gupta", "Iyer", "Nair", "Dutta", "Saxena"][i % 5]}`,
+        city: receiverCity,
+        phone: `+91-${9900000000 + i}`,
+        email: `receiver${i}@example.com`,
+        address: `${200 + i} Recipient Avenue`,
+      },
+      route: `${senderCity.substring(0, 3).toUpperCase()} → ${receiverCity.substring(0, 3).toUpperCase()}`,
+      packageType: packageTypes[i % packageTypes.length],
+      weight: parseFloat((Math.random() * 10).toFixed(2)),
+      dimensions: `${20 + i % 30}x${15 + i % 20}x${10 + i % 15} cm`,
+      value: Math.floor(1000 + Math.random() * 30000),
+      ewayBill: `${123456789012 + i}`,
+      status: status,
+      bookedDate: `2026-${String((Math.floor(i / 8) % 4) + 2).padStart(2, "0")}-${String((i % 28) + 1).padStart(2, "0")}`,
+      timeline: [
+        { phase: "booked", timestamp: "2026-04-20 10:30" },
+        { phase: "accepted", timestamp: "2026-04-20 11:15" },
+      ],
+      communications: [],
+    });
+  }
+
+  return parcels;
+};
+
+const allParcels = generateMockParcels();
+
+interface ParcelDetailModalProps {
+  parcel: (typeof allParcels)[0] | null;
+  onClose: () => void;
+}
+
+function ParcelDetailModal({ parcel, onClose }: ParcelDetailModalProps) {
+  if (!parcel) return null;
+
+  return (
+    <Modal open={!!parcel} onClose={onClose} title={parcel?.trackingId || "Parcel Details"}>
+      <div className="max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-xl font-bold text-gray-900">{parcel.trackingId}</h2>
+          <button onClick={onClose} className="p-1 hover:bg-gray-100 rounded">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        <div className="space-y-6">
+          {/* Sender & Receiver */}
+          <div className="grid grid-cols-2 gap-6">
+            <div className="bg-gray-50 rounded-lg p-4">
+              <h3 className="font-semibold text-gray-900 mb-3">Sender</h3>
+              <div className="space-y-2 text-sm">
+                <div className="flex items-start gap-2">
+                  <span className="text-gray-500">Name:</span>
+                  <span className="font-medium text-gray-900">{parcel.sender.name}</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-gray-500">City:</span>
+                  <span className="text-gray-900">{parcel.sender.city}</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-gray-500">Phone:</span>
+                  <span className="text-gray-900">{parcel.sender.phone}</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-gray-500">Email:</span>
+                  <span className="text-gray-900">{parcel.sender.email}</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-gray-500">Address:</span>
+                  <span className="text-gray-900">{parcel.sender.address}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-gray-50 rounded-lg p-4">
+              <h3 className="font-semibold text-gray-900 mb-3">Receiver</h3>
+              <div className="space-y-2 text-sm">
+                <div className="flex items-start gap-2">
+                  <span className="text-gray-500">Name:</span>
+                  <span className="font-medium text-gray-900">{parcel.receiver.name}</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-gray-500">City:</span>
+                  <span className="text-gray-900">{parcel.receiver.city}</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-gray-500">Phone:</span>
+                  <span className="text-gray-900">{parcel.receiver.phone}</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-gray-500">Email:</span>
+                  <span className="text-gray-900">{parcel.receiver.email}</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-gray-500">Address:</span>
+                  <span className="text-gray-900">{parcel.receiver.address}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Package Details */}
+          <div className="bg-blue-50 border border-blue-100 rounded-lg p-4">
+            <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+              <Package className="w-4 h-4" />
+              Package Details
+            </h3>
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <span className="text-gray-500">Type:</span>
+                <p className="font-medium text-gray-900">{parcel.packageType}</p>
+              </div>
+              <div>
+                <span className="text-gray-500">Weight:</span>
+                <p className="font-medium text-gray-900">{parcel.weight} kg</p>
+              </div>
+              <div>
+                <span className="text-gray-500">Dimensions:</span>
+                <p className="font-medium text-gray-900">{parcel.dimensions}</p>
+              </div>
+              <div>
+                <span className="text-gray-500">Value:</span>
+                <p className="font-medium text-gray-900">₹{parcel.value.toLocaleString()}</p>
+              </div>
+              <div className="col-span-2">
+                <span className="text-gray-500">E-way Bill:</span>
+                <p className="font-medium text-gray-900">{parcel.ewayBill}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Status Timeline */}
+          <div>
+            <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <Clock className="w-4 h-4" />
+              Delivery Timeline
+            </h3>
+            <div className="relative">
+              {PARCEL_PHASES.map((phase, index) => {
+                const timelineEntry = parcel.timeline.find((t) => t.phase === phase);
+                const isCompleted = parcel.timeline.some((t) => t.phase === phase);
+                const phaseLabel = phase
+                  .split("_")
+                  .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+                  .join(" ");
+
+                return (
+                  <div key={phase} className="flex gap-4 mb-4 last:mb-0">
+                    <div className="flex flex-col items-center">
+                      <div
+                        className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${
+                          isCompleted
+                            ? "bg-green-500 text-white"
+                            : "bg-gray-300 text-gray-600"
+                        }`}
+                      >
+                        {index + 1}
+                      </div>
+                      {index < PARCEL_PHASES.length - 1 && (
+                        <div
+                          className={`w-0.5 h-12 ${
+                            isCompleted ? "bg-green-500" : "bg-gray-300"
+                          }`}
+                        />
+                      )}
+                    </div>
+                    <div className="flex-1 pt-1">
+                      <p className="font-medium text-gray-900">{phaseLabel}</p>
+                      {timelineEntry && (
+                        <p className="text-sm text-gray-500">{timelineEntry.timestamp}</p>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Communications Log */}
+          <div>
+            <h3 className="font-semibold text-gray-900 mb-3">Communications</h3>
+            <div className="space-y-3">
+              {parcel.communications.length > 0 ? (
+                parcel.communications.map((comm, idx) => (
+                  <div key={idx} className="border border-gray-200 rounded-lg p-3 text-sm">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="font-medium text-gray-900">{comm.type}</span>
+                      <span className="text-xs text-gray-500">{comm.timestamp}</span>
+                    </div>
+                    <p className="text-gray-700">{comm.message}</p>
+                  </div>
+                ))
+              ) : (
+                <p className="text-gray-500 text-sm">No communications yet</p>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <button
+          onClick={onClose}
+          className="w-full mt-6 bg-brand-600 text-white py-2 rounded-lg hover:bg-brand-700 font-medium"
+        >
+          Close
+        </button>
+      </div>
+    </Modal>
+  );
+}
+
+export default function ParcelsPage() {
+  const { token } = useAuth();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("all");
+  const [selectedParcel, setSelectedParcel] = useState<(typeof allParcels)[0] | null>(null);
+
+  const filteredParcels = useMemo(() => {
+    return allParcels.filter((parcel) => {
+      const matchesStatus = selectedStatus === "all" || parcel.status === selectedStatus;
+      const matchesSearch =
+        searchQuery === "" ||
+        parcel.trackingId.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        parcel.sender.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        parcel.receiver.name.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchesStatus && matchesSearch;
+    });
+  }, [searchQuery, selectedStatus]);
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Parcel Management</h1>
+          <p className="text-sm text-gray-500 mt-1">Manage parcel lifecycle and track deliveries</p>
+        </div>
+      </div>
+
+      {/* Search and Filter Bar */}
+      <div className="bg-white rounded-xl border border-gray-200 p-4">
+        <div className="flex flex-col lg:flex-row gap-4">
+          <div className="flex-1 relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search by tracking ID, sender name, or receiver name..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+            />
+          </div>
+        </div>
+
+        {/* Status Tabs */}
+        <div className="flex flex-wrap gap-2 mt-4">
+          {PARCEL_STATUSES.map((status) => (
+            <button
+              key={status.id}
+              onClick={() => setSelectedStatus(status.id)}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                selectedStatus === status.id
+                  ? "bg-brand-600 text-white"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              }`}
+            >
+              {status.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Results count */}
+        <div className="mt-4 text-sm text-gray-600">
+          Showing {filteredParcels.length} parcels {selectedStatus !== "all" && `with status "${selectedStatus}"`}
+        </div>
+      </div>
+
+      {/* Parcels Table */}
+      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-gray-200 bg-gray-50">
+                <th className="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase">Tracking ID</th>
+                <th className="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase">Sender</th>
+                <th className="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase">Receiver</th>
+                <th className="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase">Route</th>
+                <th className="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase">Package Type</th>
+                <th className="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase">Weight</th>
+                <th className="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase">Status</th>
+                <th className="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase">Booked Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredParcels.map((parcel) => (
+                <tr
+                  key={parcel.id}
+                  onClick={() => setSelectedParcel(parcel)}
+                  className="border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors"
+                >
+                  <td className="py-3 px-4 text-sm font-medium text-brand-600">{parcel.trackingId}</td>
+                  <td className="py-3 px-4 text-sm text-gray-900">{parcel.sender.name}</td>
+                  <td className="py-3 px-4 text-sm text-gray-900">{parcel.receiver.name}</td>
+                  <td className="py-3 px-4 text-sm text-gray-600">{parcel.route}</td>
+                  <td className="py-3 px-4 text-sm text-gray-600">{parcel.packageType}</td>
+                  <td className="py-3 px-4 text-sm text-gray-600">{parcel.weight} kg</td>
+                  <td className="py-3 px-4">
+                    <StatusBadge status={parcel.status} />
+                  </td>
+                  <td className="py-3 px-4 text-sm text-gray-600">{formatDate(parcel.bookedDate)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {filteredParcels.length === 0 && (
+          <div className="text-center py-12 text-gray-500">
+            <Package className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+            <p className="text-lg font-medium">No parcels found</p>
+            <p className="text-sm">Try adjusting your search or filters</p>
+          </div>
+        )}
+      </div>
+
+      {/* Parcel Detail Modal */}
+      <ParcelDetailModal parcel={selectedParcel} onClose={() => setSelectedParcel(null)} />
+    </div>
+  );
+}

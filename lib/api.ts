@@ -177,6 +177,60 @@ export const ratesAPI = {
     request<any>("/rates/countries", { token }),
 };
 
+// ─── Parcels ───
+export const parcelsAPI = {
+  list: (token: string, page = 1, limit = 10, status?: string) =>
+    request<any>(`/parcels?page=${page}&limit=${limit}${status ? `&status=${status}` : ''}`, { headers: { Authorization: `Bearer ${token}` } }),
+
+  getById: (token: string, id: string) =>
+    request<any>(`/parcels/${id}`, { headers: { Authorization: `Bearer ${token}` } }),
+
+  updateStatus: (token: string, id: string, status: string) =>
+    request<any>(`/parcels/${id}/status`, { method: 'PATCH', headers: { Authorization: `Bearer ${token}` }, body: JSON.stringify({ status }) }),
+
+  getTracking: (token: string, id: string) =>
+    request<any>(`/parcels/${id}/tracking`, { headers: { Authorization: `Bearer ${token}` } }),
+};
+
+// ─── Fleet ───
+export const fleetAPI = {
+  getBuses: (token: string) =>
+    request<any>('/fleet/buses', { headers: { Authorization: `Bearer ${token}` } }),
+
+  getBusLocation: (token: string, busId: string) =>
+    request<any>(`/fleet/buses/${busId}/location`, { headers: { Authorization: `Bearer ${token}` } }),
+
+  getRoutes: (token: string) =>
+    request<any>('/fleet/routes', { headers: { Authorization: `Bearer ${token}` } }),
+};
+
+// ─── Agents ───
+export const agentsAPI = {
+  list: (token: string) =>
+    request<any>('/agents', { headers: { Authorization: `Bearer ${token}` } }),
+
+  getById: (token: string, id: string) =>
+    request<any>(`/agents/${id}`, { headers: { Authorization: `Bearer ${token}` } }),
+};
+
+// ─── Analytics ───
+export const analyticsAPI = {
+  getDashboard: (token: string) =>
+    request<any>('/analytics/dashboard', { headers: { Authorization: `Bearer ${token}` } }),
+
+  getDeliveryMetrics: (token: string, period = '7d') =>
+    request<any>(`/analytics/delivery?period=${period}`, { headers: { Authorization: `Bearer ${token}` } }),
+
+  getRouteUtilization: (token: string) =>
+    request<any>('/analytics/routes', { headers: { Authorization: `Bearer ${token}` } }),
+};
+
+// ─── Notification Logs ───
+export const notificationLogsAPI = {
+  list: (token: string, page = 1, limit = 20, channel?: string) =>
+    request<any>(`/notification-logs?page=${page}&limit=${limit}${channel ? `&channel=${channel}` : ''}`, { headers: { Authorization: `Bearer ${token}` } }),
+};
+
 // ─── Health ───
 export const healthAPI = {
   check: () => request<any>("/health"),

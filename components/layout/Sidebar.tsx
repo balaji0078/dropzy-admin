@@ -14,6 +14,11 @@ import {
   ChevronLeft,
   Menu,
   Calculator,
+  MapPin,
+  Bus,
+  UserCheck,
+  MessageSquare,
+  Settings,
 } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/lib/auth-context";
@@ -21,13 +26,17 @@ import { cn, getInitials } from "@/lib/utils";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/orders", label: "Orders", icon: Package },
+  { href: "/parcels", label: "Parcels", icon: MapPin },
+  { href: "/fleet", label: "Fleet Tracking", icon: Bus },
   { href: "/drivers", label: "Drivers", icon: Truck },
+  { href: "/agents", label: "Agents", icon: UserCheck },
   { href: "/payments", label: "Payments", icon: CreditCard },
   { href: "/customers", label: "Customers", icon: Users },
   { href: "/pricing", label: "Pricing", icon: Tags },
   { href: "/cost-estimator", label: "Cost Estimator", icon: Calculator },
   { href: "/notifications", label: "Notifications", icon: Bell },
+  { href: "/notification-logs", label: "Notification Logs", icon: MessageSquare },
+  { href: "/settings", label: "Settings", icon: Settings },
 ];
 
 export default function Sidebar() {

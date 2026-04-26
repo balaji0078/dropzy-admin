@@ -1,24 +1,21 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { ordersAPI, healthAPI } from "@/lib/api";
 import StatsCard from "@/components/ui/StatsCard";
 import StatusBadge from "@/components/ui/StatusBadge";
-import { formatCurrency, formatDateTime } from "@/lib/utils";
+import { formatCurrency, formatDate } from "@/lib/utils";
 import {
   Package,
   Truck,
   CreditCard,
-  Clock,
-  TrendingUp,
   Users,
   MapPin,
-  AlertCircle,
+  Activity,
 } from "lucide-react";
 import {
-  AreaChart,
-  Area,
+  LineChart,
+  Line,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -29,269 +26,412 @@ import {
   PieChart,
   Pie,
   Cell,
+  Legend,
 } from "recharts";
 
-// Sample data for charts (will be replaced by real API data)
-const weeklyOrders = [
-  { day: "Mon", orders: 42, revenue: 18400 },
-  { day: "Tue", orders: 55, revenue: 22100 },
-  { day: "Wed", orders: 38, revenue: 16200 },
-  { day: "Thu", orders: 67, revenue: 29800 },
-  { day: "Fri", orders: 72, revenue: 31500 },
-  { day: "Sat", orders: 89, revenue: 41200 },
-  { day: "Sun", orders: 64, revenue: 27600 },
+// Mock data for delivery trends
+const deliveryTrends = [
+  { day: "Mon", booked: 320, delivered: 240 },
+  { day: "Tue", booked: 380, delivered: 290 },
+  { day: "Wed", booked: 350, delivered: 310 },
+  { day: "Thu", booked: 420, delivered: 380 },
+  { day: "Fri", booked: 480, delivered: 420 },
+  { day: "Sat", booked: 510, delivered: 450 },
+  { day: "Sun", booked: 410, delivered: 380 },
 ];
 
-const ordersByStatus = [
-  { name: "Delivered", value: 245, color: "#22c55e" },
-  { name: "In Transit", value: 42, color: "#8b5cf6" },
-  { name: "Pending", value: 18, color: "#eab308" },
-  { name: "Cancelled", value: 8, color: "#ef4444" },
+// Mock data for route utilization
+const routeUtilization = [
+  { route: "HYD → MUM", parcels: 380 },
+  { route: "BLR → DEL", parcels: 320 },
+  { route: "CHE → PUN", parcels: 290 },
+  { route: "KOL → AHM", parcels: 250 },
+  { route: "MUM → BLR", parcels: 180 },
 ];
 
-const vehicleBreakdown = [
-  { type: "Bike", count: 145 },
-  { type: "Auto", count: 89 },
-  { type: "Car", count: 54 },
-  { type: "Van", count: 32 },
-  { type: "Truck", count: 12 },
+// Mock data for parcel status distribution
+const parcelStatusData = [
+  { name: "Booked", value: 420, color: "#3b82f6" },
+  { name: "Accepted", value: 310, color: "#06b6d4" },
+  { name: "In Transit", value: 342, color: "#8b5cf6" },
+  { name: "Arrived at Office", value: 180, color: "#f59e0b" },
+  { name: "Ready for Pickup", value: 150, color: "#ec4899" },
+  { name: "Delivered", value: 1445, color: "#22c55e" },
+];
+
+// Mock recent parcels data
+const mockRecentParcels = [
+  {
+    id: "DPZ-2026-00001",
+    sender: "Rajesh Kumar",
+    receiver: "Priya Singh",
+    route: "HYD → MUM",
+    status: "in_transit",
+    lastUpdate: "2026-04-26 14:30",
+  },
+  {
+    id: "DPZ-2026-00002",
+    sender: "Amit Patel",
+    receiver: "Neha Gupta",
+    route: "BLR → DEL",
+    status: "accepted",
+    lastUpdate: "2026-04-26 13:45",
+  },
+  {
+    id: "DPZ-2026-00003",
+    sender: "Sanjay Reddy",
+    receiver: "Kavya Sharma",
+    route: "CHE → PUN",
+    status: "delivered",
+    lastUpdate: "2026-04-26 12:15",
+  },
+  {
+    id: "DPZ-2026-00004",
+    sender: "Deepak Verma",
+    receiver: "Anjali Joshi",
+    route: "MUM → BLR",
+    status: "ready_for_pickup",
+    lastUpdate: "2026-04-26 11:20",
+  },
+  {
+    id: "DPZ-2026-00005",
+    sender: "Vikram Singh",
+    receiver: "Pooja Mishra",
+    route: "KOL → AHM",
+    status: "arrived_at_office",
+    lastUpdate: "2026-04-26 10:50",
+  },
+  {
+    id: "DPZ-2026-00006",
+    sender: "Akshay Desai",
+    receiver: "Divya Iyer",
+    route: "HYD → MUM",
+    status: "in_transit",
+    lastUpdate: "2026-04-26 09:30",
+  },
+  {
+    id: "DPZ-2026-00007",
+    sender: "Suresh Nair",
+    receiver: "Meera Dutta",
+    route: "BLR → DEL",
+    status: "booked",
+    lastUpdate: "2026-04-26 08:45",
+  },
+  {
+    id: "DPZ-2026-00008",
+    sender: "Harish Kulkarni",
+    receiver: "Sneha Rao",
+    route: "CHE → PUN",
+    status: "accepted",
+    lastUpdate: "2026-04-26 07:55",
+  },
+  {
+    id: "DPZ-2026-00009",
+    sender: "Ramesh Iyer",
+    receiver: "Anjali Nair",
+    route: "MUM → BLR",
+    status: "delivered",
+    lastUpdate: "2026-04-26 06:20",
+  },
+  {
+    id: "DPZ-2026-00010",
+    sender: "Naveen Kumar",
+    receiver: "Ritika Saxena",
+    route: "KOL → AHM",
+    status: "in_transit",
+    lastUpdate: "2026-04-25 22:10",
+  },
+];
+
+// Mock bus locations for map visualization
+const busLocations = [
+  { id: "BUS-001", city: "Hyderabad", lat: 17.36, lng: 78.47, route: "HYD → MUM" },
+  { id: "BUS-002", city: "Mumbai", lat: 19.07, lng: 72.88, route: "MUM → BLR" },
+  { id: "BUS-003", city: "Delhi", lat: 28.70, lng: 77.10, route: "DEL → KOL" },
+  { id: "BUS-004", city: "Bangalore", lat: 12.97, lng: 77.59, route: "BLR → CHE" },
+  { id: "BUS-005", city: "Chennai", lat: 13.08, lng: 80.27, route: "CHE → PUN" },
+  { id: "BUS-006", city: "Pune", lat: 18.52, lng: 73.85, route: "PUN → AHM" },
+  { id: "BUS-007", city: "Kolkata", lat: 22.57, lng: 88.36, route: "KOL → HYD" },
+  { id: "BUS-008", city: "Ahmedabad", lat: 23.02, lng: 72.57, route: "AHM → MUM" },
 ];
 
 export default function DashboardPage() {
   const { token } = useAuth();
-  const [recentOrders, setRecentOrders] = useState<any[]>([]);
-  const [apiStatus, setApiStatus] = useState<"connected" | "error">("connected");
-
-  useEffect(() => {
-    if (!token) return;
-
-    // Fetch recent orders
-    ordersAPI
-      .list(token, 1, 5)
-      .then((res) => setRecentOrders(res.data?.orders || []))
-      .catch(() => {});
-
-    // Check health
-    healthAPI
-      .check()
-      .then(() => setApiStatus("connected"))
-      .catch(() => setApiStatus("error"));
-  }, [token]);
 
   return (
     <div className="space-y-6">
-      {/* KPI Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* KPI Cards Row */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
         <StatsCard
-          title="Total Orders Today"
-          value="127"
-          change={12.5}
+          title="Total Parcels"
+          value="2,847"
+          change={14.2}
           icon={Package}
           iconBg="bg-blue-50"
           iconColor="text-blue-600"
         />
         <StatsCard
-          title="Active Drivers"
-          value="34"
-          change={-3.2}
-          icon={Truck}
-          iconBg="bg-green-50"
-          iconColor="text-green-600"
-        />
-        <StatsCard
-          title="Revenue Today"
-          value={formatCurrency(54200)}
-          change={8.7}
-          icon={CreditCard}
+          title="In Transit"
+          value="342"
+          change={8.5}
+          icon={Activity}
           iconBg="bg-purple-50"
           iconColor="text-purple-600"
         />
         <StatsCard
-          title="Pending Deliveries"
-          value="18"
-          change={-15}
-          icon={Clock}
-          iconBg="bg-yellow-50"
-          iconColor="text-yellow-600"
+          title="Delivered Today"
+          value="189"
+          change={12.1}
+          icon={Package}
+          iconBg="bg-green-50"
+          iconColor="text-green-600"
+        />
+        <StatsCard
+          title="Revenue"
+          value={formatCurrency(482350)}
+          change={18.3}
+          icon={CreditCard}
+          iconBg="bg-amber-50"
+          iconColor="text-amber-600"
+        />
+        <StatsCard
+          title="Active Buses"
+          value="28"
+          change={5.2}
+          icon={Truck}
+          iconBg="bg-cyan-50"
+          iconColor="text-cyan-600"
+        />
+        <StatsCard
+          title="Active Agents"
+          value="15"
+          change={2.8}
+          icon={Users}
+          iconBg="bg-pink-50"
+          iconColor="text-pink-600"
         />
       </div>
 
-      {/* Charts Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Weekly Orders Trend */}
-        <div className="lg:col-span-2 bg-white rounded-xl border border-gray-200 p-6">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h3 className="text-base font-semibold text-gray-900">Weekly Orders & Revenue</h3>
-              <p className="text-sm text-gray-500">Last 7 days performance</p>
-            </div>
-            <div className="flex items-center gap-4 text-sm">
-              <span className="flex items-center gap-1.5">
-                <span className="w-3 h-3 bg-brand-500 rounded-full" />
-                Orders
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="w-3 h-3 bg-green-500 rounded-full" />
-                Revenue
-              </span>
+      {/* Live Fleet Map Section */}
+      <div className="bg-white rounded-xl border border-gray-200 p-6">
+        <h3 className="text-base font-semibold text-gray-900 mb-4">Live Fleet Map</h3>
+        <div className="relative w-full h-96 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-lg border border-blue-100 overflow-hidden">
+          {/* Simulated map with bus locations */}
+          <svg viewBox="0 0 1000 600" className="w-full h-full" style={{ background: "linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)" }}>
+            {/* India outline (simplified) */}
+            <path
+              d="M 350 200 L 450 150 L 500 160 L 480 250 L 520 280 L 510 320 L 480 350 L 420 360 L 380 340 L 350 300 Z"
+              fill="none"
+              stroke="#cbd5e1"
+              strokeWidth="2"
+            />
+
+            {/* Bus markers */}
+            {busLocations.map((bus) => {
+              // Normalize coordinates to SVG viewBox
+              const svgLat = 550 - bus.lat * 8;
+              const svgLng = 200 + bus.lng * 3;
+              return (
+                <g key={bus.id}>
+                  {/* Bus dot */}
+                  <circle cx={svgLng} cy={svgLat} r="8" fill="#ef4444" stroke="#fff" strokeWidth="2" />
+                  {/* Bus icon indicator */}
+                  <text x={svgLng} y={svgLat + 1} textAnchor="middle" fontSize="10" fill="#fff" fontWeight="bold">
+                    B
+                  </text>
+                  {/* Route line (simplified) */}
+                  <line
+                    x1={svgLng}
+                    y1={svgLat}
+                    x2={svgLng + 40}
+                    y2={svgLat - 40}
+                    stroke="#94a3b8"
+                    strokeWidth="1"
+                    strokeDasharray="4"
+                    opacity="0.5"
+                  />
+                  {/* Label */}
+                  <text x={svgLng} y={svgLat + 25} textAnchor="middle" fontSize="9" fill="#475569" className="pointer-events-none">
+                    {bus.city}
+                  </text>
+                </g>
+              );
+            })}
+          </svg>
+
+          {/* Legend */}
+          <div className="absolute bottom-4 left-4 bg-white px-3 py-2 rounded-lg border border-gray-200 text-xs">
+            <div className="flex items-center gap-2">
+              <span className="w-3 h-3 rounded-full bg-red-500" />
+              <span className="text-gray-700">Active Bus</span>
             </div>
           </div>
-          <ResponsiveContainer width="100%" height={280}>
-            <AreaChart data={weeklyOrders}>
-              <defs>
-                <linearGradient id="colorOrders" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#338dff" stopOpacity={0.15} />
-                  <stop offset="95%" stopColor="#338dff" stopOpacity={0} />
-                </linearGradient>
-              </defs>
+
+          {/* Bus count */}
+          <div className="absolute top-4 right-4 bg-white px-4 py-2 rounded-lg border border-gray-200">
+            <p className="text-sm font-semibold text-gray-900">{busLocations.length} Buses on Map</p>
+            <p className="text-xs text-gray-500">Live tracking active</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Charts Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Delivery Trends */}
+        <div className="bg-white rounded-xl border border-gray-200 p-6">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h3 className="text-base font-semibold text-gray-900">Delivery Trends</h3>
+              <p className="text-sm text-gray-500">Last 7 days</p>
+            </div>
+          </div>
+          <ResponsiveContainer width="100%" height={250}>
+            <LineChart data={deliveryTrends}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
               <XAxis dataKey="day" tick={{ fontSize: 12 }} stroke="#94a3b8" />
               <YAxis tick={{ fontSize: 12 }} stroke="#94a3b8" />
               <Tooltip
                 contentStyle={{
-                  borderRadius: "12px",
+                  borderRadius: "8px",
                   border: "1px solid #e5e7eb",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
                 }}
               />
-              <Area
+              <Legend />
+              <Line
                 type="monotone"
-                dataKey="orders"
-                stroke="#338dff"
+                dataKey="booked"
+                stroke="#3b82f6"
                 strokeWidth={2}
-                fill="url(#colorOrders)"
+                dot={{ fill: "#3b82f6", r: 4 }}
+                activeDot={{ r: 6 }}
               />
-            </AreaChart>
+              <Line
+                type="monotone"
+                dataKey="delivered"
+                stroke="#22c55e"
+                strokeWidth={2}
+                dot={{ fill: "#22c55e", r: 4 }}
+                activeDot={{ r: 6 }}
+              />
+            </LineChart>
           </ResponsiveContainer>
         </div>
 
-        {/* Orders by Status Pie */}
+        {/* Route Utilization */}
         <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h3 className="text-base font-semibold text-gray-900 mb-1">Orders by Status</h3>
-          <p className="text-sm text-gray-500 mb-4">This month breakdown</p>
-          <ResponsiveContainer width="100%" height={200}>
-            <PieChart>
-              <Pie
-                data={ordersByStatus}
-                cx="50%"
-                cy="50%"
-                innerRadius={55}
-                outerRadius={80}
-                paddingAngle={4}
-                dataKey="value"
-              >
-                {ordersByStatus.map((entry, index) => (
-                  <Cell key={index} fill={entry.color} />
-                ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
-          <div className="space-y-2 mt-2">
-            {ordersByStatus.map((item) => (
-              <div key={item.name} className="flex items-center justify-between text-sm">
-                <span className="flex items-center gap-2">
-                  <span
-                    className="w-2.5 h-2.5 rounded-full"
-                    style={{ backgroundColor: item.color }}
-                  />
-                  {item.name}
-                </span>
-                <span className="font-medium">{item.value}</span>
-              </div>
-            ))}
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h3 className="text-base font-semibold text-gray-900">Route Utilization</h3>
+              <p className="text-sm text-gray-500">Top 5 routes by parcel count</p>
+            </div>
           </div>
-        </div>
-      </div>
-
-      {/* Bottom Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Vehicle Breakdown */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h3 className="text-base font-semibold text-gray-900 mb-1">Deliveries by Vehicle</h3>
-          <p className="text-sm text-gray-500 mb-4">Orders per vehicle type</p>
-          <ResponsiveContainer width="100%" height={220}>
-            <BarChart data={vehicleBreakdown} layout="vertical">
-              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" horizontal={false} />
-              <XAxis type="number" tick={{ fontSize: 12 }} stroke="#94a3b8" />
-              <YAxis dataKey="type" type="category" tick={{ fontSize: 12 }} stroke="#94a3b8" width={50} />
-              <Tooltip />
-              <Bar dataKey="count" fill="#338dff" radius={[0, 6, 6, 0]} barSize={20} />
+          <ResponsiveContainer width="100%" height={250}>
+            <BarChart data={routeUtilization}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+              <XAxis dataKey="route" tick={{ fontSize: 11 }} stroke="#94a3b8" angle={-15} textAnchor="end" height={80} />
+              <YAxis tick={{ fontSize: 12 }} stroke="#94a3b8" />
+              <Tooltip
+                contentStyle={{
+                  borderRadius: "8px",
+                  border: "1px solid #e5e7eb",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                }}
+              />
+              <Bar dataKey="parcels" fill="#06b6d4" radius={[8, 8, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
+      </div>
 
-        {/* Recent Orders */}
-        <div className="lg:col-span-2 bg-white rounded-xl border border-gray-200 p-6">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h3 className="text-base font-semibold text-gray-900">Recent Orders</h3>
-              <p className="text-sm text-gray-500">Latest 5 orders from the platform</p>
-            </div>
-            <a href="/orders" className="text-sm text-brand-600 hover:text-brand-700 font-medium">
-              View all &rarr;
-            </a>
+      {/* Parcel Status Distribution */}
+      <div className="bg-white rounded-xl border border-gray-200 p-6">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h3 className="text-base font-semibold text-gray-900">Parcel Status Distribution</h3>
+            <p className="text-sm text-gray-500">All parcels across lifecycle</p>
           </div>
-          <div className="space-y-3">
-            {recentOrders.length > 0 ? (
-              recentOrders.map((order: any) => (
-                <div
-                  key={order.id}
-                  className="flex items-center justify-between py-3 border-b border-gray-100 last:border-0"
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-1">
+            <ResponsiveContainer width="100%" height={280}>
+              <PieChart>
+                <Pie
+                  data={parcelStatusData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={60}
+                  outerRadius={100}
+                  paddingAngle={2}
+                  dataKey="value"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                      <MapPin className="w-5 h-5 text-gray-500" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-gray-900">
-                        {order.pickup_address?.substring(0, 30)}...
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        {order.receiver_name} &middot; {order.vehicle_type}
-                      </p>
-                    </div>
+                  {parcelStatusData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="lg:col-span-2">
+            <div className="grid grid-cols-2 gap-4 h-full">
+              {parcelStatusData.map((item) => (
+                <div key={item.name} className="bg-gray-50 rounded-lg p-4 flex flex-col justify-center">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span
+                      className="w-3 h-3 rounded-full"
+                      style={{ backgroundColor: item.color }}
+                    />
+                    <p className="text-sm font-medium text-gray-700">{item.name}</p>
                   </div>
-                  <div className="text-right">
-                    <p className="text-sm font-semibold text-gray-900">
-                      {formatCurrency(order.total_amount || 0)}
-                    </p>
-                    <StatusBadge status={order.status} />
-                  </div>
+                  <p className="text-2xl font-bold text-gray-900">{item.value.toLocaleString()}</p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    {((item.value / parcelStatusData.reduce((a, b) => a + b.value, 0)) * 100).toFixed(1)}%
+                  </p>
                 </div>
-              ))
-            ) : (
-              <div className="text-center py-8 text-gray-400">
-                <Package className="w-8 h-8 mx-auto mb-2" />
-                <p className="text-sm">No recent orders. Connect your backend to see live data.</p>
-              </div>
-            )}
+              ))}
+            </div>
           </div>
         </div>
       </div>
 
-      {/* System Status */}
+      {/* Recent Parcels Table */}
       <div className="bg-white rounded-xl border border-gray-200 p-6">
-        <h3 className="text-base font-semibold text-gray-900 mb-4">System Status</h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[
-            { label: "API Server", status: apiStatus === "connected" },
-            { label: "PostgreSQL", status: true },
-            { label: "Redis Cache", status: true },
-            { label: "WebSocket", status: true },
-          ].map((svc) => (
-            <div key={svc.label} className="flex items-center gap-2 text-sm">
-              <span
-                className={`w-2.5 h-2.5 rounded-full ${
-                  svc.status ? "bg-green-500" : "bg-red-500"
-                }`}
-              />
-              <span className="text-gray-600">{svc.label}</span>
-              <span className={svc.status ? "text-green-600" : "text-red-600"}>
-                {svc.status ? "Online" : "Offline"}
-              </span>
-            </div>
-          ))}
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h3 className="text-base font-semibold text-gray-900">Recent Parcels</h3>
+            <p className="text-sm text-gray-500">Latest 10 parcels</p>
+          </div>
+          <a href="/parcels" className="text-sm text-brand-600 hover:text-brand-700 font-medium">
+            View all →
+          </a>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-gray-200">
+                <th className="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase">Tracking ID</th>
+                <th className="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase">Sender</th>
+                <th className="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase">Receiver</th>
+                <th className="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase">Route</th>
+                <th className="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase">Status</th>
+                <th className="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase">Last Update</th>
+              </tr>
+            </thead>
+            <tbody>
+              {mockRecentParcels.map((parcel) => (
+                <tr key={parcel.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                  <td className="py-3 px-4 text-sm font-medium text-gray-900">{parcel.id}</td>
+                  <td className="py-3 px-4 text-sm text-gray-600">{parcel.sender}</td>
+                  <td className="py-3 px-4 text-sm text-gray-600">{parcel.receiver}</td>
+                  <td className="py-3 px-4 text-sm text-gray-600">{parcel.route}</td>
+                  <td className="py-3 px-4">
+                    <StatusBadge status={parcel.status} />
+                  </td>
+                  <td className="py-3 px-4 text-sm text-gray-600">{parcel.lastUpdate}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

@@ -46,6 +46,12 @@ export function getStatusColor(status: string): string {
     refunded: "bg-purple-100 text-purple-800",
     active: "bg-green-100 text-green-800",
     inactive: "bg-gray-100 text-gray-800",
+    booked: "bg-blue-100 text-blue-800",
+    accepted: "bg-cyan-100 text-cyan-800",
+    arrived_at_office: "bg-indigo-100 text-indigo-800",
+    ready_for_pickup: "bg-amber-100 text-amber-800",
+    idle: "bg-gray-100 text-gray-800",
+    maintenance: "bg-orange-100 text-orange-800",
   };
   return colors[status] || "bg-gray-100 text-gray-800";
 }
