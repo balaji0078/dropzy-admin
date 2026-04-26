@@ -127,8 +127,8 @@ async function fetchRoadGeometry(
     if (data.routes && data.routes.length > 0) {
       const coords = data.routes[0].geometry.coordinates;
       // OSRM returns [lng, lat] — convert to { lat, lng }
-      // Sample every Nth point to keep ~100 points per route for smooth animation
-      const step = Math.max(1, Math.floor(coords.length / 100));
+      // Sample every Nth point to keep ~200 points per route for smooth animation
+      const step = Math.max(1, Math.floor(coords.length / 200));
       const points: { lat: number; lng: number }[] = [];
       for (let i = 0; i < coords.length; i += step) {
         points.push({ lat: coords[i][1], lng: coords[i][0] });
@@ -238,8 +238,8 @@ const moveBusAlongRoad = (
   const points = route.roadPoints;
   if (points.length < 2) return { ...bus, lastUpdated: new Date() };
 
-  // Advance by 1-3 points depending on status (delayed = slower)
-  const stepSize = bus.status === "delayed" ? 1 : (1 + Math.floor(Math.random() * 2));
+  // Advance by exactly 1 point per update for smooth movement
+  const stepSize = 1;
   let newIdx = progress.pointIndex + progress.direction * stepSize;
   let newDirection = progress.direction;
 
@@ -403,6 +403,217 @@ export class MockLiveTracking {
   }
 }
 
+// === Trip History Types & Generator ===
+
+export interface TripStop {
+  city: string;
+  lat: number;
+  lng: number;
+  arrivalTime: string;  // ISO time
+  departureTime: string;
+  duration: number; // minutes stopped
+  parcelsLoaded: number;
+  parcelsUnloaded: number;
+}
+
+export interface TripHistoryPoint {
+  lat: number;
+  lng: number;
+  speed: number;
+  timestamp: string; // ISO time
+  heading: number;
+}
+
+export interface TripHistory {
+  tripId: string;
+  busId: string;
+  busNumber: string;
+  driverName: string;
+  route: string;
+  fromCity: string;
+  toCity: string;
+  startTime: string;
+  endTime: string;
+  etaOriginal: string; // original ETA
+  actualArrival: string;
+  totalDistance: number; // km
+  avgSpeed: number;
+  maxSpeed: number;
+  totalParcels: number;
+  stops: TripStop[];
+  trackPoints: TripHistoryPoint[];
+  status: "completed" | "in_progress" | "delayed";
+}
+
+// Helper to format time
+function formatTime(date: Date): string {
+  return date.toISOString();
+}
+
+function addMinutes(date: Date, minutes: number): Date {
+  return new Date(date.getTime() + minutes * 60000);
+}
+
+function addHours(date: Date, hours: number): Date {
+  return new Date(date.getTime() + hours * 3600000);
+}
+
+// City stop names for intermediate stops
+const STOP_NAMES: Record<string, string[]> = {
+  "Chennai → Bangalore": ["Kanchipuram", "Vellore", "Krishnagiri", "Hosur"],
+  "Chennai → Madurai": ["Chengalpattu", "Villupuram", "Trichy", "Dindigul"],
+  "Coimbatore → Chennai": ["Erode", "Salem", "Dharmapuri", "Vellore"],
+  "Madurai → Tirunelveli": ["Virudhunagar", "Kovilpatti", "Tenkasi"],
+  "Hyderabad → Chennai": ["Nalgonda", "Suryapet", "Vijayawada", "Nellore"],
+  "Mumbai → Pune": ["Panvel", "Lonavala", "Khandala"],
+  "Delhi → Jaipur": ["Gurgaon", "Neemrana", "Behror", "Shahpura"],
+  "Bangalore → Mysore": ["Ramanagara", "Channapatna", "Mandya", "Srirangapatna"],
+  "Salem → Erode": ["Edappadi", "Sankagiri"],
+  "Trichy → Thanjavur": ["Lalgudi", "Papanasam"],
+  "Kolkata → Patna": ["Asansol", "Dhanbad", "Gaya", "Aurangabad"],
+  "Lucknow → Varanasi": ["Sultanpur", "Jaunpur", "Azamgarh"],
+  "Ahmedabad → Surat": ["Anand", "Vadodara", "Bharuch"],
+  "Bhopal → Indore": ["Sehore", "Dewas", "Ujjain"],
+  "Raipur → Nagpur": ["Durg", "Rajnandgaon", "Gondia"],
+};
+
+// Generate mock trip history for a route
+function generateTripHistory(
+  tripIdx: number,
+  route: RouteDefinition,
+  daysAgo: number
+): TripHistory {
+  const routeName = `${route.from.name} → ${route.to.name}`;
+  const busIdx = tripIdx % 20;
+  const driverIdx = tripIdx % DRIVER_NAMES.length;
+
+  const baseDate = new Date();
+  baseDate.setDate(baseDate.getDate() - daysAgo);
+  baseDate.setHours(5 + Math.floor(Math.random() * 14), Math.floor(Math.random() * 60), 0, 0);
+
+  const startTime = new Date(baseDate);
+
+  // Route distance estimation (rough km based on lat/lng distance)
+  const dlat = route.to.lat - route.from.lat;
+  const dlng = route.to.lng - route.from.lng;
+  const roughDist = Math.sqrt(dlat * dlat + dlng * dlng) * 111; // degree to km
+  const totalDistance = Math.round(roughDist * (1 + Math.random() * 0.2));
+
+  // Trip duration based on avg 45 km/h
+  const baseDuration = (totalDistance / 45) * 60; // minutes
+  const totalDuration = baseDuration + Math.floor(Math.random() * 60); // add some variance
+  const endTime = addMinutes(startTime, totalDuration);
+
+  // ETA was estimated at start
+  const etaDuration = baseDuration + Math.floor(Math.random() * 30);
+  const etaTime = addMinutes(startTime, etaDuration);
+
+  // Determine if delayed
+  const isDelayed = endTime.getTime() > etaTime.getTime() + 30 * 60000;
+  const isCompleted = daysAgo > 0 || Math.random() > 0.3;
+
+  // Generate stops
+  const stopNames = STOP_NAMES[routeName] || ["Midpoint Stop"];
+  const stops: TripStop[] = [];
+  const stopCount = Math.min(stopNames.length, 2 + Math.floor(Math.random() * 3));
+  const stopInterval = totalDuration / (stopCount + 1);
+
+  for (let i = 0; i < stopCount; i++) {
+    const arrivalMin = stopInterval * (i + 1) - 5;
+    const stopDuration = 10 + Math.floor(Math.random() * 20); // 10-30 min stop
+    const arrivalTime = addMinutes(startTime, arrivalMin);
+    const departureTime = addMinutes(arrivalTime, stopDuration);
+
+    // Interpolate position
+    const t = (i + 1) / (stopCount + 1);
+    const lat = route.from.lat + (route.to.lat - route.from.lat) * t + (Math.random() - 0.5) * 0.05;
+    const lng = route.from.lng + (route.to.lng - route.from.lng) * t + (Math.random() - 0.5) * 0.05;
+
+    stops.push({
+      city: stopNames[i % stopNames.length],
+      lat, lng,
+      arrivalTime: formatTime(arrivalTime),
+      departureTime: formatTime(departureTime),
+      duration: stopDuration,
+      parcelsLoaded: Math.floor(Math.random() * 10),
+      parcelsUnloaded: Math.floor(Math.random() * 15) + 5,
+    });
+  }
+
+  // Generate track points from road geometry
+  const points = route.roadPoints.length > 0 ? route.roadPoints : [
+    { lat: route.from.lat, lng: route.from.lng },
+    { lat: route.to.lat, lng: route.to.lng },
+  ];
+  const trackPoints: TripHistoryPoint[] = [];
+  const timePerPoint = totalDuration / points.length;
+
+  for (let i = 0; i < points.length; i++) {
+    const pointTime = addMinutes(startTime, timePerPoint * i);
+    const nextPt = points[Math.min(i + 1, points.length - 1)];
+    const heading = Math.atan2(nextPt.lng - points[i].lng, nextPt.lat - points[i].lat) * (180 / Math.PI);
+
+    // Check if near a stop - speed = 0
+    const isNearStop = stops.some((s) => {
+      const stopTime = new Date(s.arrivalTime).getTime();
+      const depTime = new Date(s.departureTime).getTime();
+      return pointTime.getTime() >= stopTime && pointTime.getTime() <= depTime;
+    });
+
+    trackPoints.push({
+      lat: points[i].lat,
+      lng: points[i].lng,
+      speed: isNearStop ? 0 : 30 + Math.random() * 50,
+      timestamp: formatTime(pointTime),
+      heading: heading >= 0 ? heading : heading + 360,
+    });
+  }
+
+  const speeds = trackPoints.filter((p) => p.speed > 0).map((p) => p.speed);
+  const avgSpeed = speeds.length > 0 ? speeds.reduce((a, b) => a + b, 0) / speeds.length : 0;
+  const maxSpeed = speeds.length > 0 ? Math.max(...speeds) : 0;
+
+  return {
+    tripId: `TRIP-${String(tripIdx + 1).padStart(4, "0")}`,
+    busId: `BUS-${String(busIdx + 1).padStart(3, "0")}`,
+    busNumber: `TN ${["01", "09", "22", "33", "45", "58", "63", "72", "38", "43", "11", "07", "55", "28", "66", "77", "19", "31", "14", "50"][busIdx]} N ${1000 + busIdx * 111}`,
+    driverName: DRIVER_NAMES[driverIdx],
+    route: routeName,
+    fromCity: route.from.name,
+    toCity: route.to.name,
+    startTime: formatTime(startTime),
+    endTime: isCompleted ? formatTime(endTime) : "",
+    etaOriginal: formatTime(etaTime),
+    actualArrival: isCompleted ? formatTime(endTime) : "",
+    totalDistance,
+    avgSpeed: Math.round(avgSpeed),
+    maxSpeed: Math.round(maxSpeed),
+    totalParcels: 20 + Math.floor(Math.random() * 40),
+    stops,
+    trackPoints,
+    status: isCompleted ? (isDelayed ? "delayed" : "completed") : "in_progress",
+  };
+}
+
+// Generate trip history for all routes over the past 7 days
+function generateAllTripHistory(): TripHistory[] {
+  const trips: TripHistory[] = [];
+  let tripIdx = 0;
+
+  // Generate 3-5 trips per route over past 7 days
+  for (let day = 0; day < 7; day++) {
+    for (let r = 0; r < BUS_ROUTES.length; r++) {
+      // Not every route runs every day
+      if (Math.random() > 0.6) continue;
+      trips.push(generateTripHistory(tripIdx++, BUS_ROUTES[r], day));
+    }
+  }
+
+  // Sort by start time descending (most recent first)
+  trips.sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime());
+  return trips;
+}
+
 // Singleton instance
 let instance: MockLiveTracking | null = null;
 export const getLiveTracking = (): MockLiveTracking => {
@@ -410,4 +621,21 @@ export const getLiveTracking = (): MockLiveTracking => {
     instance = new MockLiveTracking();
   }
   return instance;
+};
+
+// Trip history singleton
+let tripHistoryCache: TripHistory[] | null = null;
+export const getTripHistory = (): TripHistory[] => {
+  if (!tripHistoryCache) {
+    tripHistoryCache = generateAllTripHistory();
+  }
+  return tripHistoryCache;
+};
+
+export const getTripById = (tripId: string): TripHistory | undefined => {
+  return getTripHistory().find((t) => t.tripId === tripId);
+};
+
+export const getTripsForBus = (busId: string): TripHistory[] => {
+  return getTripHistory().filter((t) => t.busId === busId);
 };

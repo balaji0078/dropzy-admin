@@ -100,7 +100,7 @@ export default function DashboardFleetMap({ onBusSelect }: DashboardFleetMapProp
 
     mapRef.current = map;
 
-    // Add pulse animation style
+    // Add pulse animation + smooth marker transition styles
     const style = document.createElement("style");
     style.textContent = `
       @keyframes pulse {
@@ -108,6 +108,9 @@ export default function DashboardFleetMap({ onBusSelect }: DashboardFleetMapProp
         100% { transform: translate(-50%, -50%) scale(1.8); opacity: 0; }
       }
       .custom-bus-marker { background: none !important; border: none !important; }
+      .leaflet-marker-icon.custom-bus-marker {
+        transition: transform 2.8s linear !important;
+      }
     `;
     document.head.appendChild(style);
 

@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import dynamic from "next/dynamic";
 import { useAuth } from "@/lib/auth-context";
 import StatsCard from "@/components/ui/StatsCard";
 import StatusBadge from "@/components/ui/StatusBadge";
 import Modal from "@/components/ui/Modal";
-import { Truck, MapPin, User, Gauge, Box, X, Navigation, Activity } from "lucide-react";
+import { Truck, MapPin, User, Gauge, Box, X, Navigation, Activity, History, Clock, ChevronRight } from "lucide-react";
+import { getTripHistory, TripHistory } from "@/lib/mock-live-tracking";
 
 const FleetMap = dynamic(() => import("@/components/ui/FleetMap"), {
   ssr: false,
@@ -16,6 +17,15 @@ const FleetMap = dynamic(() => import("@/components/ui/FleetMap"), {
         <div className="animate-spin w-8 h-8 border-4 border-brand-600 border-t-transparent rounded-full mx-auto mb-3" />
         <p className="text-sm text-gray-500">Loading map...</p>
       </div>
+    </div>
+  ),
+});
+
+const TripHistoryPlayer = dynamic(() => import("@/components/ui/TripHistoryPlayer"), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-[300px] bg-gray-50 rounded-lg border border-gray-200 flex items-center justify-center">
+      <p className="text-sm text-gray-500">Loading trip player...</p>
     </div>
   ),
 });
@@ -385,10 +395,38 @@ function BusDetailPanel({ bus, onClose }: BusDetailPanelProps) {
   );
 }
 
+function formatTripTime(iso: string): string {
+  if (!iso) return "--";
+  const d = new Date(iso);
+  return d.toLocaleString("en-IN", {
+    day: "2-digit", month: "short",
+    hour: "2-digit", minute: "2-digit", hour12: true,
+  });
+}
+
+function formatTripDuration(start: string, end: string): string {
+  if (!start || !end) return "--";
+  const diff = new Date(end).getTime() - new Date(start).getTime();
+  const hours = Math.floor(diff / 3600000);
+  const mins = Math.floor((diff % 3600000) / 60000);
+  return `${hours}h ${mins}m`;
+}
+
 export default function FleetPage() {
   const { token } = useAuth();
   const [selectedBus, setSelectedBus] = useState<(typeof allBuses)[0] | null>(null);
   const [filterStatus, setFilterStatus] = useState<string | null>(null);
+
+  // Trip history state
+  const [selectedTrip, setSelectedTrip] = useState<TripHistory | null>(null);
+  const [tripFilter, setTripFilter] = useState<"all" | "completed" | "delayed" | "in_progress">("all");
+  const [showTripHistory, setShowTripHistory] = useState(false);
+
+  const allTrips = useMemo(() => getTripHistory(), []);
+  const filteredTrips = useMemo(() => {
+    if (tripFilter === "all") return allTrips.slice(0, 30);
+    return allTrips.filter((t) => t.status === tripFilter).slice(0, 30);
+  }, [allTrips, tripFilter]);
 
   const activeBuses = allBuses.filter((b) => b.status === "active").length;
   const idleBuses = allBuses.filter((b) => b.status === "idle").length;
@@ -529,7 +567,105 @@ export default function FleetPage() {
         </div>
       </div>
 
-      {/* Bus Detail Panel is now inline with the map above */}
+      {/* Trip History Section */}
+      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div className="flex items-center justify-between p-6 border-b border-gray-200">
+          <div className="flex items-center gap-3">
+            <History className="w-5 h-5 text-brand-600" />
+            <div>
+              <h3 className="text-base font-semibold text-gray-900">Trip History</h3>
+              <p className="text-sm text-gray-500">View past trips with route replay and stop details</p>
+            </div>
+          </div>
+          <button
+            onClick={() => setShowTripHistory(!showTripHistory)}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              showTripHistory ? "bg-brand-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+            }`}
+          >
+            {showTripHistory ? "Hide Trips" : "Show Trip History"}
+          </button>
+        </div>
+
+        {showTripHistory && (
+          <>
+            {/* Trip Player */}
+            {selectedTrip && (
+              <div className="p-4 border-b border-gray-200">
+                <TripHistoryPlayer trip={selectedTrip} onClose={() => setSelectedTrip(null)} />
+              </div>
+            )}
+
+            {/* Trip Status Filters */}
+            <div className="flex gap-2 p-4 border-b border-gray-100">
+              {[
+                { label: "All Trips", value: "all" as const },
+                { label: "Completed", value: "completed" as const },
+                { label: "Delayed", value: "delayed" as const },
+                { label: "In Progress", value: "in_progress" as const },
+              ].map((filter) => (
+                <button
+                  key={filter.value}
+                  onClick={() => setTripFilter(filter.value)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                    tripFilter === filter.value
+                      ? "bg-brand-600 text-white"
+                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  }`}
+                >
+                  {filter.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Trip List */}
+            <div className="divide-y divide-gray-100 max-h-[500px] overflow-y-auto">
+              {filteredTrips.map((trip) => (
+                <button
+                  key={trip.tripId}
+                  onClick={() => setSelectedTrip(trip)}
+                  className={`w-full text-left p-4 hover:bg-gray-50 transition-colors flex items-center gap-4 ${
+                    selectedTrip?.tripId === trip.tripId ? "bg-brand-50 border-l-4 border-l-brand-600" : ""
+                  }`}
+                >
+                  {/* Status indicator */}
+                  <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${
+                    trip.status === "completed" ? "bg-green-500" :
+                    trip.status === "delayed" ? "bg-red-500" : "bg-blue-500"
+                  }`} />
+
+                  {/* Trip info */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="font-medium text-sm text-gray-900">{trip.route}</span>
+                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                        trip.status === "completed" ? "bg-green-100 text-green-700" :
+                        trip.status === "delayed" ? "bg-red-100 text-red-700" : "bg-blue-100 text-blue-700"
+                      }`}>
+                        {trip.status === "in_progress" ? "In Progress" : trip.status.charAt(0).toUpperCase() + trip.status.slice(1)}
+                      </span>
+                    </div>
+                    <p className="text-xs text-gray-500 truncate">
+                      {trip.busNumber} &middot; {trip.driverName} &middot; {trip.totalDistance} km
+                    </p>
+                  </div>
+
+                  {/* Time info */}
+                  <div className="text-right flex-shrink-0">
+                    <p className="text-xs font-medium text-gray-700">{formatTripTime(trip.startTime)}</p>
+                    <p className="text-xs text-gray-400 flex items-center justify-end gap-1">
+                      <Clock className="w-3 h-3" />
+                      {formatTripDuration(trip.startTime, trip.endTime || trip.etaOriginal)}
+                    </p>
+                  </div>
+
+                  <ChevronRight className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                </button>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 }
