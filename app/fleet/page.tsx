@@ -173,6 +173,35 @@ const MOCK_BUSES = [
   },
 ];
 
+// Indian city coordinates for realistic bus placement (all on land)
+const INDIAN_CITY_COORDS: { name: string; lat: number; lng: number; state: string; stateCode: string }[] = [
+  { name: "Jaipur", lat: 26.9124, lng: 75.7873, state: "Rajasthan", stateCode: "RJ" },
+  { name: "Lucknow", lat: 26.8467, lng: 80.9462, state: "Uttar Pradesh", stateCode: "UP" },
+  { name: "Nagpur", lat: 21.1458, lng: 79.0882, state: "Maharashtra", stateCode: "MH" },
+  { name: "Indore", lat: 22.7196, lng: 75.8577, state: "Madhya Pradesh", stateCode: "MP" },
+  { name: "Bhopal", lat: 23.2599, lng: 77.4126, state: "Madhya Pradesh", stateCode: "MP" },
+  { name: "Patna", lat: 25.6093, lng: 85.1376, state: "Bihar", stateCode: "BR" },
+  { name: "Chandigarh", lat: 30.7333, lng: 76.7794, state: "Chandigarh", stateCode: "CH" },
+  { name: "Ranchi", lat: 23.3441, lng: 85.3096, state: "Jharkhand", stateCode: "JH" },
+  { name: "Vadodara", lat: 22.3072, lng: 73.1812, state: "Gujarat", stateCode: "GJ" },
+  { name: "Surat", lat: 21.1702, lng: 72.8311, state: "Gujarat", stateCode: "GJ" },
+  { name: "Coimbatore", lat: 11.0168, lng: 76.9558, state: "Tamil Nadu", stateCode: "TN" },
+  { name: "Visakhapatnam", lat: 17.6868, lng: 83.2185, state: "Andhra Pradesh", stateCode: "AP" },
+  { name: "Bhubaneswar", lat: 20.2961, lng: 85.8245, state: "Odisha", stateCode: "OD" },
+  { name: "Dehradun", lat: 30.3165, lng: 78.0322, state: "Uttarakhand", stateCode: "UK" },
+  { name: "Amritsar", lat: 31.6340, lng: 74.8723, state: "Punjab", stateCode: "PB" },
+  { name: "Kanpur", lat: 26.4499, lng: 80.3319, state: "Uttar Pradesh", stateCode: "UP" },
+  { name: "Mysore", lat: 12.2958, lng: 76.6394, state: "Karnataka", stateCode: "KA" },
+  { name: "Aurangabad", lat: 19.8762, lng: 75.3433, state: "Maharashtra", stateCode: "MH" },
+  { name: "Guwahati", lat: 26.1445, lng: 91.7362, state: "Assam", stateCode: "AS" },
+  { name: "Raipur", lat: 21.2514, lng: 81.6296, state: "Chhattisgarh", stateCode: "CG" },
+  { name: "Agra", lat: 27.1767, lng: 78.0081, state: "Uttar Pradesh", stateCode: "UP" },
+  { name: "Varanasi", lat: 25.3176, lng: 82.9739, state: "Uttar Pradesh", stateCode: "UP" },
+  { name: "Nashik", lat: 19.9975, lng: 73.7898, state: "Maharashtra", stateCode: "MH" },
+  { name: "Jodhpur", lat: 26.2389, lng: 73.0243, state: "Rajasthan", stateCode: "RJ" },
+  { name: "Thiruvananthapuram", lat: 8.5241, lng: 76.9366, state: "Kerala", stateCode: "KL" },
+];
+
 // Generate more buses to reach 35 total
 const generateMockBuses = () => {
   const buses = [...MOCK_BUSES];
@@ -195,18 +224,18 @@ const generateMockBuses = () => {
     const firstName = driverNames[i % driverNames.length];
     const lastName = lastNames[i % lastNames.length];
     const status = statuses[(i + 2) % statuses.length];
-    const stateCode = ["KA", "MH", "DL", "TN", "KA", "WB", "GJ", "TS"][i % 8];
+    const city = INDIAN_CITY_COORDS[(i - 10) % INDIAN_CITY_COORDS.length];
 
     buses.push({
       id: `BUS-${String(i + 1).padStart(3, "0")}`,
-      busNumber: `${stateCode}-${String((i % 15) + 1).padStart(2, "0")}-UV-${String(i + 1001).padStart(4, "0")}`,
+      busNumber: `${city.stateCode}-${String((i % 15) + 1).padStart(2, "0")}-UV-${String(i + 1001).padStart(4, "0")}`,
       route: route,
       driver: `${firstName} ${lastName}`,
       driverPhone: `+91-${9800000000 + i}`,
       status: status,
-      lastLocation: ["Telangana", "Maharashtra", "Delhi", "Karnataka", "Tamil Nadu", "West Bengal", "Gujarat"][i % 7],
-      latitude: 12 + Math.random() * 16,
-      longitude: 72 + Math.random() * 16,
+      lastLocation: city.name,
+      latitude: city.lat + (Math.random() - 0.5) * 0.5,
+      longitude: city.lng + (Math.random() - 0.5) * 0.5,
       speed: status === "active" ? Math.floor(55 + Math.random() * 30) : 0,
       parcelsOnboard: status === "active" ? Math.floor(10 + Math.random() * 35) : Math.floor(Math.random() * 5),
       capacity: 50,
@@ -228,7 +257,7 @@ function BusDetailPanel({ bus, onClose }: BusDetailPanelProps) {
   if (!bus) return null;
 
   return (
-    <div className="fixed right-0 top-0 h-screen w-96 bg-white shadow-xl border-l border-gray-200 z-40 flex flex-col">
+    <div className="bg-white rounded-xl border border-gray-200 flex flex-col max-h-[600px]">
       <div className="flex items-center justify-between p-6 border-b border-gray-200">
         <h2 className="text-lg font-bold text-gray-900">{bus.busNumber}</h2>
         <button onClick={onClose} className="p-1 hover:bg-gray-100 rounded">
@@ -417,14 +446,17 @@ export default function FleetPage() {
         />
       </div>
 
-      {/* Live Map Section */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6">
-        <h3 className="text-base font-semibold text-gray-900 mb-4">Live Fleet Map</h3>
-        <FleetMap
-          buses={filteredBuses}
-          onBusClick={handleBusClick}
-          selectedBusId={selectedBus?.id}
-        />
+      {/* Live Map Section + Detail Panel */}
+      <div className={`grid gap-6 ${selectedBus ? "grid-cols-1 lg:grid-cols-3" : "grid-cols-1"}`}>
+        <div className={`bg-white rounded-xl border border-gray-200 p-6 ${selectedBus ? "lg:col-span-2" : ""}`}>
+          <h3 className="text-base font-semibold text-gray-900 mb-4">Live Fleet Map</h3>
+          <FleetMap
+            buses={filteredBuses}
+            onBusClick={handleBusClick}
+            selectedBusId={selectedBus?.id}
+          />
+        </div>
+        {selectedBus && <BusDetailPanel bus={selectedBus} onClose={() => setSelectedBus(null)} />}
       </div>
 
       {/* Status Filter */}
@@ -497,8 +529,7 @@ export default function FleetPage() {
         </div>
       </div>
 
-      {/* Bus Detail Panel */}
-      {selectedBus && <BusDetailPanel bus={selectedBus} onClose={() => setSelectedBus(null)} />}
+      {/* Bus Detail Panel is now inline with the map above */}
     </div>
   );
 }
