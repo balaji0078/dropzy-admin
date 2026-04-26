@@ -6,6 +6,7 @@ import StatusBadge from "@/components/ui/StatusBadge";
 import Modal from "@/components/ui/Modal";
 import { formatDate } from "@/lib/utils";
 import { Search, Filter, X, MapPin, Phone, Mail, Package, Scale, Clock } from "lucide-react";
+import { TN_PINCODES } from "@/lib/tn-pincodes";
 
 const PARCEL_STATUSES = [
   { id: "all", label: "All" },
@@ -28,18 +29,10 @@ const PARCEL_PHASES = [
 ];
 
 // Comprehensive list of Indian cities with pincodes and districts
+// TN pincodes are imported from lib/tn-pincodes.ts (all 38 districts, ~250 entries)
 const INDIAN_LOCATIONS = [
-  // Tamil Nadu
-  { city: "Chennai", district: "Chennai", state: "Tamil Nadu", pincode: "600001" },
-  { city: "Madurai", district: "Madurai", state: "Tamil Nadu", pincode: "625001" },
-  { city: "Tirunelveli", district: "Tirunelveli", state: "Tamil Nadu", pincode: "627001" },
-  { city: "Salem", district: "Salem", state: "Tamil Nadu", pincode: "636001" },
-  { city: "Erode", district: "Erode", state: "Tamil Nadu", pincode: "638001" },
-  { city: "Thanjavur", district: "Thanjavur", state: "Tamil Nadu", pincode: "613001" },
-  { city: "Coimbatore", district: "Coimbatore", state: "Tamil Nadu", pincode: "641001" },
-  { city: "Vellore", district: "Vellore", state: "Tamil Nadu", pincode: "632001" },
-  { city: "Tiruchirappalli", district: "Tiruchirappalli", state: "Tamil Nadu", pincode: "620001" },
-  { city: "Dindigul", district: "Dindigul", state: "Tamil Nadu", pincode: "624001" },
+  // Tamil Nadu - All 38 districts with comprehensive pincodes
+  ...TN_PINCODES,
 
   // Karnataka
   { city: "Bangalore", district: "Bangalore Urban", state: "Karnataka", pincode: "560001" },
@@ -154,9 +147,9 @@ const MOCK_PARCELS = [
   {
     id: "DPZ-2026-00003",
     trackingId: "DPZ-2026-00003",
-    sender: { name: "Sanjay Reddy", city: "Chennai", district: "Chennai", pincode: "600001", phone: "+91-9876543214", email: "sanjay@example.com", address: "202 Tech Drive" },
-    receiver: { name: "Kavya Sharma", city: "Pune", district: "Pune", pincode: "411001", phone: "+91-9876543215", email: "kavya@example.com", address: "303 Business Street" },
-    route: "CHE-600001 → PUN-411001",
+    sender: { name: "Sanjay Reddy", city: "Velachery", district: "Chennai", pincode: "600042", phone: "+91-9876543214", email: "sanjay@example.com", address: "202 Tech Drive" },
+    receiver: { name: "Kavya Sharma", city: "Coimbatore", district: "Coimbatore", pincode: "641001", phone: "+91-9876543215", email: "kavya@example.com", address: "303 Business Street" },
+    route: "CHE-600042 → CBE-641001",
     packageType: "Clothing",
     weight: 1.2,
     dimensions: "25x20x15 cm",
@@ -277,9 +270,9 @@ const MOCK_PARCELS = [
   {
     id: "DPZ-2026-00008",
     trackingId: "DPZ-2026-00008",
-    sender: { name: "Harish Kulkarni", city: "Chennai", district: "Chennai", pincode: "600001", phone: "+91-9876543224", email: "harish@example.com", address: "1212 Craft Lane" },
-    receiver: { name: "Sneha Rao", city: "Pune", district: "Pune", pincode: "411001", phone: "+91-9876543225", email: "sneha@example.com", address: "1313 Design Street" },
-    route: "CHE-600001 → PUN-411001",
+    sender: { name: "Harish Kulkarni", city: "Madurai", district: "Madurai", pincode: "625001", phone: "+91-9876543224", email: "harish@example.com", address: "1212 Craft Lane" },
+    receiver: { name: "Sneha Rao", city: "Tirunelveli", district: "Tirunelveli", pincode: "627001", phone: "+91-9876543225", email: "sneha@example.com", address: "1313 Design Street" },
+    route: "MDU-625001 → TNV-627001",
     packageType: "Art Supplies",
     weight: 1.5,
     dimensions: "30x25x15 cm",
