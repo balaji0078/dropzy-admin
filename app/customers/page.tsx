@@ -53,7 +53,7 @@ export default function CustomersPage() {
       label: "Customer",
       render: (c: any) => (
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 bg-[#007AFF]/10 text-[#007AFF] rounded-full flex items-center justify-center text-sm font-semibold">
+          <div className="w-9 h-9 bg-[#D82C2C]/10 text-[#D82C2C] rounded-full flex items-center justify-center text-sm font-semibold">
             {getInitials(c.first_name, c.last_name)}
           </div>
           <div>
@@ -102,15 +102,15 @@ export default function CustomersPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="section-title">All Customers</h2>
-        <p className="section-subtitle">{sampleCustomers.length} registered customers</p>
+        <h2 className="text-[16px] font-bold text-gray-900">All Customers</h2>
+        <p className="text-[13px] text-gray-500">{sampleCustomers.length} registered customers</p>
       </div>
 
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <FilterTabs tabs={statusTabs} activeTab={statusFilter} onChange={setStatusFilter} />
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-          <input type="text" placeholder="Search name, email, city..." value={search} onChange={(e) => setSearch(e.target.value)} className="apple-input pl-10 pr-4 py-2 w-64" />
+          <input type="text" placeholder="Search name, email, city..." value={search} onChange={(e) => setSearch(e.target.value)} className="rb-input pl-10 pr-4 py-2 w-64" />
         </div>
       </div>
 
@@ -120,7 +120,7 @@ export default function CustomersPage() {
         {selected && (
           <div className="space-y-4">
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 bg-[#007AFF]/10 text-[#007AFF] rounded-full flex items-center justify-center text-xl font-bold">
+              <div className="w-14 h-14 bg-[#D82C2C]/10 text-[#D82C2C] rounded-full flex items-center justify-center text-xl font-bold">
                 {getInitials(selected.first_name, selected.last_name)}
               </div>
               <div>
@@ -140,7 +140,7 @@ export default function CustomersPage() {
                   onClick={() => setActiveTab(tab)}
                   className={`px-4 py-2 text-sm font-medium capitalize border-b-2 transition-colors ${
                     activeTab === tab
-                      ? "border-[#007AFF] text-[#007AFF]"
+                      ? "border-[#D82C2C] text-[#D82C2C]"
                       : "border-transparent text-gray-500 hover:text-gray-700"
                   }`}
                 >

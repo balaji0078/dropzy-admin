@@ -157,10 +157,10 @@ export default function OrdersPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="section-title">All Orders</h2>
-          <p className="section-subtitle">{orders.length} total orders</p>
+          <h2 className="text-[16px] font-bold text-gray-900">All Orders</h2>
+          <p className="text-[13px] text-gray-500">{orders.length} total orders</p>
         </div>
-        <button className="apple-btn apple-btn-secondary flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium">
+        <button className="rb-btn rb-btn-outline flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium">
           <Download className="w-4 h-4" />
           Export CSV
         </button>
@@ -176,7 +176,7 @@ export default function OrdersPage() {
             placeholder="Search orders..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="apple-input pl-10 pr-4 py-2 w-64 rounded-xl text-sm"
+            className="rb-input pl-10 pr-4 py-2 w-64 rounded-xl text-sm"
           />
         </div>
       </div>
@@ -257,7 +257,7 @@ export default function OrdersPage() {
               {selectedOrder.status === "pending" && (
                 <button
                   onClick={() => handleUpdateStatus(selectedOrder.id, "confirmed")}
-                  className="apple-btn apple-btn-primary flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium"
+                  className="rb-btn rb-btn-primary flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium"
                 >
                   <UserPlus className="w-4 h-4" />
                   Confirm & Assign Driver

@@ -59,7 +59,7 @@ export default function DriversPage() {
       label: "Driver",
       render: (d: any) => (
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full flex items-center justify-center text-[12px] font-semibold text-white" style={{ backgroundColor: "#007AFF" }}>
+          <div className="w-9 h-9 rounded-full flex items-center justify-center text-[12px] font-semibold text-white" style={{ backgroundColor: "#D82C2C" }}>
             {getInitials("D", d.id?.substring(0, 1) || "R")}
           </div>
           <div>
@@ -121,8 +121,8 @@ export default function DriversPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="section-title">All Drivers</h2>
-          <p className="section-subtitle">{drivers.length} registered drivers</p>
+          <h2 className="text-[16px] font-bold text-gray-900">All Drivers</h2>
+          <p className="text-[13px] text-gray-500">{drivers.length} registered drivers</p>
         </div>
       </div>
 
@@ -135,7 +135,7 @@ export default function DriversPage() {
             placeholder="Search plate, vehicle..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="apple-input pl-10 pr-4 py-2 w-64 rounded-xl text-[13px] focus:outline-none focus:ring-2 focus:ring-[#007AFF]/50"
+            className="rb-input pl-10 pr-4 py-2 w-64 rounded-xl text-[13px] focus:outline-none focus:ring-2 focus:ring-[#D82C2C]/50"
           />
         </div>
       </div>
@@ -153,32 +153,32 @@ export default function DriversPage() {
         {selected && (
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
-              <div className="glass-card-static p-3 rounded-xl">
+              <div className="rb-card-flat p-3 rounded-xl">
                 <p className="text-[11px] text-gray-500 uppercase font-medium tracking-tight">Driver ID</p>
                 <p className="text-[13px] font-mono mt-2">{selected.id}</p>
               </div>
-              <div className="glass-card-static p-3 rounded-xl">
+              <div className="rb-card-flat p-3 rounded-xl">
                 <p className="text-[11px] text-gray-500 uppercase font-medium tracking-tight">Status</p>
                 <div className="mt-2"><StatusBadge status={selected.status} /></div>
               </div>
-              <div className="glass-card-static p-3 rounded-xl">
+              <div className="rb-card-flat p-3 rounded-xl">
                 <p className="text-[11px] text-gray-500 uppercase font-medium tracking-tight">Vehicle</p>
                 <p className="text-[13px] mt-2 capitalize">
                   {selected.vehicle_type} — {selected.vehicle_plate}
                 </p>
               </div>
-              <div className="glass-card-static p-3 rounded-xl">
+              <div className="rb-card-flat p-3 rounded-xl">
                 <p className="text-[11px] text-gray-500 uppercase font-medium tracking-tight">License</p>
                 <p className="text-[13px] mt-2">{selected.license_number}</p>
               </div>
-              <div className="glass-card-static p-3 rounded-xl">
+              <div className="rb-card-flat p-3 rounded-xl">
                 <p className="text-[11px] text-gray-500 uppercase font-medium tracking-tight">Rating</p>
                 <p className="text-[13px] mt-2 flex items-center gap-1">
                   <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
                   {selected.rating?.toFixed(1)} ({selected.total_ratings} reviews)
                 </p>
               </div>
-              <div className="glass-card-static p-3 rounded-xl">
+              <div className="rb-card-flat p-3 rounded-xl">
                 <p className="text-[11px] text-gray-500 uppercase font-medium tracking-tight">Total Deliveries</p>
                 <p className="text-[13px] font-semibold mt-2">{selected.total_deliveries}</p>
               </div>
@@ -186,11 +186,11 @@ export default function DriversPage() {
 
             <div className="flex gap-3 pt-4" style={{ borderTop: "1px solid rgba(0,0,0,0.06)" }}>
               {!selected.is_verified && (
-                <button className="apple-btn apple-btn-primary flex items-center gap-2 px-4 py-2 rounded-xl text-[13px] font-medium" style={{ backgroundColor: "#34C759" }}>
+                <button className="rb-btn rb-btn-primary flex items-center gap-2 px-4 py-2 rounded-xl text-[13px] font-medium" style={{ backgroundColor: "#34C759" }}>
                   <Shield className="w-4 h-4" /> Verify Driver
                 </button>
               )}
-              <button className="apple-btn apple-btn-secondary flex items-center gap-2 px-4 py-2 rounded-xl text-[13px] font-medium" style={{ color: "#FF3B30", backgroundColor: "rgba(255, 59, 48, 0.1)" }}>
+              <button className="rb-btn rb-btn-outline flex items-center gap-2 px-4 py-2 rounded-xl text-[13px] font-medium" style={{ color: "#FF3B30", backgroundColor: "rgba(255, 59, 48, 0.1)" }}>
                 <ShieldOff className="w-4 h-4" /> Suspend Driver
               </button>
             </div>

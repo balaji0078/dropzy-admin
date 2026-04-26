@@ -7,43 +7,35 @@ interface StatusBadgeProps {
   className?: string;
 }
 
-const statusStyles: Record<string, string> = {
-  delivered: "bg-green-50 text-green-600 ring-green-500/10",
-  completed: "bg-green-50 text-green-600 ring-green-500/10",
-  in_transit: "bg-blue-50 text-blue-600 ring-blue-500/10",
-  on_route: "bg-blue-50 text-blue-600 ring-blue-500/10",
-  in_progress: "bg-blue-50 text-blue-600 ring-blue-500/10",
-  booked: "bg-indigo-50 text-indigo-600 ring-indigo-500/10",
-  accepted: "bg-cyan-50 text-cyan-600 ring-cyan-500/10",
-  pending: "bg-amber-50 text-amber-600 ring-amber-500/10",
-  arrived_at_office: "bg-orange-50 text-orange-600 ring-orange-500/10",
-  ready_for_pickup: "bg-pink-50 text-pink-600 ring-pink-500/10",
-  available: "bg-green-50 text-green-600 ring-green-500/10",
-  on_duty: "bg-blue-50 text-blue-600 ring-blue-500/10",
-  unavailable: "bg-gray-50 text-gray-500 ring-gray-500/10",
-  failed: "bg-red-50 text-red-600 ring-red-500/10",
-  cancelled: "bg-red-50 text-red-500 ring-red-500/10",
-  refunded: "bg-purple-50 text-purple-600 ring-purple-500/10",
-  delayed: "bg-red-50 text-red-500 ring-red-500/10",
-  maintenance: "bg-orange-50 text-orange-600 ring-orange-500/10",
-  idle: "bg-gray-50 text-gray-500 ring-gray-500/10",
+const statusStyles: Record<string, { bg: string; text: string; dot: string }> = {
+  delivered: { bg: "bg-green-50", text: "text-green-700", dot: "bg-green-500" },
+  completed: { bg: "bg-green-50", text: "text-green-700", dot: "bg-green-500" },
+  in_transit: { bg: "bg-blue-50", text: "text-blue-700", dot: "bg-blue-500" },
+  on_route: { bg: "bg-blue-50", text: "text-blue-700", dot: "bg-blue-500" },
+  in_progress: { bg: "bg-blue-50", text: "text-blue-700", dot: "bg-blue-500" },
+  booked: { bg: "bg-indigo-50", text: "text-indigo-700", dot: "bg-indigo-500" },
+  accepted: { bg: "bg-cyan-50", text: "text-cyan-700", dot: "bg-cyan-500" },
+  pending: { bg: "bg-amber-50", text: "text-amber-700", dot: "bg-amber-500" },
+  arrived_at_office: { bg: "bg-orange-50", text: "text-orange-700", dot: "bg-orange-500" },
+  ready_for_pickup: { bg: "bg-pink-50", text: "text-pink-700", dot: "bg-pink-500" },
+  available: { bg: "bg-green-50", text: "text-green-700", dot: "bg-green-500" },
+  on_duty: { bg: "bg-blue-50", text: "text-blue-700", dot: "bg-blue-500" },
+  unavailable: { bg: "bg-gray-100", text: "text-gray-600", dot: "bg-gray-400" },
+  failed: { bg: "bg-red-50", text: "text-red-700", dot: "bg-red-500" },
+  cancelled: { bg: "bg-red-50", text: "text-red-600", dot: "bg-red-500" },
+  refunded: { bg: "bg-purple-50", text: "text-purple-700", dot: "bg-purple-500" },
+  delayed: { bg: "bg-red-50", text: "text-red-600", dot: "bg-red-500" },
+  maintenance: { bg: "bg-orange-50", text: "text-orange-700", dot: "bg-orange-500" },
+  idle: { bg: "bg-gray-100", text: "text-gray-600", dot: "bg-gray-400" },
+  active: { bg: "bg-green-50", text: "text-green-700", dot: "bg-green-500" },
 };
 
 export default function StatusBadge({ status, className }: StatusBadgeProps) {
-  const style = statusStyles[status] || "bg-gray-50 text-gray-500 ring-gray-500/10";
+  const style = statusStyles[status] || { bg: "bg-gray-100", text: "text-gray-600", dot: "bg-gray-400" };
 
   return (
-    <span
-      className={cn(
-        "inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold capitalize ring-1 ring-inset",
-        style,
-        className
-      )}
-    >
-      <span
-        className="w-1.5 h-1.5 rounded-full"
-        style={{ backgroundColor: "currentColor", opacity: 0.6 }}
-      />
+    <span className={cn("inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-bold capitalize", style.bg, style.text, className)}>
+      <span className={cn("w-1.5 h-1.5 rounded-full", style.dot)} />
       {status.replace(/_/g, " ")}
     </span>
   );

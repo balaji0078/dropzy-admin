@@ -131,14 +131,14 @@ export default function PricingPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="section-title">Pricing Rules</h2>
-          <p className="section-subtitle">Manage delivery pricing per vehicle type</p>
+          <h2 className="text-[16px] font-bold text-gray-900">Pricing Rules</h2>
+          <p className="text-[13px] text-gray-500">Manage delivery pricing per vehicle type</p>
         </div>
         <div className="flex gap-3">
-          <button onClick={() => setShowEstimate(true)} className="apple-btn apple-btn-secondary flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium">
+          <button onClick={() => setShowEstimate(true)} className="rb-btn rb-btn-outline flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium">
             <Calculator className="w-4 h-4" /> Test Estimate
           </button>
-          <button onClick={() => setShowCreate(true)} className="apple-btn apple-btn-primary flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium">
+          <button onClick={() => setShowCreate(true)} className="rb-btn rb-btn-primary flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium">
             <Plus className="w-4 h-4" /> Add Rule
           </button>
         </div>
@@ -165,7 +165,7 @@ export default function PricingPage() {
               <input type="number" value={(createForm as any)[field]} onChange={(e) => setCreateForm({ ...createForm, [field]: parseFloat(e.target.value) })} className="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm" />
             </div>
           ))}
-          <button onClick={handleCreateRule} className="apple-btn apple-btn-primary w-full py-2.5 rounded-xl text-sm font-medium">Create Rule</button>
+          <button onClick={handleCreateRule} className="rb-btn rb-btn-primary w-full py-2.5 rounded-xl text-sm font-medium">Create Rule</button>
         </div>
       </Modal>
 
@@ -190,10 +190,10 @@ export default function PricingPage() {
               <input type="number" value={estimateForm.weight_kg} onChange={(e) => setEstimateForm({ ...estimateForm, weight_kg: parseFloat(e.target.value) })} className="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm" />
             </div>
           </div>
-          <button onClick={handleEstimate} className="apple-btn apple-btn-primary w-full py-2.5 rounded-xl text-sm font-medium">Calculate</button>
+          <button onClick={handleEstimate} className="rb-btn rb-btn-primary w-full py-2.5 rounded-xl text-sm font-medium">Calculate</button>
 
           {estimateResult && (
-            <div className="glass-card-static rounded-xl p-4 space-y-2 mt-4">
+            <div className="rb-card-flat rounded-xl p-4 space-y-2 mt-4">
               <div className="flex justify-between text-sm"><span>Base Price</span><span>{formatCurrency(estimateResult.base_price)}</span></div>
               <div className="flex justify-between text-sm"><span>Distance ({estimateResult.distance_km} km)</span><span>{formatCurrency(estimateResult.distance_price)}</span></div>
               <div className="flex justify-between text-sm"><span>Weight ({estimateResult.weight_kg} kg)</span><span>{formatCurrency(estimateResult.weight_price)}</span></div>
@@ -202,7 +202,7 @@ export default function PricingPage() {
               )}
               <div className="flex justify-between text-base font-bold pt-2 mt-2" style={{ borderTop: "1px solid rgba(0,0,0,0.06)" }}>
                 <span>Total</span>
-                <span className="text-[#007AFF]">{formatCurrency(estimateResult.total_price)}</span>
+                <span className="text-[#D82C2C]">{formatCurrency(estimateResult.total_price)}</span>
               </div>
             </div>
           )}

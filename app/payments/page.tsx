@@ -11,13 +11,13 @@ import Modal from "@/components/ui/Modal";
 import { formatCurrency, formatDateTime } from "@/lib/utils";
 import { Search, CreditCard, TrendingUp, DollarSign, RefreshCcw, RotateCcw } from "lucide-react";
 
-// Apple color palette
-const APPLE_COLORS = {
-  blue: "#007AFF",
+// redBus color palette
+const RB_COLORS = {
+  blue: "#D82C2C",
   green: "#34C759",
   red: "#FF3B30",
   orange: "#FF9500",
-  indigo: "#5856D6",
+  indigo: "#D82C2C",
   lightGreen: "#30D158",
 };
 
@@ -122,7 +122,7 @@ export default function PaymentsPage() {
       key: "amount",
       label: "Amount",
       render: (p: any) => (
-        <span className="text-[13px] font-semibold" style={{ color: APPLE_COLORS.green }}>
+        <span className="text-[13px] font-semibold" style={{ color: RB_COLORS.green }}>
           {formatCurrency(p.amount, p.currency)}
         </span>
       ),
@@ -132,7 +132,7 @@ export default function PaymentsPage() {
       label: "Method",
       render: (p: any) => (
         <span className="capitalize flex items-center gap-1.5 text-[13px]">
-          <CreditCard className="w-4 h-4" style={{ color: APPLE_COLORS.blue, opacity: 0.6 }} />
+          <CreditCard className="w-4 h-4" style={{ color: RB_COLORS.blue, opacity: 0.6 }} />
           {p.method}
         </span>
       ),
@@ -160,7 +160,7 @@ export default function PaymentsPage() {
           icon={DollarSign}
           iconBg="bg-green-50"
           iconColor="text-green-600"
-          gradient={`linear-gradient(135deg, ${APPLE_COLORS.green}, ${APPLE_COLORS.lightGreen})`}
+          gradient={`linear-gradient(135deg, ${RB_COLORS.green}, ${RB_COLORS.lightGreen})`}
         />
         <StatsCard
           title="Weekly Revenue"
@@ -169,7 +169,7 @@ export default function PaymentsPage() {
           icon={TrendingUp}
           iconBg="bg-blue-50"
           iconColor="text-blue-600"
-          gradient={`linear-gradient(135deg, ${APPLE_COLORS.blue}, #00A9FF)`}
+          gradient={`linear-gradient(135deg, #D82C2C, #D82C2C)`}
         />
         <StatsCard
           title="Monthly Revenue"
@@ -178,7 +178,7 @@ export default function PaymentsPage() {
           icon={CreditCard}
           iconBg="bg-purple-50"
           iconColor="text-purple-600"
-          gradient={`linear-gradient(135deg, ${APPLE_COLORS.indigo}, #7C3AED)`}
+          gradient={`linear-gradient(135deg, #D82C2C, #7C3AED)`}
         />
       </div>
 
@@ -187,17 +187,15 @@ export default function PaymentsPage() {
         <div className="relative">
           <Search
             className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4"
-            style={{ color: APPLE_COLORS.blue }}
+            style={{ color: "#D82C2C" }}
           />
           <input
             type="text"
             placeholder="Search transaction, customer..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="apple-input pl-10 pr-4 py-2.5 w-64 rounded-xl text-[13px] focus:outline-none focus:ring-2 transition-all"
+            className="rb-input pl-10 pr-4 py-2.5 w-64 rounded-xl text-[13px] focus:outline-none focus:ring-2 transition-all"
             style={{
-              backgroundColor: "rgba(255, 255, 255, 0.5)",
-              backdropFilter: "blur(10px)",
               border: "1px solid rgba(0, 0, 0, 0.06)",
             }}
           />
@@ -211,22 +209,22 @@ export default function PaymentsPage() {
         {selected && (
           <div className="space-y-5">
             <div className="grid grid-cols-2 gap-4">
-              <div className="glass-card-static p-3 rounded-xl">
-                <p className="section-subtitle uppercase text-[11px] tracking-wide">Transaction ID</p>
+              <div className="rb-card-flat p-3 rounded-xl">
+                <p className="text-[13px] text-gray-500 uppercase text-[11px] tracking-wide">Transaction ID</p>
                 <p className="text-[13px] font-mono font-medium mt-1.5">{selected.transaction_id}</p>
               </div>
-              <div className="glass-card-static p-3 rounded-xl">
-                <p className="section-subtitle uppercase text-[11px] tracking-wide">Status</p>
+              <div className="rb-card-flat p-3 rounded-xl">
+                <p className="text-[13px] text-gray-500 uppercase text-[11px] tracking-wide">Status</p>
                 <div className="mt-1.5"><StatusBadge status={selected.status} /></div>
               </div>
-              <div className="glass-card-static p-3 rounded-xl">
-                <p className="section-subtitle uppercase text-[11px] tracking-wide">Amount</p>
-                <p className="text-[13px] font-semibold mt-1.5" style={{ color: APPLE_COLORS.green }}>
+              <div className="rb-card-flat p-3 rounded-xl">
+                <p className="text-[13px] text-gray-500 uppercase text-[11px] tracking-wide">Amount</p>
+                <p className="text-[13px] font-semibold mt-1.5" style={{ color: RB_COLORS.green }}>
                   {formatCurrency(selected.amount)}
                 </p>
               </div>
-              <div className="glass-card-static p-3 rounded-xl">
-                <p className="section-subtitle uppercase text-[11px] tracking-wide">Method</p>
+              <div className="rb-card-flat p-3 rounded-xl">
+                <p className="text-[13px] text-gray-500 uppercase text-[11px] tracking-wide">Method</p>
                 <p className="text-[13px] capitalize font-medium mt-1.5">{selected.method}</p>
               </div>
             </div>
@@ -236,9 +234,9 @@ export default function PaymentsPage() {
                   onClick={() => { setRefundAmount(String(selected.amount)); setRefundModal(true); }}
                   className="flex items-center gap-2 px-4 py-2.5 text-[13px] font-medium rounded-xl transition-all"
                   style={{
-                    backgroundColor: `${APPLE_COLORS.red}15`,
-                    color: APPLE_COLORS.red,
-                    border: `1px solid rgba(${parseInt(APPLE_COLORS.red.slice(1, 3), 16)}, ${parseInt(APPLE_COLORS.red.slice(3, 5), 16)}, ${parseInt(APPLE_COLORS.red.slice(5, 7), 16)}, 0.2)`,
+                    backgroundColor: `${RB_COLORS.red}15`,
+                    color: RB_COLORS.red,
+                    border: `1px solid rgba(${parseInt(RB_COLORS.red.slice(1, 3), 16)}, ${parseInt(RB_COLORS.red.slice(3, 5), 16)}, ${parseInt(RB_COLORS.red.slice(5, 7), 16)}, 0.2)`,
                   }}
                 >
                   <RotateCcw className="w-4 h-4" /> Issue Refund
@@ -258,10 +256,8 @@ export default function PaymentsPage() {
               type="number"
               value={refundAmount}
               onChange={(e) => setRefundAmount(e.target.value)}
-              className="apple-input w-full px-4 py-2.5 rounded-xl text-[13px] focus:outline-none focus:ring-2 transition-all"
+              className="rb-input w-full px-4 py-2.5 rounded-xl text-[13px] focus:outline-none focus:ring-2 transition-all"
               style={{
-                backgroundColor: "rgba(255, 255, 255, 0.5)",
-                backdropFilter: "blur(10px)",
                 border: "1px solid rgba(0, 0, 0, 0.06)",
               }}
             />
@@ -272,10 +268,8 @@ export default function PaymentsPage() {
               value={refundReason}
               onChange={(e) => setRefundReason(e.target.value)}
               rows={3}
-              className="apple-input w-full px-4 py-2.5 rounded-xl text-[13px] focus:outline-none focus:ring-2 transition-all"
+              className="rb-input w-full px-4 py-2.5 rounded-xl text-[13px] focus:outline-none focus:ring-2 transition-all"
               style={{
-                backgroundColor: "rgba(255, 255, 255, 0.5)",
-                backdropFilter: "blur(10px)",
                 border: "1px solid rgba(0, 0, 0, 0.06)",
               }}
               placeholder="Customer requested cancellation..."
@@ -283,9 +277,9 @@ export default function PaymentsPage() {
           </div>
           <button
             onClick={handleRefund}
-            className="apple-btn apple-btn-primary w-full py-2.5 rounded-xl text-[13px] font-semibold transition-all"
+            className="rb-btn rb-btn-primary w-full py-2.5 rounded-xl text-[13px] font-semibold transition-all"
             style={{
-              backgroundColor: APPLE_COLORS.red,
+              backgroundColor: RB_COLORS.red,
               color: "white",
             }}
           >

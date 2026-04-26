@@ -1,20 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import dynamic from "next/dynamic";
 import { useAuth } from "@/lib/auth-context";
-import StatsCard from "@/components/ui/StatsCard";
 import StatusBadge from "@/components/ui/StatusBadge";
-import { formatCurrency, formatDate } from "@/lib/utils";
+import { formatCurrency } from "@/lib/utils";
 import {
   Package,
-  Truck,
-  CreditCard,
-  Users,
+  Search,
   MapPin,
-  Activity,
-  ArrowUpRight,
+  Calendar,
+  ArrowRight,
+  ArrowLeftRight,
+  Truck,
+  Shield,
+  Clock,
+  Star,
+  Tag,
+  Phone,
+  CheckCircle2,
+  ChevronRight,
+  Zap,
+  Users,
   TrendingUp,
+  Gift,
+  Navigation,
 } from "lucide-react";
 
 const DashboardFleetMap = dynamic(
@@ -22,365 +32,486 @@ const DashboardFleetMap = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="w-full h-[400px] rounded-2xl flex items-center justify-center"
-        style={{ background: "rgba(0, 0, 0, 0.02)" }}
-      >
-        <div className="flex flex-col items-center gap-2">
-          <div
-            className="w-6 h-6 rounded-full border-2 border-t-transparent animate-spin"
-            style={{ borderColor: "#007AFF", borderTopColor: "transparent" }}
-          />
-          <span className="text-[12px] text-gray-400">Loading map...</span>
-        </div>
+      <div className="w-full h-[350px] rounded-xl bg-gray-100 flex items-center justify-center">
+        <div className="text-gray-400 text-sm">Loading live map...</div>
       </div>
     ),
   }
 );
 
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  BarChart,
-  Bar,
-  PieChart,
-  Pie,
-  Cell,
-  Area,
-  AreaChart,
-} from "recharts";
-
-const deliveryTrends = [
-  { day: "Mon", booked: 320, delivered: 240 },
-  { day: "Tue", booked: 380, delivered: 290 },
-  { day: "Wed", booked: 350, delivered: 310 },
-  { day: "Thu", booked: 420, delivered: 380 },
-  { day: "Fri", booked: 480, delivered: 420 },
-  { day: "Sat", booked: 510, delivered: 450 },
-  { day: "Sun", booked: 410, delivered: 380 },
+// Popular routes data
+const popularRoutes = [
+  { from: "Hyderabad", to: "Mumbai", price: 850, duration: "12h", buses: 45, rating: 4.3 },
+  { from: "Bangalore", to: "Chennai", price: 650, duration: "6h", buses: 72, rating: 4.5 },
+  { from: "Delhi", to: "Jaipur", price: 550, duration: "5h", buses: 60, rating: 4.2 },
+  { from: "Mumbai", to: "Pune", price: 350, duration: "3.5h", buses: 120, rating: 4.6 },
+  { from: "Kolkata", to: "Patna", price: 750, duration: "10h", buses: 35, rating: 4.1 },
+  { from: "Chennai", to: "Madurai", price: 500, duration: "7h", buses: 55, rating: 4.4 },
 ];
 
-const routeUtilization = [
-  { route: "HYD → MUM", parcels: 380 },
-  { route: "BLR → DEL", parcels: 320 },
-  { route: "CHE → PUN", parcels: 290 },
-  { route: "KOL → AHM", parcels: 250 },
-  { route: "MUM → BLR", parcels: 180 },
+// Offers data
+const offers = [
+  { code: "FIRST50", title: "50% OFF on First Booking", desc: "Max discount ₹200. Valid for new users.", color: "#D82C2C", bg: "#FEF2F2" },
+  { code: "DROPZY100", title: "Flat ₹100 OFF", desc: "On bookings above ₹500. All routes.", color: "#FF6F00", bg: "#FFF8E1" },
+  { code: "WEEKEND25", title: "25% OFF Weekend Travel", desc: "Valid on Sat-Sun departures.", color: "#43A047", bg: "#E8F5E9" },
 ];
 
-const parcelStatusData = [
-  { name: "Booked", value: 420, color: "#007AFF" },
-  { name: "Accepted", value: 310, color: "#5AC8FA" },
-  { name: "In Transit", value: 342, color: "#5856D6" },
-  { name: "At Office", value: 180, color: "#FF9500" },
-  { name: "Ready", value: 150, color: "#FF2D55" },
-  { name: "Delivered", value: 1445, color: "#34C759" },
+// Recent tracking data
+const recentTracking = [
+  { id: "DPZ-2026-00001", from: "Hyderabad", to: "Mumbai", status: "in_transit", eta: "Apr 27, 6:30 PM", progress: 65 },
+  { id: "DPZ-2026-00003", from: "Chennai", to: "Coimbatore", status: "delivered", eta: "Delivered", progress: 100 },
+  { id: "DPZ-2026-00004", from: "Mumbai", to: "Bangalore", status: "ready_for_pickup", eta: "Ready for pickup", progress: 90 },
+  { id: "DPZ-2026-00006", from: "Hyderabad", to: "Mumbai", status: "in_transit", eta: "Apr 27, 3:00 PM", progress: 40 },
 ];
 
-const mockRecentParcels = [
-  { id: "DPZ-2026-00001", sender: "Rajesh Kumar", receiver: "Priya Singh", route: "HYD → MUM", status: "in_transit", lastUpdate: "2026-04-26 14:30" },
-  { id: "DPZ-2026-00002", sender: "Amit Patel", receiver: "Neha Gupta", route: "BLR → DEL", status: "accepted", lastUpdate: "2026-04-26 13:45" },
-  { id: "DPZ-2026-00003", sender: "Sanjay Reddy", receiver: "Kavya Sharma", route: "CHE → PUN", status: "delivered", lastUpdate: "2026-04-26 12:15" },
-  { id: "DPZ-2026-00004", sender: "Deepak Verma", receiver: "Anjali Joshi", route: "MUM → BLR", status: "ready_for_pickup", lastUpdate: "2026-04-26 11:20" },
-  { id: "DPZ-2026-00005", sender: "Vikram Singh", receiver: "Pooja Mishra", route: "KOL → AHM", status: "arrived_at_office", lastUpdate: "2026-04-26 10:50" },
-  { id: "DPZ-2026-00006", sender: "Akshay Desai", receiver: "Divya Iyer", route: "HYD → MUM", status: "in_transit", lastUpdate: "2026-04-26 09:30" },
-  { id: "DPZ-2026-00007", sender: "Suresh Nair", receiver: "Meera Dutta", route: "BLR → DEL", status: "booked", lastUpdate: "2026-04-26 08:45" },
-  { id: "DPZ-2026-00008", sender: "Harish Kulkarni", receiver: "Sneha Rao", route: "CHE → PUN", status: "accepted", lastUpdate: "2026-04-26 07:55" },
+// Stats
+const stats = [
+  { icon: Package, label: "Parcels Delivered", value: "2.5L+", color: "#D82C2C" },
+  { icon: Truck, label: "Active Buses", value: "500+", color: "#FF6F00" },
+  { icon: MapPin, label: "Cities Covered", value: "200+", color: "#43A047" },
+  { icon: Users, label: "Happy Customers", value: "50K+", color: "#1565C0" },
 ];
-
-const CustomTooltip = ({ active, payload, label }: any) => {
-  if (!active || !payload) return null;
-  return (
-    <div
-      style={{
-        background: "rgba(255, 255, 255, 0.95)",
-        backdropFilter: "blur(20px)",
-        border: "1px solid rgba(0, 0, 0, 0.06)",
-        borderRadius: "12px",
-        padding: "10px 14px",
-        boxShadow: "0 8px 32px rgba(0, 0, 0, 0.08)",
-      }}
-    >
-      <p className="text-[11px] font-semibold text-gray-400 uppercase mb-1">{label}</p>
-      {payload.map((p: any, i: number) => (
-        <p key={i} className="text-[13px] font-semibold" style={{ color: p.color }}>
-          {p.name}: {p.value}
-        </p>
-      ))}
-    </div>
-  );
-};
 
 export default function DashboardPage() {
   const { token } = useAuth();
+  const [fromCity, setFromCity] = useState("");
+  const [toCity, setToCity] = useState("");
+  const [date, setDate] = useState("");
+  const [trackingId, setTrackingId] = useState("");
+  const [activeTab, setActiveTab] = useState<"send" | "track">("send");
+
+  const swapCities = () => {
+    setFromCity(toCity);
+    setToCity(fromCity);
+  };
 
   return (
-    <div className="space-y-6">
-      {/* Welcome Banner */}
+    <div className="space-y-0 -m-6">
+      {/* ═══════ HERO SECTION ═══════ */}
       <div
-        className="p-6 rounded-3xl relative overflow-hidden"
+        className="relative overflow-hidden"
         style={{
-          background: "linear-gradient(135deg, #007AFF 0%, #5856D6 50%, #AF52DE 100%)",
-          boxShadow: "0 8px 32px rgba(0, 122, 255, 0.2)",
+          background: "linear-gradient(135deg, #D82C2C 0%, #B71C1C 40%, #880E0E 100%)",
+          minHeight: "420px",
         }}
       >
-        <div className="absolute inset-0 opacity-10"
-          style={{
-            backgroundImage: "radial-gradient(circle at 20% 80%, rgba(255,255,255,0.3), transparent 50%), radial-gradient(circle at 80% 20%, rgba(255,255,255,0.2), transparent 50%)",
-          }}
-        />
-        <div className="relative z-10">
-          <p className="text-white/70 text-[13px] font-medium">Welcome back</p>
-          <h2 className="text-white text-[22px] font-bold tracking-tight mt-0.5">Dropzy Operations Center</h2>
-          <p className="text-white/60 text-[13px] mt-1">Everything running smoothly today</p>
-        </div>
-        <div className="absolute right-6 top-1/2 -translate-y-1/2 flex gap-3">
-          <div className="bg-white/10 backdrop-blur-md rounded-2xl px-4 py-3 text-center">
-            <p className="text-white text-[20px] font-bold">98.2%</p>
-            <p className="text-white/60 text-[11px] font-medium">On-Time Rate</p>
-          </div>
-          <div className="bg-white/10 backdrop-blur-md rounded-2xl px-4 py-3 text-center">
-            <p className="text-white text-[20px] font-bold">4.8</p>
-            <p className="text-white/60 text-[11px] font-medium">Avg Rating</p>
+        {/* Background decorations */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-20 -right-20 w-80 h-80 rounded-full" style={{ background: "rgba(255,255,255,0.04)" }} />
+          <div className="absolute bottom-10 -left-10 w-60 h-60 rounded-full" style={{ background: "rgba(255,255,255,0.03)" }} />
+          <div className="absolute top-1/2 left-1/3 w-40 h-40 rounded-full" style={{ background: "rgba(255,255,255,0.02)" }} />
+          {/* Animated bus */}
+          <div className="absolute bottom-8 left-0 right-0 h-px bg-white/10" />
+          <div className="absolute bottom-[31px] animate-bus-move">
+            <Truck className="w-5 h-5 text-white/20" />
           </div>
         </div>
-      </div>
 
-      {/* KPI Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
-        <StatsCard
-          title="Total Parcels"
-          value="2,847"
-          change={14.2}
-          icon={Package}
-          gradient="linear-gradient(135deg, #007AFF, #5AC8FA)"
-        />
-        <StatsCard
-          title="In Transit"
-          value="342"
-          change={8.5}
-          icon={Activity}
-          gradient="linear-gradient(135deg, #5856D6, #AF52DE)"
-        />
-        <StatsCard
-          title="Delivered Today"
-          value="189"
-          change={12.1}
-          icon={Package}
-          gradient="linear-gradient(135deg, #34C759, #30D158)"
-        />
-        <StatsCard
-          title="Revenue"
-          value={formatCurrency(482350)}
-          change={18.3}
-          icon={CreditCard}
-          gradient="linear-gradient(135deg, #FF9500, #FFCC00)"
-        />
-        <StatsCard
-          title="Active Buses"
-          value="28"
-          change={5.2}
-          icon={Truck}
-          gradient="linear-gradient(135deg, #5AC8FA, #007AFF)"
-        />
-        <StatsCard
-          title="Active Agents"
-          value="15"
-          change={2.8}
-          icon={Users}
-          gradient="linear-gradient(135deg, #FF2D55, #FF6482)"
-        />
-      </div>
-
-      {/* Live Fleet Map */}
-      <div className="glass-card-static p-6">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h3 className="section-title">Live Fleet Map</h3>
-            <p className="section-subtitle mt-0.5">Real-time bus positions updating every 3 seconds</p>
+        <div className="relative z-10 max-w-6xl mx-auto px-6 pt-10 pb-28">
+          {/* Hero text */}
+          <div className="text-center mb-8 animate-fade-in-up">
+            <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
+              India&apos;s Most Trusted Parcel Service
+            </h1>
+            <p className="text-white/60 text-base">
+              Send parcels across 200+ cities with real-time tracking
+            </p>
           </div>
-          <a
-            href="/fleet"
-            className="flex items-center gap-1.5 text-[13px] font-semibold transition-colors"
-            style={{ color: "#007AFF" }}
-          >
-            Full Fleet View
-            <ArrowUpRight className="w-3.5 h-3.5" />
-          </a>
-        </div>
-        <DashboardFleetMap />
-      </div>
 
-      {/* Charts Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Delivery Trends */}
-        <div className="glass-card-static p-6">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h3 className="section-title">Delivery Trends</h3>
-              <p className="section-subtitle mt-0.5">Last 7 days performance</p>
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full" style={{ background: "#007AFF" }} />
-                <span className="text-[11px] text-gray-400">Booked</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full" style={{ background: "#34C759" }} />
-                <span className="text-[11px] text-gray-400">Delivered</span>
-              </div>
+          {/* Tab Switcher */}
+          <div className="flex justify-center mb-6 animate-fade-in-up animation-delay-100">
+            <div className="inline-flex bg-white/10 rounded-full p-1">
+              <button
+                onClick={() => setActiveTab("send")}
+                className={`px-6 py-2 rounded-full text-sm font-semibold transition-all ${
+                  activeTab === "send"
+                    ? "bg-white text-red-600 shadow-md"
+                    : "text-white/80 hover:text-white"
+                }`}
+              >
+                <Package className="w-4 h-4 inline mr-2 -mt-0.5" />
+                Send Parcel
+              </button>
+              <button
+                onClick={() => setActiveTab("track")}
+                className={`px-6 py-2 rounded-full text-sm font-semibold transition-all ${
+                  activeTab === "track"
+                    ? "bg-white text-red-600 shadow-md"
+                    : "text-white/80 hover:text-white"
+                }`}
+              >
+                <Search className="w-4 h-4 inline mr-2 -mt-0.5" />
+                Track Parcel
+              </button>
             </div>
           </div>
-          <ResponsiveContainer width="100%" height={250}>
-            <AreaChart data={deliveryTrends}>
-              <defs>
-                <linearGradient id="blueGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#007AFF" stopOpacity={0.15} />
-                  <stop offset="100%" stopColor="#007AFF" stopOpacity={0} />
-                </linearGradient>
-                <linearGradient id="greenGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#34C759" stopOpacity={0.15} />
-                  <stop offset="100%" stopColor="#34C759" stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.04)" vertical={false} />
-              <XAxis dataKey="day" tick={{ fontSize: 11, fill: "#8E8E93" }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fontSize: 11, fill: "#8E8E93" }} axisLine={false} tickLine={false} />
-              <Tooltip content={<CustomTooltip />} />
-              <Area type="monotone" dataKey="booked" stroke="#007AFF" strokeWidth={2.5} fill="url(#blueGrad)" dot={false} activeDot={{ r: 5, fill: "#007AFF", stroke: "white", strokeWidth: 2 }} />
-              <Area type="monotone" dataKey="delivered" stroke="#34C759" strokeWidth={2.5} fill="url(#greenGrad)" dot={false} activeDot={{ r: 5, fill: "#34C759", stroke: "white", strokeWidth: 2 }} />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
 
-        {/* Route Utilization */}
-        <div className="glass-card-static p-6">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h3 className="section-title">Route Utilization</h3>
-              <p className="section-subtitle mt-0.5">Top 5 routes by parcel count</p>
-            </div>
-          </div>
-          <ResponsiveContainer width="100%" height={250}>
-            <BarChart data={routeUtilization} barSize={32}>
-              <defs>
-                <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#007AFF" stopOpacity={1} />
-                  <stop offset="100%" stopColor="#5856D6" stopOpacity={0.8} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.04)" vertical={false} />
-              <XAxis dataKey="route" tick={{ fontSize: 10, fill: "#8E8E93" }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fontSize: 11, fill: "#8E8E93" }} axisLine={false} tickLine={false} />
-              <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="parcels" fill="url(#barGrad)" radius={[8, 8, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-
-      {/* Parcel Status Distribution */}
-      <div className="glass-card-static p-6">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h3 className="section-title">Parcel Status Distribution</h3>
-            <p className="section-subtitle mt-0.5">All parcels across lifecycle</p>
-          </div>
-        </div>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-1">
-            <ResponsiveContainer width="100%" height={280}>
-              <PieChart>
-                <Pie
-                  data={parcelStatusData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={65}
-                  outerRadius={105}
-                  paddingAngle={3}
-                  dataKey="value"
-                  strokeWidth={0}
-                >
-                  {parcelStatusData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip content={<CustomTooltip />} />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-          <div className="lg:col-span-2">
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-              {parcelStatusData.map((item) => (
-                <div
-                  key={item.name}
-                  className="rounded-2xl p-4 transition-all duration-200 hover:scale-[1.02]"
-                  style={{ background: `${item.color}08`, border: `1px solid ${item.color}15` }}
-                >
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }} />
-                    <p className="text-[12px] font-medium text-gray-500">{item.name}</p>
+          {/* Search Card */}
+          <div className="max-w-4xl mx-auto animate-fade-in-up animation-delay-200">
+            <div className="bg-white rounded-2xl shadow-rb-xl p-1.5">
+              {activeTab === "send" ? (
+                <div className="flex flex-col md:flex-row items-stretch">
+                  {/* From */}
+                  <div className="flex-1 relative border-b md:border-b-0 md:border-r border-gray-100">
+                    <div className="px-5 pt-3 pb-1">
+                      <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400">From</label>
+                    </div>
+                    <div className="flex items-center px-5 pb-3">
+                      <MapPin className="w-5 h-5 text-red-500 mr-3 flex-shrink-0" />
+                      <input
+                        type="text"
+                        value={fromCity}
+                        onChange={(e) => setFromCity(e.target.value)}
+                        placeholder="Enter origin city"
+                        className="rb-search-input py-0"
+                      />
+                    </div>
                   </div>
-                  <p className="text-[22px] font-bold text-gray-900 tracking-tight">{item.value.toLocaleString()}</p>
-                  <p className="text-[11px] text-gray-400 mt-0.5">
-                    {((item.value / parcelStatusData.reduce((a, b) => a + b.value, 0)) * 100).toFixed(1)}% of total
+
+                  {/* Swap Button */}
+                  <div className="relative flex items-center justify-center md:-mx-5 z-10">
+                    <button
+                      onClick={swapCities}
+                      className="w-10 h-10 rounded-full bg-white border-2 border-gray-200 flex items-center justify-center hover:border-red-400 hover:bg-red-50 transition-all shadow-sm"
+                    >
+                      <ArrowLeftRight className="w-4 h-4 text-red-500" />
+                    </button>
+                  </div>
+
+                  {/* To */}
+                  <div className="flex-1 relative border-b md:border-b-0 md:border-r border-gray-100">
+                    <div className="px-5 pt-3 pb-1">
+                      <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400">To</label>
+                    </div>
+                    <div className="flex items-center px-5 pb-3">
+                      <MapPin className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
+                      <input
+                        type="text"
+                        value={toCity}
+                        onChange={(e) => setToCity(e.target.value)}
+                        placeholder="Enter destination city"
+                        className="rb-search-input py-0"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Date */}
+                  <div className="flex-1 relative border-b md:border-b-0 md:border-r border-gray-100">
+                    <div className="px-5 pt-3 pb-1">
+                      <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Date</label>
+                    </div>
+                    <div className="flex items-center px-5 pb-3">
+                      <Calendar className="w-5 h-5 text-gray-400 mr-3 flex-shrink-0" />
+                      <input
+                        type="date"
+                        value={date}
+                        onChange={(e) => setDate(e.target.value)}
+                        className="rb-search-input py-0"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Search Button */}
+                  <div className="flex items-center p-2">
+                    <button className="rb-btn rb-btn-primary px-8 py-4 text-base font-bold rounded-xl w-full md:w-auto">
+                      SEARCH
+                      <ArrowRight className="w-5 h-5" />
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-col md:flex-row items-stretch">
+                  <div className="flex-1 relative">
+                    <div className="px-5 pt-3 pb-1">
+                      <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Tracking ID</label>
+                    </div>
+                    <div className="flex items-center px-5 pb-3">
+                      <Package className="w-5 h-5 text-red-500 mr-3 flex-shrink-0" />
+                      <input
+                        type="text"
+                        value={trackingId}
+                        onChange={(e) => setTrackingId(e.target.value)}
+                        placeholder="Enter your tracking ID (e.g., DPZ-2026-00001)"
+                        className="rb-search-input py-0"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex items-center p-2">
+                    <button className="rb-btn rb-btn-primary px-8 py-4 text-base font-bold rounded-xl w-full md:w-auto">
+                      TRACK
+                      <Search className="w-5 h-5" />
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ═══════ STATS BAR ═══════ */}
+      <div className="max-w-6xl mx-auto px-6 -mt-14 relative z-20">
+        <div className="bg-white rounded-2xl shadow-rb-lg p-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {stats.map((stat) => (
+              <div key={stat.label} className="flex items-center gap-4">
+                <div
+                  className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
+                  style={{ background: `${stat.color}12` }}
+                >
+                  <stat.icon className="w-6 h-6" style={{ color: stat.color }} />
+                </div>
+                <div>
+                  <p className="text-xl font-bold text-gray-900">{stat.value}</p>
+                  <p className="text-[12px] text-gray-500">{stat.label}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ═══════ OFFERS SECTION ═══════ */}
+      <div className="max-w-6xl mx-auto px-6 mt-10">
+        <div className="flex items-center justify-between mb-5">
+          <div>
+            <h2 className="text-xl font-bold text-gray-900">Exclusive Offers</h2>
+            <p className="text-sm text-gray-500 mt-0.5">Save big on your next shipment</p>
+          </div>
+          <button className="text-sm font-semibold text-red-600 hover:text-red-700 flex items-center gap-1">
+            View All <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {offers.map((offer) => (
+            <div
+              key={offer.code}
+              className="rb-card p-5 border-l-4 cursor-pointer"
+              style={{ borderLeftColor: offer.color }}
+            >
+              <div className="flex items-start justify-between mb-2">
+                <div
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[12px] font-bold"
+                  style={{ background: offer.bg, color: offer.color }}
+                >
+                  <Tag className="w-3.5 h-3.5" />
+                  {offer.code}
+                </div>
+                <Gift className="w-5 h-5 text-gray-300" />
+              </div>
+              <h3 className="text-[15px] font-bold text-gray-900 mt-2">{offer.title}</h3>
+              <p className="text-[12px] text-gray-500 mt-1">{offer.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ═══════ POPULAR ROUTES ═══════ */}
+      <div className="max-w-6xl mx-auto px-6 mt-10">
+        <div className="flex items-center justify-between mb-5">
+          <div>
+            <h2 className="text-xl font-bold text-gray-900">Popular Routes</h2>
+            <p className="text-sm text-gray-500 mt-0.5">Most booked parcel routes across India</p>
+          </div>
+          <button className="text-sm font-semibold text-red-600 hover:text-red-700 flex items-center gap-1">
+            All Routes <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {popularRoutes.map((route) => (
+            <div key={`${route.from}-${route.to}`} className="rb-card p-5 cursor-pointer group">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center">
+                    <Navigation className="w-4 h-4 text-red-500" />
+                  </div>
+                  <div>
+                    <p className="text-[14px] font-bold text-gray-900">
+                      {route.from} → {route.to}
+                    </p>
+                    <p className="text-[11px] text-gray-500">{route.buses} buses daily</p>
+                  </div>
+                </div>
+                <ChevronRight className="w-4 h-4 text-gray-300 group-hover:text-red-500 transition-colors" />
+              </div>
+
+              <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-1">
+                    <Clock className="w-3.5 h-3.5 text-gray-400" />
+                    <span className="text-[12px] text-gray-600">{route.duration}</span>
+                  </div>
+                  <div className="rb-rating">
+                    <Star className="w-3 h-3 fill-white" />
+                    {route.rating}
+                  </div>
+                </div>
+                <p className="text-[16px] font-bold text-gray-900">
+                  Starting {formatCurrency(route.price)}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ═══════ LIVE TRACKING + MAP ═══════ */}
+      <div className="max-w-6xl mx-auto px-6 mt-10">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+          {/* Track Your Parcel */}
+          <div className="lg:col-span-2">
+            <div className="flex items-center justify-between mb-5">
+              <div>
+                <h2 className="text-xl font-bold text-gray-900">Track Your Parcel</h2>
+                <p className="text-sm text-gray-500 mt-0.5">Real-time shipment updates</p>
+              </div>
+            </div>
+            <div className="space-y-3">
+              {recentTracking.map((item) => (
+                <div key={item.id} className="rb-card p-4 cursor-pointer group">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-[13px] font-bold" style={{ color: "#D82C2C" }}>{item.id}</span>
+                    <StatusBadge status={item.status} />
+                  </div>
+                  <p className="text-[13px] text-gray-700 font-medium mb-2">
+                    {item.from} → {item.to}
                   </p>
+                  {/* Progress bar */}
+                  <div className="w-full bg-gray-100 rounded-full h-2 mb-1.5">
+                    <div
+                      className="h-2 rounded-full transition-all duration-500"
+                      style={{
+                        width: `${item.progress}%`,
+                        background: item.progress === 100
+                          ? "#43A047"
+                          : "linear-gradient(90deg, #D82C2C, #FF5252)",
+                      }}
+                    />
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[11px] text-gray-400">{item.progress}% complete</span>
+                    <span className="text-[11px] text-gray-500 font-medium">{item.eta}</span>
+                  </div>
                 </div>
               ))}
             </div>
           </div>
+
+          {/* Live Fleet Map */}
+          <div className="lg:col-span-3">
+            <div className="flex items-center justify-between mb-5">
+              <div>
+                <h2 className="text-xl font-bold text-gray-900">Live Fleet Map</h2>
+                <p className="text-sm text-gray-500 mt-0.5">Real-time bus positions across India</p>
+              </div>
+              <a href="/fleet" className="text-sm font-semibold text-red-600 hover:text-red-700 flex items-center gap-1">
+                Full View <ChevronRight className="w-4 h-4" />
+              </a>
+            </div>
+            <div className="rb-card-flat overflow-hidden">
+              <DashboardFleetMap />
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Recent Parcels */}
-      <div className="glass-card-static p-6">
-        <div className="flex items-center justify-between mb-5">
-          <div>
-            <h3 className="section-title">Recent Parcels</h3>
-            <p className="section-subtitle mt-0.5">Latest shipments</p>
-          </div>
-          <a
-            href="/parcels"
-            className="flex items-center gap-1.5 text-[13px] font-semibold transition-colors"
-            style={{ color: "#007AFF" }}
-          >
-            View all
-            <ArrowUpRight className="w-3.5 h-3.5" />
-          </a>
+      {/* ═══════ WHY DROPZY ═══════ */}
+      <div className="max-w-6xl mx-auto px-6 mt-10">
+        <div className="text-center mb-8">
+          <h2 className="text-xl font-bold text-gray-900">Why Choose Dropzy?</h2>
+          <p className="text-sm text-gray-500 mt-1">Trusted by 50,000+ customers across India</p>
         </div>
-        <div className="overflow-x-auto">
-          <table className="apple-table">
-            <thead>
-              <tr>
-                <th>Tracking ID</th>
-                <th>Sender</th>
-                <th>Receiver</th>
-                <th>Route</th>
-                <th>Status</th>
-                <th>Last Update</th>
-              </tr>
-            </thead>
-            <tbody>
-              {mockRecentParcels.map((parcel) => (
-                <tr key={parcel.id}>
-                  <td className="font-semibold text-gray-900">{parcel.id}</td>
-                  <td className="text-gray-600">{parcel.sender}</td>
-                  <td className="text-gray-600">{parcel.receiver}</td>
-                  <td>
-                    <span className="px-2 py-1 rounded-lg text-[12px] font-medium" style={{ background: "rgba(0, 122, 255, 0.06)", color: "#007AFF" }}>
-                      {parcel.route}
-                    </span>
-                  </td>
-                  <td><StatusBadge status={parcel.status} /></td>
-                  <td className="text-gray-400 text-[12px]">{parcel.lastUpdate}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+          {[
+            { icon: Shield, title: "Safe & Secure", desc: "Insured parcels with real-time tracking", color: "#D82C2C" },
+            { icon: Zap, title: "Super Fast", desc: "Express delivery in 24-48 hours", color: "#FF6F00" },
+            { icon: TrendingUp, title: "Best Prices", desc: "Competitive rates with no hidden charges", color: "#43A047" },
+            { icon: Phone, title: "24/7 Support", desc: "Round the clock customer assistance", color: "#1565C0" },
+          ].map((feature) => (
+            <div key={feature.title} className="text-center rb-card p-6">
+              <div
+                className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-3"
+                style={{ background: `${feature.color}12` }}
+              >
+                <feature.icon className="w-7 h-7" style={{ color: feature.color }} />
+              </div>
+              <h3 className="text-[14px] font-bold text-gray-900 mb-1">{feature.title}</h3>
+              <p className="text-[12px] text-gray-500 leading-relaxed">{feature.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ═══════ FOOTER ═══════ */}
+      <div className="mt-12 bg-gray-900 text-white">
+        <div className="max-w-6xl mx-auto px-6 py-10">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-8 h-8 bg-red-600 rounded-lg flex items-center justify-center">
+                  <Package className="w-5 h-5 text-white" />
+                </div>
+                <span className="text-lg font-bold">Dropzy</span>
+              </div>
+              <p className="text-[13px] text-gray-400 leading-relaxed">
+                India&apos;s leading bus parcel delivery service with real-time tracking and guaranteed delivery.
+              </p>
+            </div>
+
+            <div>
+              <h4 className="text-[13px] font-bold uppercase tracking-wider text-gray-400 mb-4">Quick Links</h4>
+              <ul className="space-y-2.5">
+                {["Dashboard", "Send Parcel", "Track Parcel", "Fleet Tracking", "Pricing"].map((link) => (
+                  <li key={link}>
+                    <a href="#" className="text-[13px] text-gray-400 hover:text-white transition-colors">{link}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="text-[13px] font-bold uppercase tracking-wider text-gray-400 mb-4">Top Routes</h4>
+              <ul className="space-y-2.5">
+                {["HYD → MUM", "BLR → CHE", "DEL → JAI", "MUM → PUN", "KOL → PAT"].map((route) => (
+                  <li key={route}>
+                    <a href="#" className="text-[13px] text-gray-400 hover:text-white transition-colors">{route}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="text-[13px] font-bold uppercase tracking-wider text-gray-400 mb-4">Contact</h4>
+              <ul className="space-y-2.5">
+                <li className="flex items-center gap-2 text-[13px] text-gray-400">
+                  <Phone className="w-4 h-4" /> 1800-123-DROPZY
+                </li>
+                <li className="flex items-center gap-2 text-[13px] text-gray-400">
+                  <Package className="w-4 h-4" /> support@dropzy.in
+                </li>
+              </ul>
+              <div className="mt-4 flex gap-2">
+                <div className="w-9 h-9 rounded-full bg-gray-800 flex items-center justify-center hover:bg-red-600 transition-colors cursor-pointer">
+                  <span className="text-[12px] font-bold">f</span>
+                </div>
+                <div className="w-9 h-9 rounded-full bg-gray-800 flex items-center justify-center hover:bg-red-600 transition-colors cursor-pointer">
+                  <span className="text-[12px] font-bold">X</span>
+                </div>
+                <div className="w-9 h-9 rounded-full bg-gray-800 flex items-center justify-center hover:bg-red-600 transition-colors cursor-pointer">
+                  <span className="text-[12px] font-bold">in</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="border-t border-gray-800 mt-8 pt-6 flex flex-col md:flex-row items-center justify-between gap-3">
+            <p className="text-[12px] text-gray-500">&copy; 2026 Dropzy. All rights reserved.</p>
+            <div className="flex items-center gap-6">
+              <a href="#" className="text-[12px] text-gray-500 hover:text-white transition-colors">Privacy Policy</a>
+              <a href="#" className="text-[12px] text-gray-500 hover:text-white transition-colors">Terms of Service</a>
+              <a href="#" className="text-[12px] text-gray-500 hover:text-white transition-colors">Refund Policy</a>
+            </div>
+          </div>
         </div>
       </div>
     </div>

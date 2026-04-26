@@ -97,8 +97,8 @@ export default function NotificationsPage() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div>
-            <h2 className="section-title">Notifications</h2>
-            <p className="section-subtitle">{unreadCount} unread notifications</p>
+            <h2 className="text-[16px] font-bold text-gray-900">Notifications</h2>
+            <p className="text-[13px] text-gray-500">{unreadCount} unread notifications</p>
           </div>
           {unreadCount > 0 && (
             <span className="px-2.5 py-1 bg-red-100 text-red-700 rounded-full text-xs font-bold">
@@ -109,13 +109,13 @@ export default function NotificationsPage() {
         <div className="flex gap-3">
           <button
             onClick={handleMarkAllRead}
-            className="apple-btn apple-btn-secondary flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium"
+            className="rb-btn rb-btn-outline flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium"
           >
             <CheckCheck className="w-4 h-4" /> Mark All Read
           </button>
           <button
             onClick={() => setShowCompose(!showCompose)}
-            className="apple-btn apple-btn-primary flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium"
+            className="rb-btn rb-btn-primary flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium"
           >
             <Send className="w-4 h-4" /> Compose
           </button>
@@ -126,7 +126,7 @@ export default function NotificationsPage() {
 
       {/* Compose Panel */}
       {showCompose && (
-        <div className="glass-card p-6 space-y-4">
+        <div className="rb-card p-6 space-y-4">
           <h3 className="font-semibold text-gray-900">Send Notification</h3>
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -136,7 +136,7 @@ export default function NotificationsPage() {
                 value={composeForm.title}
                 onChange={(e) => setComposeForm({ ...composeForm, title: e.target.value })}
                 placeholder="Notification title"
-                className="apple-input w-full px-4 py-2 text-sm rounded-xl"
+                className="rb-input w-full px-4 py-2 text-sm rounded-xl"
               />
             </div>
             <div>
@@ -144,7 +144,7 @@ export default function NotificationsPage() {
               <select
                 value={composeForm.recipients}
                 onChange={(e) => setComposeForm({ ...composeForm, recipients: e.target.value })}
-                className="apple-input w-full px-4 py-2 text-sm rounded-xl"
+                className="rb-input w-full px-4 py-2 text-sm rounded-xl"
               >
                 <option value="all">All Users</option>
                 <option value="customers">Customers Only</option>
@@ -159,7 +159,7 @@ export default function NotificationsPage() {
               onChange={(e) => setComposeForm({ ...composeForm, message: e.target.value })}
               rows={3}
               placeholder="Type your notification message..."
-              className="apple-input w-full px-4 py-2 text-sm rounded-xl"
+              className="rb-input w-full px-4 py-2 text-sm rounded-xl"
             />
           </div>
           <div>
@@ -175,8 +175,8 @@ export default function NotificationsPage() {
                   onClick={() => setComposeForm({ ...composeForm, channel: ch.value })}
                   className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium border transition-colors ${
                     composeForm.channel === ch.value
-                      ? "glass-card border-[#007AFF] bg-[#007AFF]/5 text-[#007AFF]"
-                      : "apple-btn apple-btn-secondary border-gray-200 text-gray-600"
+                      ? "rb-card border-[#D82C2C] bg-[#D82C2C]/5 text-[#D82C2C]"
+                      : "rb-btn rb-btn-outline border-gray-200 text-gray-600"
                   }`}
                 >
                   <ch.icon className="w-4 h-4" /> {ch.label}
@@ -184,17 +184,17 @@ export default function NotificationsPage() {
               ))}
             </div>
           </div>
-          <button className="apple-btn apple-btn-primary px-6 py-2.5 rounded-xl text-sm font-medium">
+          <button className="rb-btn rb-btn-primary px-6 py-2.5 rounded-xl text-sm font-medium">
             Send Notification
           </button>
         </div>
       )}
 
       {/* Notifications List */}
-      <div className="glass-card-static" style={{ borderRadius: "var(--radius-lg)" }}>
+      <div className="rb-card-flat" style={{ borderRadius: "var(--radius-lg)" }}>
         {loading ? (
           <div className="p-12 text-center">
-            <div className="animate-spin w-6 h-6 border-4 border-brand-600 border-t-transparent rounded-full mx-auto" />
+            <div className="animate-spin w-6 h-6 border-4 border-[#D82C2C] border-t-transparent rounded-full mx-auto" />
           </div>
         ) : filtered.length === 0 ? (
           <div className="p-12 text-center text-gray-400">
@@ -217,7 +217,7 @@ export default function NotificationsPage() {
               >
                 <div
                   className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
-                    !n.is_read ? "bg-[#007AFF]/10 text-[#007AFF]" : "bg-gray-100 text-gray-500"
+                    !n.is_read ? "bg-[#D82C2C]/10 text-[#D82C2C]" : "bg-gray-100 text-gray-500"
                   }`}
                 >
                   <Icon className="w-5 h-5" />
@@ -232,7 +232,7 @@ export default function NotificationsPage() {
                 {!n.is_read && (
                   <button
                     onClick={() => handleMarkRead(n.id)}
-                    className="text-xs text-[#007AFF] hover:text-[#0051D5] font-medium whitespace-nowrap"
+                    className="text-xs text-[#D82C2C] hover:text-[#B71C1C] font-medium whitespace-nowrap"
                   >
                     Mark read
                   </button>

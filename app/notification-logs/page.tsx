@@ -157,7 +157,7 @@ export default function NotificationLogsPage() {
       </div>
 
       {/* Filter and Search */}
-      <div className="glass-card p-6 space-y-4">
+      <div className="rb-card p-6 space-y-4">
         <div className="flex items-center gap-2 mb-4">
           <Search className="w-5 h-5 text-gray-400" />
           <input
@@ -196,7 +196,7 @@ export default function NotificationLogsPage() {
           <select
             value={dateRange}
             onChange={(e) => setDateRange(e.target.value)}
-            className="apple-input px-4 py-2 text-sm rounded-xl"
+            className="rb-input px-4 py-2 text-sm rounded-xl"
           >
             <option value="today">Today</option>
             <option value="7days">Last 7 Days</option>
@@ -206,7 +206,7 @@ export default function NotificationLogsPage() {
       </div>
 
       {/* Notifications Table */}
-      <div className="glass-card overflow-hidden">
+      <div className="rb-card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead style={{ borderBottom: "1px solid rgba(0,0,0,0.06)" }}>
@@ -277,7 +277,7 @@ export default function NotificationLogsPage() {
                           setSelectedNotification(notif);
                           setShowModal(true);
                         }}
-                        className="apple-btn apple-btn-primary px-3 py-1.5 rounded-xl text-xs font-medium transition-colors flex items-center gap-1"
+                        className="rb-btn rb-btn-primary px-3 py-1.5 rounded-xl text-xs font-medium transition-colors flex items-center gap-1"
                       >
                         <Eye className="w-3.5 h-3.5" />
                         View
@@ -377,7 +377,7 @@ export default function NotificationLogsPage() {
                 <h3 className="text-xs font-semibold text-gray-500 uppercase mb-3">
                   Message Content
                 </h3>
-                <div className="p-4 glass-card-static rounded-lg">
+                <div className="p-4 rb-card-flat rounded-lg">
                   <p className="text-sm text-gray-900 leading-relaxed">
                     {selectedNotification.message}
                   </p>
@@ -396,7 +396,7 @@ export default function NotificationLogsPage() {
                   <StatusBadge status={selectedNotification.status} />
                 </div>
                 {selectedNotification.read_receipt && (
-                  <div className="flex items-center justify-between p-3 glass-card-static rounded-lg border-[#34C759]/20">
+                  <div className="flex items-center justify-between p-3 rb-card-flat rounded-lg border-[#34C759]/20">
                     <span className="text-sm text-[#34C759] font-medium">Read Receipt</span>
                     <p className="text-xs text-[#34C759]">
                       {formatDateTime(selectedNotification.read_receipt)}

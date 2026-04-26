@@ -170,7 +170,7 @@ export default function UsersPage() {
       </div>
 
       {/* Filter and Search */}
-      <div className="glass-card p-6 space-y-4">
+      <div className="rb-card p-6 space-y-4">
         <div className="flex items-center gap-2 mb-4">
           <Search className="w-5 h-5 text-gray-400" />
           <input
@@ -197,7 +197,7 @@ export default function UsersPage() {
 
       {/* Bulk Actions */}
       {selectedUsers.length > 0 && (
-        <div className="glass-card border-[#007AFF]/20 p-4 flex items-center justify-between">
+        <div className="rb-card border-[#D82C2C]/20 p-4 flex items-center justify-between">
           <p className="text-sm font-medium text-gray-900">
             {selectedUsers.length} user(s) selected
           </p>
@@ -210,7 +210,7 @@ export default function UsersPage() {
             </button>
             <button
               onClick={() => handleBulkAction("export")}
-              className="apple-btn apple-btn-primary px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-1"
+              className="rb-btn rb-btn-primary px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-1"
             >
               <Download className="w-3.5 h-3.5" />
               Export as CSV
@@ -220,7 +220,7 @@ export default function UsersPage() {
       )}
 
       {/* Users Table */}
-      <div className="glass-card overflow-hidden">
+      <div className="rb-card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead style={{ borderBottom: "1px solid rgba(0,0,0,0.06)" }}>
@@ -389,7 +389,7 @@ export default function UsersPage() {
                 Account Information
               </h3>
               <div className="grid grid-cols-2 gap-4">
-                <div className="glass-card-static rounded-lg p-4">
+                <div className="rb-card-flat rounded-lg p-4">
                   <p className="text-xs text-gray-600 uppercase tracking-wide mb-1">
                     Role
                   </p>
@@ -397,7 +397,7 @@ export default function UsersPage() {
                     {selectedUser.role}
                   </p>
                 </div>
-                <div className="glass-card-static rounded-lg p-4">
+                <div className="rb-card-flat rounded-lg p-4">
                   <p className="text-xs text-gray-600 uppercase tracking-wide mb-1">
                     Registered
                   </p>
@@ -417,8 +417,8 @@ export default function UsersPage() {
               <div className="grid grid-cols-2 gap-4">
                 {selectedUser.role === "customer" && (
                   <>
-                    <div className="glass-card-static rounded-lg p-4 border-[#007AFF]/20">
-                      <p className="text-xs text-[#007AFF] uppercase tracking-wide mb-1">
+                    <div className="rb-card-flat rounded-lg p-4 border-[#D82C2C]/20">
+                      <p className="text-xs text-[#D82C2C] uppercase tracking-wide mb-1">
                         Orders Placed
                       </p>
                       <p className="text-[22px] font-bold text-gray-900">
@@ -429,7 +429,7 @@ export default function UsersPage() {
                 )}
                 {selectedUser.role === "driver" && (
                   <>
-                    <div className="glass-card-static rounded-lg p-4 border-purple-200/20">
+                    <div className="rb-card-flat rounded-lg p-4 border-purple-200/20">
                       <p className="text-xs text-purple-600 uppercase tracking-wide mb-1">
                         Deliveries Completed
                       </p>
@@ -441,7 +441,7 @@ export default function UsersPage() {
                 )}
                 {selectedUser.role === "agent" && (
                   <>
-                    <div className="glass-card-static rounded-lg p-4 border-cyan-200/20">
+                    <div className="rb-card-flat rounded-lg p-4 border-cyan-200/20">
                       <p className="text-xs text-cyan-600 uppercase tracking-wide mb-1">
                         Parcels Handled
                       </p>
@@ -453,7 +453,7 @@ export default function UsersPage() {
                 )}
                 {selectedUser.role === "admin" && (
                   <>
-                    <div className="glass-card-static rounded-lg p-4 border-red-200/20">
+                    <div className="rb-card-flat rounded-lg p-4 border-red-200/20">
                       <p className="text-xs text-red-600 uppercase tracking-wide mb-1">
                         Admin Actions
                       </p>
@@ -463,7 +463,7 @@ export default function UsersPage() {
                     </div>
                   </>
                 )}
-                <div className="glass-card-static rounded-lg p-4">
+                <div className="rb-card-flat rounded-lg p-4">
                   <p className="text-xs text-gray-700 uppercase tracking-wide mb-1">
                     Last Active
                   </p>
@@ -515,7 +515,7 @@ export default function UsersPage() {
                   Activate Account
                 </button>
               )}
-              <button className="apple-btn apple-btn-secondary flex-1 px-4 py-2 rounded-xl text-sm font-medium flex items-center justify-center gap-2">
+              <button className="rb-btn rb-btn-outline flex-1 px-4 py-2 rounded-xl text-sm font-medium flex items-center justify-center gap-2">
                 <Edit2 className="w-4 h-4" />
                 Edit User
               </button>

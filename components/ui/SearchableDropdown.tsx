@@ -72,8 +72,8 @@ export default function SearchableDropdown({
         className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-[13px] transition-all duration-200"
         style={{
           background: "rgba(255, 255, 255, 0.8)",
-          border: isOpen ? "1px solid rgba(0, 122, 255, 0.3)" : "1px solid rgba(0, 0, 0, 0.08)",
-          boxShadow: isOpen ? "0 0 0 3px rgba(0, 122, 255, 0.08)" : "none",
+          border: isOpen ? "1px solid rgba(216, 44, 44, 0.3)" : "1px solid rgba(0, 0, 0, 0.08)",
+          boxShadow: isOpen ? "0 0 0 3px rgba(216, 44, 44, 0.08)" : "none",
         }}
       >
         <span className={selectedOption ? "text-gray-900 font-medium" : "text-gray-400"}>
@@ -142,7 +142,7 @@ export default function SearchableDropdown({
                   }}
                   className={`w-full text-left px-3 py-2 text-[13px] rounded-lg transition-colors duration-150 flex items-center justify-between ${
                     opt.value === value
-                      ? "bg-blue-50 text-blue-600"
+                      ? "bg-red-50 text-[#D82C2C]"
                       : "text-gray-700 hover:bg-black/[0.03]"
                   }`}
                 >
@@ -152,7 +152,7 @@ export default function SearchableDropdown({
                       <div className="text-[11px] text-gray-400 mt-0.5">{opt.sublabel}</div>
                     )}
                   </div>
-                  {opt.value === value && <Check className="w-4 h-4 text-blue-500" />}
+                  {opt.value === value && <Check className="w-4 h-4 text-[#D82C2C]" />}
                 </button>
               ))
             )}

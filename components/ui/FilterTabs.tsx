@@ -16,31 +16,24 @@ interface FilterTabsProps {
 
 export default function FilterTabs({ tabs, activeTab, onChange }: FilterTabsProps) {
   return (
-    <div
-      className="inline-flex gap-1 p-1 rounded-xl"
-      style={{ background: "rgba(0, 0, 0, 0.04)" }}
-    >
+    <div className="inline-flex gap-1 p-1 rounded-lg bg-gray-100">
       {tabs.map((tab) => (
         <button
           key={tab.value}
           onClick={() => onChange(tab.value)}
           className={cn(
-            "px-3.5 py-1.5 rounded-lg text-[13px] font-medium transition-all duration-200",
+            "px-3.5 py-1.5 rounded-md text-[13px] font-semibold transition-all duration-200",
             activeTab === tab.value
-              ? "bg-white text-gray-900 shadow-apple-sm"
+              ? "bg-white text-gray-900 shadow-sm"
               : "text-gray-500 hover:text-gray-700"
           )}
         >
           {tab.label}
           {tab.count !== undefined && (
-            <span
-              className={cn(
-                "ml-1.5 px-1.5 py-0.5 rounded-full text-[10px] font-semibold",
-                activeTab === tab.value
-                  ? "bg-blue-50 text-blue-600"
-                  : "bg-black/[0.04] text-gray-400"
-              )}
-            >
+            <span className={cn(
+              "ml-1.5 px-1.5 py-0.5 rounded text-[10px] font-bold",
+              activeTab === tab.value ? "bg-red-50 text-red-600" : "bg-gray-200 text-gray-500"
+            )}>
               {tab.count}
             </span>
           )}
