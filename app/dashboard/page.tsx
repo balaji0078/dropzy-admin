@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import dynamic from "next/dynamic";
 import { useAuth } from "@/lib/auth-context";
 import StatsCard from "@/components/ui/StatsCard";
 import StatusBadge from "@/components/ui/StatusBadge";
@@ -13,6 +14,16 @@ import {
   MapPin,
   Activity,
 } from "lucide-react";
+
+// Dynamically import map to avoid SSR issues with Leaflet
+const DashboardFleetMap = dynamic(
+  () => import("@/components/ui/DashboardFleetMap"),
+  { ssr: false, loading: () => (
+    <div className="w-full h-[400px] rounded-lg bg-gray-100 flex items-center justify-center">
+      <div className="text-gray-500 text-sm">Loading map...</div>
+    </div>
+  )}
+);
 import {
   LineChart,
   Line,
@@ -143,17 +154,6 @@ const mockRecentParcels = [
   },
 ];
 
-// Mock bus locations for map visualization
-const busLocations = [
-  { id: "BUS-001", city: "Hyderabad", lat: 17.36, lng: 78.47, route: "HYD → MUM" },
-  { id: "BUS-002", city: "Mumbai", lat: 19.07, lng: 72.88, route: "MUM → BLR" },
-  { id: "BUS-003", city: "Delhi", lat: 28.70, lng: 77.10, route: "DEL → KOL" },
-  { id: "BUS-004", city: "Bangalore", lat: 12.97, lng: 77.59, route: "BLR → CHE" },
-  { id: "BUS-005", city: "Chennai", lat: 13.08, lng: 80.27, route: "CHE → PUN" },
-  { id: "BUS-006", city: "Pune", lat: 18.52, lng: 73.85, route: "PUN → AHM" },
-  { id: "BUS-007", city: "Kolkata", lat: 22.57, lng: 88.36, route: "KOL → HYD" },
-  { id: "BUS-008", city: "Ahmedabad", lat: 23.02, lng: 72.57, route: "AHM → MUM" },
-];
 
 export default function DashboardPage() {
   const { token } = useAuth();
@@ -214,65 +214,16 @@ export default function DashboardPage() {
 
       {/* Live Fleet Map Section */}
       <div className="bg-white rounded-xl border border-gray-200 p-6">
-        <h3 className="text-base font-semibold text-gray-900 mb-4">Live Fleet Map</h3>
-        <div className="relative w-full h-96 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-lg border border-blue-100 overflow-hidden">
-          {/* Simulated map with bus locations */}
-          <svg viewBox="0 0 1000 600" className="w-full h-full" style={{ background: "linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)" }}>
-            {/* India outline (simplified) */}
-            <path
-              d="M 350 200 L 450 150 L 500 160 L 480 250 L 520 280 L 510 320 L 480 350 L 420 360 L 380 340 L 350 300 Z"
-              fill="none"
-              stroke="#cbd5e1"
-              strokeWidth="2"
-            />
-
-            {/* Bus markers */}
-            {busLocations.map((bus) => {
-              // Normalize coordinates to SVG viewBox
-              const svgLat = 550 - bus.lat * 8;
-              const svgLng = 200 + bus.lng * 3;
-              return (
-                <g key={bus.id}>
-                  {/* Bus dot */}
-                  <circle cx={svgLng} cy={svgLat} r="8" fill="#ef4444" stroke="#fff" strokeWidth="2" />
-                  {/* Bus icon indicator */}
-                  <text x={svgLng} y={svgLat + 1} textAnchor="middle" fontSize="10" fill="#fff" fontWeight="bold">
-                    B
-                  </text>
-                  {/* Route line (simplified) */}
-                  <line
-                    x1={svgLng}
-                    y1={svgLat}
-                    x2={svgLng + 40}
-                    y2={svgLat - 40}
-                    stroke="#94a3b8"
-                    strokeWidth="1"
-                    strokeDasharray="4"
-                    opacity="0.5"
-                  />
-                  {/* Label */}
-                  <text x={svgLng} y={svgLat + 25} textAnchor="middle" fontSize="9" fill="#475569" className="pointer-events-none">
-                    {bus.city}
-                  </text>
-                </g>
-              );
-            })}
-          </svg>
-
-          {/* Legend */}
-          <div className="absolute bottom-4 left-4 bg-white px-3 py-2 rounded-lg border border-gray-200 text-xs">
-            <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full bg-red-500" />
-              <span className="text-gray-700">Active Bus</span>
-            </div>
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h3 className="text-base font-semibold text-gray-900">Live Fleet Map</h3>
+            <p className="text-sm text-gray-500">Real-time bus positions updating every 3 seconds</p>
           </div>
-
-          {/* Bus count */}
-          <div className="absolute top-4 right-4 bg-white px-4 py-2 rounded-lg border border-gray-200">
-            <p className="text-sm font-semibold text-gray-900">{busLocations.length} Buses on Map</p>
-            <p className="text-xs text-gray-500">Live tracking active</p>
-          </div>
+          <a href="/fleet" className="text-sm text-brand-600 hover:text-brand-700 font-medium">
+            Full Fleet View →
+          </a>
         </div>
+        <DashboardFleetMap />
       </div>
 
       {/* Charts Row */}

@@ -6,7 +6,7 @@ import StatusBadge from "@/components/ui/StatusBadge";
 import Modal from "@/components/ui/Modal";
 import { formatDate } from "@/lib/utils";
 import { Search, Filter, X, MapPin, Phone, Mail, Package, Scale, Clock } from "lucide-react";
-import { TN_PINCODES } from "@/lib/tn-pincodes";
+import { INDIA_PINCODES, getCityCode } from "@/lib/india-pincodes";
 
 const PARCEL_STATUSES = [
   { id: "all", label: "All" },
@@ -28,76 +28,8 @@ const PARCEL_PHASES = [
   "delivered",
 ];
 
-// Comprehensive list of Indian cities with pincodes and districts
-// TN pincodes are imported from lib/tn-pincodes.ts (all 38 districts, ~250 entries)
-const INDIAN_LOCATIONS = [
-  // Tamil Nadu - All 38 districts with comprehensive pincodes
-  ...TN_PINCODES,
-
-  // Karnataka
-  { city: "Bangalore", district: "Bangalore Urban", state: "Karnataka", pincode: "560001" },
-  { city: "Hubli", district: "Dharwad", state: "Karnataka", pincode: "580001" },
-  { city: "Belgaum", district: "Belagavi", state: "Karnataka", pincode: "590001" },
-  { city: "Shimoga", district: "Shimoga", state: "Karnataka", pincode: "577201" },
-  { city: "Mangalore", district: "Dakshina Kannada", state: "Karnataka", pincode: "575001" },
-  { city: "Mysore", district: "Mysore", state: "Karnataka", pincode: "570001" },
-  { city: "Davangere", district: "Davangere", state: "Karnataka", pincode: "577001" },
-
-  // Maharashtra
-  { city: "Mumbai", district: "Mumbai City", state: "Maharashtra", pincode: "400001" },
-  { city: "Pune", district: "Pune", state: "Maharashtra", pincode: "411001" },
-  { city: "Nashik", district: "Nashik", state: "Maharashtra", pincode: "422001" },
-  { city: "Aurangabad", district: "Aurangabad", state: "Maharashtra", pincode: "431001" },
-  { city: "Solapur", district: "Solapur", state: "Maharashtra", pincode: "413001" },
-  { city: "Kolhapur", district: "Kolhapur", state: "Maharashtra", pincode: "416001" },
-  { city: "Nagpur", district: "Nagpur", state: "Maharashtra", pincode: "440001" },
-  { city: "Amravati", district: "Amravati", state: "Maharashtra", pincode: "444601" },
-
-  // Telangana & Andhra Pradesh
-  { city: "Hyderabad", district: "Hyderabad", state: "Telangana", pincode: "500001" },
-  { city: "Warangal", district: "Warangal Urban", state: "Telangana", pincode: "506001" },
-  { city: "Karimnagar", district: "Karimnagar", state: "Telangana", pincode: "505001" },
-  { city: "Guntur", district: "Guntur", state: "Andhra Pradesh", pincode: "522001" },
-  { city: "Vijayawada", district: "Krishna", state: "Andhra Pradesh", pincode: "520001" },
-  { city: "Tirupati", district: "Chittoor", state: "Andhra Pradesh", pincode: "517501" },
-
-  // Rajasthan
-  { city: "Jaipur", district: "Jaipur", state: "Rajasthan", pincode: "302001" },
-  { city: "Udaipur", district: "Udaipur", state: "Rajasthan", pincode: "313001" },
-  { city: "Jodhpur", district: "Jodhpur", state: "Rajasthan", pincode: "342001" },
-
-  // Madhya Pradesh
-  { city: "Indore", district: "Indore", state: "Madhya Pradesh", pincode: "452001" },
-  { city: "Bhopal", district: "Bhopal", state: "Madhya Pradesh", pincode: "462001" },
-
-  // Uttar Pradesh
-  { city: "Lucknow", district: "Lucknow", state: "Uttar Pradesh", pincode: "226001" },
-  { city: "Kanpur", district: "Kanpur Nagar", state: "Uttar Pradesh", pincode: "208001" },
-
-  // Bihar
-  { city: "Patna", district: "Patna", state: "Bihar", pincode: "800001" },
-
-  // Jharkhand
-  { city: "Ranchi", district: "Ranchi", state: "Jharkhand", pincode: "834001" },
-
-  // Odisha
-  { city: "Bhubaneswar", district: "Khordha", state: "Odisha", pincode: "751001" },
-
-  // Chhattisgarh
-  { city: "Raipur", district: "Raipur", state: "Chhattisgarh", pincode: "492001" },
-
-  // Assam
-  { city: "Guwahati", district: "Kamrup", state: "Assam", pincode: "781001" },
-
-  // Delhi
-  { city: "Delhi", district: "New Delhi", state: "Delhi", pincode: "110001" },
-
-  // Gujarat
-  { city: "Ahmedabad", district: "Ahmedabad", state: "Gujarat", pincode: "380001" },
-
-  // Kolkata
-  { city: "Kolkata", district: "South 24 Parganas", state: "West Bengal", pincode: "700001" },
-];
+// All-India pincodes database - 500+ entries covering all 28 states + 8 UTs
+const INDIAN_LOCATIONS = INDIA_PINCODES;
 
 const MOCK_PARCELS = [
   {
@@ -327,7 +259,7 @@ const generateMockParcels = () => {
         email: `receiver${i}@example.com`,
         address: `${200 + i} Recipient Avenue`,
       },
-      route: `${senderLocation.city.substring(0, 3).toUpperCase()}-${senderLocation.pincode} → ${receiverLocation.city.substring(0, 3).toUpperCase()}-${receiverLocation.pincode}`,
+      route: `${getCityCode(senderLocation.city)}-${senderLocation.pincode} → ${getCityCode(receiverLocation.city)}-${receiverLocation.pincode}`,
       packageType: packageTypes[i % packageTypes.length],
       weight: parseFloat((Math.random() * 10).toFixed(2)),
       dimensions: `${20 + i % 30}x${15 + i % 20}x${10 + i % 15} cm`,
