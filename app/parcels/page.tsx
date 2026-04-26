@@ -27,13 +27,92 @@ const PARCEL_PHASES = [
   "delivered",
 ];
 
+// Comprehensive list of Indian cities with pincodes and districts
+const INDIAN_LOCATIONS = [
+  // Tamil Nadu
+  { city: "Chennai", district: "Chennai", state: "Tamil Nadu", pincode: "600001" },
+  { city: "Madurai", district: "Madurai", state: "Tamil Nadu", pincode: "625001" },
+  { city: "Tirunelveli", district: "Tirunelveli", state: "Tamil Nadu", pincode: "627001" },
+  { city: "Salem", district: "Salem", state: "Tamil Nadu", pincode: "636001" },
+  { city: "Erode", district: "Erode", state: "Tamil Nadu", pincode: "638001" },
+  { city: "Thanjavur", district: "Thanjavur", state: "Tamil Nadu", pincode: "613001" },
+  { city: "Coimbatore", district: "Coimbatore", state: "Tamil Nadu", pincode: "641001" },
+  { city: "Vellore", district: "Vellore", state: "Tamil Nadu", pincode: "632001" },
+  { city: "Tiruchirappalli", district: "Tiruchirappalli", state: "Tamil Nadu", pincode: "620001" },
+  { city: "Dindigul", district: "Dindigul", state: "Tamil Nadu", pincode: "624001" },
+
+  // Karnataka
+  { city: "Bangalore", district: "Bangalore Urban", state: "Karnataka", pincode: "560001" },
+  { city: "Hubli", district: "Dharwad", state: "Karnataka", pincode: "580001" },
+  { city: "Belgaum", district: "Belagavi", state: "Karnataka", pincode: "590001" },
+  { city: "Shimoga", district: "Shimoga", state: "Karnataka", pincode: "577201" },
+  { city: "Mangalore", district: "Dakshina Kannada", state: "Karnataka", pincode: "575001" },
+  { city: "Mysore", district: "Mysore", state: "Karnataka", pincode: "570001" },
+  { city: "Davangere", district: "Davangere", state: "Karnataka", pincode: "577001" },
+
+  // Maharashtra
+  { city: "Mumbai", district: "Mumbai City", state: "Maharashtra", pincode: "400001" },
+  { city: "Pune", district: "Pune", state: "Maharashtra", pincode: "411001" },
+  { city: "Nashik", district: "Nashik", state: "Maharashtra", pincode: "422001" },
+  { city: "Aurangabad", district: "Aurangabad", state: "Maharashtra", pincode: "431001" },
+  { city: "Solapur", district: "Solapur", state: "Maharashtra", pincode: "413001" },
+  { city: "Kolhapur", district: "Kolhapur", state: "Maharashtra", pincode: "416001" },
+  { city: "Nagpur", district: "Nagpur", state: "Maharashtra", pincode: "440001" },
+  { city: "Amravati", district: "Amravati", state: "Maharashtra", pincode: "444601" },
+
+  // Telangana & Andhra Pradesh
+  { city: "Hyderabad", district: "Hyderabad", state: "Telangana", pincode: "500001" },
+  { city: "Warangal", district: "Warangal Urban", state: "Telangana", pincode: "506001" },
+  { city: "Karimnagar", district: "Karimnagar", state: "Telangana", pincode: "505001" },
+  { city: "Guntur", district: "Guntur", state: "Andhra Pradesh", pincode: "522001" },
+  { city: "Vijayawada", district: "Krishna", state: "Andhra Pradesh", pincode: "520001" },
+  { city: "Tirupati", district: "Chittoor", state: "Andhra Pradesh", pincode: "517501" },
+
+  // Rajasthan
+  { city: "Jaipur", district: "Jaipur", state: "Rajasthan", pincode: "302001" },
+  { city: "Udaipur", district: "Udaipur", state: "Rajasthan", pincode: "313001" },
+  { city: "Jodhpur", district: "Jodhpur", state: "Rajasthan", pincode: "342001" },
+
+  // Madhya Pradesh
+  { city: "Indore", district: "Indore", state: "Madhya Pradesh", pincode: "452001" },
+  { city: "Bhopal", district: "Bhopal", state: "Madhya Pradesh", pincode: "462001" },
+
+  // Uttar Pradesh
+  { city: "Lucknow", district: "Lucknow", state: "Uttar Pradesh", pincode: "226001" },
+  { city: "Kanpur", district: "Kanpur Nagar", state: "Uttar Pradesh", pincode: "208001" },
+
+  // Bihar
+  { city: "Patna", district: "Patna", state: "Bihar", pincode: "800001" },
+
+  // Jharkhand
+  { city: "Ranchi", district: "Ranchi", state: "Jharkhand", pincode: "834001" },
+
+  // Odisha
+  { city: "Bhubaneswar", district: "Khordha", state: "Odisha", pincode: "751001" },
+
+  // Chhattisgarh
+  { city: "Raipur", district: "Raipur", state: "Chhattisgarh", pincode: "492001" },
+
+  // Assam
+  { city: "Guwahati", district: "Kamrup", state: "Assam", pincode: "781001" },
+
+  // Delhi
+  { city: "Delhi", district: "New Delhi", state: "Delhi", pincode: "110001" },
+
+  // Gujarat
+  { city: "Ahmedabad", district: "Ahmedabad", state: "Gujarat", pincode: "380001" },
+
+  // Kolkata
+  { city: "Kolkata", district: "South 24 Parganas", state: "West Bengal", pincode: "700001" },
+];
+
 const MOCK_PARCELS = [
   {
     id: "DPZ-2026-00001",
     trackingId: "DPZ-2026-00001",
-    sender: { name: "Rajesh Kumar", city: "Hyderabad", phone: "+91-9876543210", email: "rajesh@example.com", address: "123 Main St" },
-    receiver: { name: "Priya Singh", city: "Mumbai", phone: "+91-9876543211", email: "priya@example.com", address: "456 Park Ave" },
-    route: "HYD → MUM",
+    sender: { name: "Rajesh Kumar", city: "Hyderabad", district: "Hyderabad", pincode: "500001", phone: "+91-9876543210", email: "rajesh@example.com", address: "123 Main St" },
+    receiver: { name: "Priya Singh", city: "Mumbai", district: "Mumbai City", pincode: "400001", phone: "+91-9876543211", email: "priya@example.com", address: "456 Park Ave" },
+    route: "HYD-500001 → MUM-400001",
     packageType: "Electronics",
     weight: 2.5,
     dimensions: "20x15x10 cm",
@@ -54,9 +133,9 @@ const MOCK_PARCELS = [
   {
     id: "DPZ-2026-00002",
     trackingId: "DPZ-2026-00002",
-    sender: { name: "Amit Patel", city: "Bangalore", phone: "+91-9876543212", email: "amit@example.com", address: "789 Tech Park" },
-    receiver: { name: "Neha Gupta", city: "Delhi", phone: "+91-9876543213", email: "neha@example.com", address: "101 Business Plaza" },
-    route: "BLR → DEL",
+    sender: { name: "Amit Patel", city: "Bangalore", district: "Bangalore Urban", pincode: "560001", phone: "+91-9876543212", email: "amit@example.com", address: "789 Tech Park" },
+    receiver: { name: "Neha Gupta", city: "Delhi", district: "New Delhi", pincode: "110001", phone: "+91-9876543213", email: "neha@example.com", address: "101 Business Plaza" },
+    route: "BLR-560001 → DEL-110001",
     packageType: "Documents",
     weight: 0.5,
     dimensions: "30x20x5 cm",
@@ -75,9 +154,9 @@ const MOCK_PARCELS = [
   {
     id: "DPZ-2026-00003",
     trackingId: "DPZ-2026-00003",
-    sender: { name: "Sanjay Reddy", city: "Chennai", phone: "+91-9876543214", email: "sanjay@example.com", address: "202 Tech Drive" },
-    receiver: { name: "Kavya Sharma", city: "Pune", phone: "+91-9876543215", email: "kavya@example.com", address: "303 Business Street" },
-    route: "CHE → PUN",
+    sender: { name: "Sanjay Reddy", city: "Chennai", district: "Chennai", pincode: "600001", phone: "+91-9876543214", email: "sanjay@example.com", address: "202 Tech Drive" },
+    receiver: { name: "Kavya Sharma", city: "Pune", district: "Pune", pincode: "411001", phone: "+91-9876543215", email: "kavya@example.com", address: "303 Business Street" },
+    route: "CHE-600001 → PUN-411001",
     packageType: "Clothing",
     weight: 1.2,
     dimensions: "25x20x15 cm",
@@ -104,9 +183,9 @@ const MOCK_PARCELS = [
   {
     id: "DPZ-2026-00004",
     trackingId: "DPZ-2026-00004",
-    sender: { name: "Deepak Verma", city: "Mumbai", phone: "+91-9876543216", email: "deepak@example.com", address: "404 Market Complex" },
-    receiver: { name: "Anjali Joshi", city: "Bangalore", phone: "+91-9876543217", email: "anjali@example.com", address: "505 Commerce Center" },
-    route: "MUM → BLR",
+    sender: { name: "Deepak Verma", city: "Mumbai", district: "Mumbai City", pincode: "400001", phone: "+91-9876543216", email: "deepak@example.com", address: "404 Market Complex" },
+    receiver: { name: "Anjali Joshi", city: "Bangalore", district: "Bangalore Urban", pincode: "560001", phone: "+91-9876543217", email: "anjali@example.com", address: "505 Commerce Center" },
+    route: "MUM-400001 → BLR-560001",
     packageType: "Furniture",
     weight: 5.0,
     dimensions: "100x50x50 cm",
@@ -130,9 +209,9 @@ const MOCK_PARCELS = [
   {
     id: "DPZ-2026-00005",
     trackingId: "DPZ-2026-00005",
-    sender: { name: "Vikram Singh", city: "Kolkata", phone: "+91-9876543218", email: "vikram@example.com", address: "606 Shopping Mall" },
-    receiver: { name: "Pooja Mishra", city: "Ahmedabad", phone: "+91-9876543219", email: "pooja@example.com", address: "707 Trade Center" },
-    route: "KOL → AHM",
+    sender: { name: "Vikram Singh", city: "Kolkata", district: "South 24 Parganas", pincode: "700001", phone: "+91-9876543218", email: "vikram@example.com", address: "606 Shopping Mall" },
+    receiver: { name: "Pooja Mishra", city: "Ahmedabad", district: "Ahmedabad", pincode: "380001", phone: "+91-9876543219", email: "pooja@example.com", address: "707 Trade Center" },
+    route: "KOL-700001 → AHM-380001",
     packageType: "Books",
     weight: 3.0,
     dimensions: "40x30x20 cm",
@@ -155,9 +234,9 @@ const MOCK_PARCELS = [
   {
     id: "DPZ-2026-00006",
     trackingId: "DPZ-2026-00006",
-    sender: { name: "Akshay Desai", city: "Hyderabad", phone: "+91-9876543220", email: "akshay@example.com", address: "808 Plaza Tower" },
-    receiver: { name: "Divya Iyer", city: "Mumbai", phone: "+91-9876543221", email: "divya@example.com", address: "909 High Street" },
-    route: "HYD → MUM",
+    sender: { name: "Akshay Desai", city: "Hyderabad", district: "Hyderabad", pincode: "500001", phone: "+91-9876543220", email: "akshay@example.com", address: "808 Plaza Tower" },
+    receiver: { name: "Divya Iyer", city: "Mumbai", district: "Mumbai City", pincode: "400001", phone: "+91-9876543221", email: "divya@example.com", address: "909 High Street" },
+    route: "HYD-500001 → MUM-400001",
     packageType: "Cosmetics",
     weight: 0.8,
     dimensions: "15x12x10 cm",
@@ -178,9 +257,9 @@ const MOCK_PARCELS = [
   {
     id: "DPZ-2026-00007",
     trackingId: "DPZ-2026-00007",
-    sender: { name: "Suresh Nair", city: "Bangalore", phone: "+91-9876543222", email: "suresh@example.com", address: "1010 Silk Street" },
-    receiver: { name: "Meera Dutta", city: "Delhi", phone: "+91-9876543223", email: "meera@example.com", address: "1111 Innovation Drive" },
-    route: "BLR → DEL",
+    sender: { name: "Suresh Nair", city: "Bangalore", district: "Bangalore Urban", pincode: "560001", phone: "+91-9876543222", email: "suresh@example.com", address: "1010 Silk Street" },
+    receiver: { name: "Meera Dutta", city: "Delhi", district: "New Delhi", pincode: "110001", phone: "+91-9876543223", email: "meera@example.com", address: "1111 Innovation Drive" },
+    route: "BLR-560001 → DEL-110001",
     packageType: "Toys",
     weight: 2.0,
     dimensions: "35x25x20 cm",
@@ -198,9 +277,9 @@ const MOCK_PARCELS = [
   {
     id: "DPZ-2026-00008",
     trackingId: "DPZ-2026-00008",
-    sender: { name: "Harish Kulkarni", city: "Chennai", phone: "+91-9876543224", email: "harish@example.com", address: "1212 Craft Lane" },
-    receiver: { name: "Sneha Rao", city: "Pune", phone: "+91-9876543225", email: "sneha@example.com", address: "1313 Design Street" },
-    route: "CHE → PUN",
+    sender: { name: "Harish Kulkarni", city: "Chennai", district: "Chennai", pincode: "600001", phone: "+91-9876543224", email: "harish@example.com", address: "1212 Craft Lane" },
+    receiver: { name: "Sneha Rao", city: "Pune", district: "Pune", pincode: "411001", phone: "+91-9876543225", email: "sneha@example.com", address: "1313 Design Street" },
+    route: "CHE-600001 → PUN-411001",
     packageType: "Art Supplies",
     weight: 1.5,
     dimensions: "30x25x15 cm",
@@ -220,7 +299,6 @@ const MOCK_PARCELS = [
 
 // Generate additional mock parcels to reach 50
 const generateMockParcels = () => {
-  const cities = ["Hyderabad", "Mumbai", "Delhi", "Bangalore", "Chennai", "Pune", "Kolkata", "Ahmedabad"];
   const senderNames = ["Rajesh", "Amit", "Sanjay", "Deepak", "Vikram", "Akshay", "Suresh", "Harish", "Ramesh", "Naveen"];
   const receiverNames = ["Priya", "Neha", "Kavya", "Anjali", "Pooja", "Divya", "Meera", "Sneha", "Anjali", "Ritika"];
   const packageTypes = ["Electronics", "Documents", "Clothing", "Furniture", "Books", "Cosmetics", "Toys", "Art Supplies", "Gifts", "Food"];
@@ -229,8 +307,8 @@ const generateMockParcels = () => {
   const parcels = [...MOCK_PARCELS];
 
   for (let i = 8; i < 50; i++) {
-    const senderCity = cities[Math.floor(Math.random() * cities.length)];
-    const receiverCity = cities[Math.floor(Math.random() * cities.length)];
+    const senderLocation = INDIAN_LOCATIONS[Math.floor(Math.random() * INDIAN_LOCATIONS.length)];
+    const receiverLocation = INDIAN_LOCATIONS[Math.floor(Math.random() * INDIAN_LOCATIONS.length)];
     const status = statuses[Math.floor(Math.random() * statuses.length)];
     const senderName = senderNames[Math.floor(Math.random() * senderNames.length)];
     const receiverName = receiverNames[Math.floor(Math.random() * receiverNames.length)];
@@ -240,19 +318,23 @@ const generateMockParcels = () => {
       trackingId: `DPZ-2026-${String(i + 1).padStart(5, "0")}`,
       sender: {
         name: `${senderName} ${["Kumar", "Patel", "Singh", "Sharma", "Verma"][i % 5]}`,
-        city: senderCity,
+        city: senderLocation.city,
+        district: senderLocation.district,
+        pincode: senderLocation.pincode,
         phone: `+91-${9800000000 + i}`,
         email: `sender${i}@example.com`,
         address: `${100 + i} Address Street`,
       },
       receiver: {
         name: `${receiverName} ${["Gupta", "Iyer", "Nair", "Dutta", "Saxena"][i % 5]}`,
-        city: receiverCity,
+        city: receiverLocation.city,
+        district: receiverLocation.district,
+        pincode: receiverLocation.pincode,
         phone: `+91-${9900000000 + i}`,
         email: `receiver${i}@example.com`,
         address: `${200 + i} Recipient Avenue`,
       },
-      route: `${senderCity.substring(0, 3).toUpperCase()} → ${receiverCity.substring(0, 3).toUpperCase()}`,
+      route: `${senderLocation.city.substring(0, 3).toUpperCase()}-${senderLocation.pincode} → ${receiverLocation.city.substring(0, 3).toUpperCase()}-${receiverLocation.pincode}`,
       packageType: packageTypes[i % packageTypes.length],
       weight: parseFloat((Math.random() * 10).toFixed(2)),
       dimensions: `${20 + i % 30}x${15 + i % 20}x${10 + i % 15} cm`,
@@ -306,6 +388,14 @@ function ParcelDetailModal({ parcel, onClose }: ParcelDetailModalProps) {
                   <span className="text-gray-900">{parcel.sender.city}</span>
                 </div>
                 <div className="flex items-start gap-2">
+                  <span className="text-gray-500">Pincode:</span>
+                  <span className="text-gray-900">{parcel.sender.pincode}</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-gray-500">District:</span>
+                  <span className="text-gray-900">{parcel.sender.district}</span>
+                </div>
+                <div className="flex items-start gap-2">
                   <span className="text-gray-500">Phone:</span>
                   <span className="text-gray-900">{parcel.sender.phone}</span>
                 </div>
@@ -330,6 +420,14 @@ function ParcelDetailModal({ parcel, onClose }: ParcelDetailModalProps) {
                 <div className="flex items-start gap-2">
                   <span className="text-gray-500">City:</span>
                   <span className="text-gray-900">{parcel.receiver.city}</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-gray-500">Pincode:</span>
+                  <span className="text-gray-900">{parcel.receiver.pincode}</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-gray-500">District:</span>
+                  <span className="text-gray-900">{parcel.receiver.district}</span>
                 </div>
                 <div className="flex items-start gap-2">
                   <span className="text-gray-500">Phone:</span>
@@ -469,7 +567,11 @@ export default function ParcelsPage() {
         searchQuery === "" ||
         parcel.trackingId.toLowerCase().includes(searchQuery.toLowerCase()) ||
         parcel.sender.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        parcel.receiver.name.toLowerCase().includes(searchQuery.toLowerCase());
+        parcel.receiver.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        parcel.sender.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        parcel.receiver.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        parcel.sender.pincode.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        parcel.receiver.pincode.toLowerCase().includes(searchQuery.toLowerCase());
       return matchesStatus && matchesSearch;
     });
   }, [searchQuery, selectedStatus]);
@@ -491,7 +593,7 @@ export default function ParcelsPage() {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
               type="text"
-              placeholder="Search by tracking ID, sender name, or receiver name..."
+              placeholder="Search by tracking ID, sender/receiver name, city, or pincode..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
@@ -529,8 +631,8 @@ export default function ParcelsPage() {
             <thead>
               <tr className="border-b border-gray-200 bg-gray-50">
                 <th className="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase">Tracking ID</th>
-                <th className="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase">Sender</th>
-                <th className="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase">Receiver</th>
+                <th className="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase">Pickup City</th>
+                <th className="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase">Destination</th>
                 <th className="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase">Route</th>
                 <th className="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase">Package Type</th>
                 <th className="text-left py-3 px-4 text-xs font-semibold text-gray-600 uppercase">Weight</th>
@@ -546,8 +648,8 @@ export default function ParcelsPage() {
                   className="border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors"
                 >
                   <td className="py-3 px-4 text-sm font-medium text-brand-600">{parcel.trackingId}</td>
-                  <td className="py-3 px-4 text-sm text-gray-900">{parcel.sender.name}</td>
-                  <td className="py-3 px-4 text-sm text-gray-900">{parcel.receiver.name}</td>
+                  <td className="py-3 px-4 text-sm text-gray-900">{parcel.sender.city} - {parcel.sender.pincode}</td>
+                  <td className="py-3 px-4 text-sm text-gray-900">{parcel.receiver.city} - {parcel.receiver.pincode}</td>
                   <td className="py-3 px-4 text-sm text-gray-600">{parcel.route}</td>
                   <td className="py-3 px-4 text-sm text-gray-600">{parcel.packageType}</td>
                   <td className="py-3 px-4 text-sm text-gray-600">{parcel.weight} kg</td>
