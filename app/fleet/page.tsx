@@ -1,11 +1,24 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
+import dynamic from "next/dynamic";
 import { useAuth } from "@/lib/auth-context";
 import StatsCard from "@/components/ui/StatsCard";
 import StatusBadge from "@/components/ui/StatusBadge";
 import Modal from "@/components/ui/Modal";
 import { Truck, MapPin, User, Gauge, Box, X, Navigation, Activity } from "lucide-react";
+
+const FleetMap = dynamic(() => import("@/components/ui/FleetMap"), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-[500px] bg-gray-50 rounded-lg border border-gray-200 flex items-center justify-center">
+      <div className="text-center">
+        <div className="animate-spin w-8 h-8 border-4 border-brand-600 border-t-transparent rounded-full mx-auto mb-3" />
+        <p className="text-sm text-gray-500">Loading map...</p>
+      </div>
+    </div>
+  ),
+});
 
 const MOCK_BUSES = [
   {
@@ -354,6 +367,10 @@ export default function FleetPage() {
 
   const filteredBuses = filterStatus ? allBuses.filter((b) => b.status === filterStatus) : allBuses;
 
+  const handleBusClick = useCallback((bus: (typeof allBuses)[0]) => {
+    setSelectedBus(bus);
+  }, []);
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -403,66 +420,11 @@ export default function FleetPage() {
       {/* Live Map Section */}
       <div className="bg-white rounded-xl border border-gray-200 p-6">
         <h3 className="text-base font-semibold text-gray-900 mb-4">Live Fleet Map</h3>
-        <div className="relative w-full h-96 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-lg border border-blue-100 overflow-hidden">
-          {/* Simulated map */}
-          <svg viewBox="0 0 1000 600" className="w-full h-full" style={{ background: "linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)" }}>
-            {/* India outline (simplified) */}
-            <path
-              d="M 350 200 L 450 150 L 500 160 L 480 250 L 520 280 L 510 320 L 480 350 L 420 360 L 380 340 L 350 300 Z"
-              fill="none"
-              stroke="#cbd5e1"
-              strokeWidth="2"
-            />
-
-            {/* Bus markers */}
-            {allBuses.map((bus) => {
-              const svgLat = 550 - bus.latitude * 8;
-              const svgLng = 200 + bus.longitude * 3;
-              const isActive = bus.status === "active";
-
-              return (
-                <g key={bus.id} onClick={() => setSelectedBus(bus)} style={{ cursor: "pointer" }}>
-                  {/* Bus dot */}
-                  <circle
-                    cx={svgLng}
-                    cy={svgLat}
-                    r="8"
-                    fill={isActive ? "#ef4444" : bus.status === "maintenance" ? "#f97316" : "#6b7280"}
-                    stroke="#fff"
-                    strokeWidth="2"
-                    className="hover:r-10 transition-all"
-                  />
-                  {/* Bus icon */}
-                  <text x={svgLng} y={svgLat + 1} textAnchor="middle" fontSize="10" fill="#fff" fontWeight="bold">
-                    B
-                  </text>
-                </g>
-              );
-            })}
-          </svg>
-
-          {/* Legend */}
-          <div className="absolute bottom-4 left-4 bg-white px-3 py-2 rounded-lg border border-gray-200 text-xs space-y-1">
-            <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full bg-red-500" />
-              <span className="text-gray-700">Active</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full bg-gray-500" />
-              <span className="text-gray-700">Idle</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full bg-orange-500" />
-              <span className="text-gray-700">Maintenance</span>
-            </div>
-          </div>
-
-          {/* Bus count */}
-          <div className="absolute top-4 right-4 bg-white px-4 py-2 rounded-lg border border-gray-200">
-            <p className="text-sm font-semibold text-gray-900">{allBuses.length} Buses Tracked</p>
-            <p className="text-xs text-gray-500">Live tracking active</p>
-          </div>
-        </div>
+        <FleetMap
+          buses={filteredBuses}
+          onBusClick={handleBusClick}
+          selectedBusId={selectedBus?.id}
+        />
       </div>
 
       {/* Status Filter */}
