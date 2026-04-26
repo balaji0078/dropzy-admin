@@ -1,12 +1,14 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useAuth } from "@/lib/auth-context";
 import StatusBadge from "@/components/ui/StatusBadge";
 import Modal from "@/components/ui/Modal";
+import SearchableDropdown from "@/components/ui/SearchableDropdown";
 import { formatDate } from "@/lib/utils";
-import { Search, Filter, X, MapPin, Phone, Mail, Package, Scale, Clock } from "lucide-react";
-import { INDIA_PINCODES, getCityCode } from "@/lib/india-pincodes";
+import { Search, Filter, X, MapPin, Phone, Mail, Package, Scale, Clock, Plus, ChevronDown } from "lucide-react";
+import { INDIA_PINCODES, INDIA_STATES, getCityCode, searchPincodes } from "@/lib/india-pincodes";
+import type { IndianLocation } from "@/lib/india-pincodes";
 
 const PARCEL_STATUSES = [
   { id: "all", label: "All" },
@@ -479,11 +481,73 @@ function ParcelDetailModal({ parcel, onClose }: ParcelDetailModalProps) {
   );
 }
 
+// Build dropdown options from pincodes
+const stateOptions = INDIA_STATES.map((s) => ({ label: s, value: s }));
+
+const pincodeOptions = INDIA_PINCODES.map((loc) => ({
+  label: `${loc.city} - ${loc.pincode}`,
+  value: `${loc.city}|${loc.pincode}`,
+  sublabel: `${loc.district}, ${loc.state}`,
+}));
+
+const getDistrictOptions = (state: string) => {
+  if (!state) return [];
+  const districts = Array.from(
+    new Set(INDIA_PINCODES.filter((l) => l.state === state).map((l) => l.district))
+  ).sort();
+  return districts.map((d) => ({ label: d, value: d }));
+};
+
+const getPincodeOptionsForFilters = (state: string, district: string) => {
+  let locs = INDIA_PINCODES;
+  if (state) locs = locs.filter((l) => l.state === state);
+  if (district) locs = locs.filter((l) => l.district === district);
+  return locs.map((l) => ({
+    label: `${l.city} - ${l.pincode}`,
+    value: l.pincode,
+    sublabel: `${l.district}, ${l.state}`,
+  }));
+};
+
 export default function ParcelsPage() {
   const { token } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [selectedParcel, setSelectedParcel] = useState<(typeof allParcels)[0] | null>(null);
+
+  // Filter dropdowns state
+  const [filterState, setFilterState] = useState("");
+  const [filterDistrict, setFilterDistrict] = useState("");
+  const [filterPincode, setFilterPincode] = useState("");
+  const [showFilters, setShowFilters] = useState(false);
+
+  // New Parcel modal state
+  const [showNewParcel, setShowNewParcel] = useState(false);
+  const [newParcelPickup, setNewParcelPickup] = useState("");
+  const [newParcelDestination, setNewParcelDestination] = useState("");
+
+  // Reset district when state changes
+  const handleStateChange = useCallback((val: string) => {
+    setFilterState(val);
+    setFilterDistrict("");
+    setFilterPincode("");
+  }, []);
+
+  const handleDistrictChange = useCallback((val: string) => {
+    setFilterDistrict(val);
+    setFilterPincode("");
+  }, []);
+
+  const districtOptions = useMemo(() => getDistrictOptions(filterState), [filterState]);
+  const filterPincodeOptions = useMemo(() => getPincodeOptionsForFilters(filterState, filterDistrict), [filterState, filterDistrict]);
+
+  const activeFilterCount = [filterState, filterDistrict, filterPincode].filter(Boolean).length;
+
+  const clearAllFilters = () => {
+    setFilterState("");
+    setFilterDistrict("");
+    setFilterPincode("");
+  };
 
   const filteredParcels = useMemo(() => {
     return allParcels.filter((parcel) => {
@@ -497,9 +561,25 @@ export default function ParcelsPage() {
         parcel.receiver.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
         parcel.sender.pincode.toLowerCase().includes(searchQuery.toLowerCase()) ||
         parcel.receiver.pincode.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchesStatus && matchesSearch;
+
+      // Location filters - match on either sender or receiver
+      const matchesState = !filterState || (() => {
+        const senderLoc = INDIA_PINCODES.find((l) => l.pincode === parcel.sender.pincode);
+        const receiverLoc = INDIA_PINCODES.find((l) => l.pincode === parcel.receiver.pincode);
+        return senderLoc?.state === filterState || receiverLoc?.state === filterState;
+      })();
+
+      const matchesDistrict = !filterDistrict || (() => {
+        return parcel.sender.district === filterDistrict || parcel.receiver.district === filterDistrict;
+      })();
+
+      const matchesPincode = !filterPincode ||
+        parcel.sender.pincode === filterPincode ||
+        parcel.receiver.pincode === filterPincode;
+
+      return matchesStatus && matchesSearch && matchesState && matchesDistrict && matchesPincode;
     });
-  }, [searchQuery, selectedStatus]);
+  }, [searchQuery, selectedStatus, filterState, filterDistrict, filterPincode]);
 
   return (
     <div className="space-y-6">
@@ -509,6 +589,13 @@ export default function ParcelsPage() {
           <h1 className="text-2xl font-bold text-gray-900">Parcel Management</h1>
           <p className="text-sm text-gray-500 mt-1">Manage parcel lifecycle and track deliveries</p>
         </div>
+        <button
+          onClick={() => setShowNewParcel(true)}
+          className="flex items-center gap-2 px-4 py-2 bg-brand-600 text-white rounded-lg hover:bg-brand-700 font-medium text-sm transition-colors"
+        >
+          <Plus className="w-4 h-4" />
+          New Parcel
+        </button>
       </div>
 
       {/* Search and Filter Bar */}
@@ -524,7 +611,60 @@ export default function ParcelsPage() {
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
             />
           </div>
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium border transition-colors ${
+              showFilters || activeFilterCount > 0
+                ? "border-brand-300 bg-brand-50 text-brand-700"
+                : "border-gray-300 text-gray-700 hover:bg-gray-50"
+            }`}
+          >
+            <Filter className="w-4 h-4" />
+            Location Filters
+            {activeFilterCount > 0 && (
+              <span className="bg-brand-600 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+                {activeFilterCount}
+              </span>
+            )}
+          </button>
         </div>
+
+        {/* Location Filter Dropdowns */}
+        {showFilters && (
+          <div className="mt-4 pt-4 border-t border-gray-100">
+            <div className="flex items-center justify-between mb-3">
+              <h4 className="text-sm font-medium text-gray-700">Filter by Location</h4>
+              {activeFilterCount > 0 && (
+                <button
+                  onClick={clearAllFilters}
+                  className="text-xs text-brand-600 hover:text-brand-700 font-medium"
+                >
+                  Clear all filters
+                </button>
+              )}
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <SearchableDropdown
+                options={stateOptions}
+                value={filterState}
+                onChange={handleStateChange}
+                placeholder="Filter by State..."
+              />
+              <SearchableDropdown
+                options={districtOptions}
+                value={filterDistrict}
+                onChange={handleDistrictChange}
+                placeholder={filterState ? "Filter by District..." : "Select state first..."}
+              />
+              <SearchableDropdown
+                options={filterPincodeOptions}
+                value={filterPincode}
+                onChange={setFilterPincode}
+                placeholder="Filter by Pincode..."
+              />
+            </div>
+          </div>
+        )}
 
         {/* Status Tabs */}
         <div className="flex flex-wrap gap-2 mt-4">
@@ -546,6 +686,7 @@ export default function ParcelsPage() {
         {/* Results count */}
         <div className="mt-4 text-sm text-gray-600">
           Showing {filteredParcels.length} parcels {selectedStatus !== "all" && `with status "${selectedStatus}"`}
+          {activeFilterCount > 0 && " (location filters active)"}
         </div>
       </div>
 
@@ -599,6 +740,173 @@ export default function ParcelsPage() {
 
       {/* Parcel Detail Modal */}
       <ParcelDetailModal parcel={selectedParcel} onClose={() => setSelectedParcel(null)} />
+
+      {/* New Parcel Modal */}
+      <Modal open={showNewParcel} onClose={() => setShowNewParcel(false)} title="Book New Parcel">
+        <div className="max-w-2xl w-full max-h-[85vh] overflow-y-auto">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-bold text-gray-900">Book New Parcel</h2>
+            <button onClick={() => setShowNewParcel(false)} className="p-1 hover:bg-gray-100 rounded">
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          <div className="space-y-6">
+            {/* Pickup Location */}
+            <div className="bg-green-50 border border-green-100 rounded-lg p-4">
+              <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                <MapPin className="w-4 h-4 text-green-600" />
+                Pickup Location
+              </h3>
+              <SearchableDropdown
+                options={pincodeOptions}
+                value={newParcelPickup}
+                onChange={setNewParcelPickup}
+                placeholder="Search city or pincode..."
+                label="City & Pincode"
+              />
+              {newParcelPickup && (() => {
+                const [city, pin] = newParcelPickup.split("|");
+                const loc = INDIA_PINCODES.find((l) => l.pincode === pin && l.city === city);
+                return loc ? (
+                  <div className="mt-2 text-xs text-gray-500 bg-white rounded p-2">
+                    {loc.city}, {loc.district}, {loc.state} — {loc.pincode}
+                  </div>
+                ) : null;
+              })()}
+              <div className="grid grid-cols-2 gap-3 mt-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Sender Name</label>
+                  <input type="text" placeholder="Full name" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                  <input type="text" placeholder="+91-XXXXXXXXXX" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
+                </div>
+              </div>
+              <div className="mt-3">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                <input type="text" placeholder="Full address" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
+              </div>
+            </div>
+
+            {/* Destination */}
+            <div className="bg-blue-50 border border-blue-100 rounded-lg p-4">
+              <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                <MapPin className="w-4 h-4 text-blue-600" />
+                Destination
+              </h3>
+              <SearchableDropdown
+                options={pincodeOptions}
+                value={newParcelDestination}
+                onChange={setNewParcelDestination}
+                placeholder="Search city or pincode..."
+                label="City & Pincode"
+              />
+              {newParcelDestination && (() => {
+                const [city, pin] = newParcelDestination.split("|");
+                const loc = INDIA_PINCODES.find((l) => l.pincode === pin && l.city === city);
+                return loc ? (
+                  <div className="mt-2 text-xs text-gray-500 bg-white rounded p-2">
+                    {loc.city}, {loc.district}, {loc.state} — {loc.pincode}
+                  </div>
+                ) : null;
+              })()}
+              <div className="grid grid-cols-2 gap-3 mt-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Receiver Name</label>
+                  <input type="text" placeholder="Full name" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                  <input type="text" placeholder="+91-XXXXXXXXXX" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
+                </div>
+              </div>
+              <div className="mt-3">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                <input type="text" placeholder="Full address" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
+              </div>
+            </div>
+
+            {/* Package Details */}
+            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+              <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                <Package className="w-4 h-4" />
+                Package Details
+              </h3>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Package Type</label>
+                  <select className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                    <option value="">Select type...</option>
+                    <option value="Electronics">Electronics</option>
+                    <option value="Documents">Documents</option>
+                    <option value="Clothing">Clothing</option>
+                    <option value="Furniture">Furniture</option>
+                    <option value="Books">Books</option>
+                    <option value="Cosmetics">Cosmetics</option>
+                    <option value="Toys">Toys</option>
+                    <option value="Food">Food</option>
+                    <option value="Gifts">Gifts</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Weight (kg)</label>
+                  <input type="number" step="0.1" placeholder="0.0" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Dimensions (cm)</label>
+                  <input type="text" placeholder="L x W x H" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Declared Value (₹)</label>
+                  <input type="number" placeholder="0" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
+                </div>
+              </div>
+            </div>
+
+            {/* Route Preview */}
+            {newParcelPickup && newParcelDestination && (() => {
+              const [pCity, pPin] = newParcelPickup.split("|");
+              const [dCity, dPin] = newParcelDestination.split("|");
+              return (
+                <div className="bg-purple-50 border border-purple-100 rounded-lg p-4">
+                  <h3 className="font-semibold text-gray-900 mb-2">Route Preview</h3>
+                  <div className="flex items-center gap-3 text-sm">
+                    <span className="bg-green-100 text-green-800 px-2 py-1 rounded font-medium">{pCity} ({pPin})</span>
+                    <span className="text-gray-400">→</span>
+                    <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded font-medium">{dCity} ({dPin})</span>
+                  </div>
+                  <p className="text-xs text-gray-500 mt-2">
+                    Route code: {getCityCode(pCity)}-{pPin} → {getCityCode(dCity)}-{dPin}
+                  </p>
+                </div>
+              );
+            })()}
+          </div>
+
+          <div className="flex gap-3 mt-6">
+            <button
+              onClick={() => setShowNewParcel(false)}
+              className="flex-1 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium text-sm"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={() => {
+                alert("Parcel booked successfully! (Demo mode)");
+                setShowNewParcel(false);
+                setNewParcelPickup("");
+                setNewParcelDestination("");
+              }}
+              className="flex-1 py-2 bg-brand-600 text-white rounded-lg hover:bg-brand-700 font-medium text-sm"
+            >
+              Book Parcel
+            </button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }
