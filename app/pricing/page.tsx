@@ -8,6 +8,7 @@ import FilterTabs from "@/components/ui/FilterTabs";
 import Modal from "@/components/ui/Modal";
 import { formatCurrency } from "@/lib/utils";
 import { Plus, Calculator, Edit, Truck } from "lucide-react";
+import { useToast } from "@/components/ui/Toast";
 
 const vehicleTabs = [
   { label: "All", value: "all" },
@@ -20,6 +21,7 @@ const vehicleTabs = [
 
 export default function PricingPage() {
   const { token } = useAuth();
+  const toast = useToast();
   const [rules, setRules] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [vehicleFilter, setVehicleFilter] = useState("all");
@@ -60,7 +62,7 @@ export default function PricingPage() {
       const res = await pricingAPI.getEstimate(estimateForm);
       setEstimateResult(res.data);
     } catch (err) {
-      alert("Failed to get estimate");
+      toast("Failed to get estimate", "error");
     }
   };
 
@@ -73,7 +75,7 @@ export default function PricingPage() {
       const res = await pricingAPI.getRules(token);
       setRules(res.data?.rules || res.data || []);
     } catch (err) {
-      alert("Failed to create rule");
+      toast("Failed to create rule", "error");
     }
   };
 

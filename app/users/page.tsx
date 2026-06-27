@@ -23,6 +23,7 @@ import {
   Shield,
 } from "lucide-react";
 import { formatDate, formatDateTime } from "@/lib/utils";
+import { useToast } from "@/components/ui/Toast";
 
 // Mock user data
 const mockUsers = [
@@ -67,6 +68,7 @@ const roleColors: Record<string, string> = {
 
 export default function UsersPage() {
   const { user, token } = useAuth();
+  const toast = useToast();
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
   const [selectedUser, setSelectedUser] = useState<any>(null);
@@ -107,7 +109,7 @@ export default function UsersPage() {
   const handleBulkAction = (action: string) => {
     if (action === "suspend") {
       // Mock action
-      alert(`Suspended ${selectedUsers.length} user(s)`);
+      toast(`Suspended ${selectedUsers.length} user(s)`);
       setSelectedUsers([]);
     } else if (action === "export") {
       // Mock CSV export

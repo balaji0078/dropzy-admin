@@ -9,6 +9,7 @@ import FilterTabs from "@/components/ui/FilterTabs";
 import Modal from "@/components/ui/Modal";
 import { formatCurrency, formatDateTime } from "@/lib/utils";
 import { Search, Download, Eye, XCircle, UserPlus } from "lucide-react";
+import { useToast } from "@/components/ui/Toast";
 
 const statusTabs = [
   { label: "All", value: "all" },
@@ -21,6 +22,7 @@ const statusTabs = [
 
 export default function OrdersPage() {
   const { token } = useAuth();
+  const toast = useToast();
   const [orders, setOrders] = useState<any[]>([]);
   const [filteredOrders, setFilteredOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -73,7 +75,7 @@ export default function OrdersPage() {
       fetchOrders();
       setSelectedOrder(null);
     } catch (err) {
-      alert("Failed to update order status");
+      toast("Failed to update order status", "error");
     }
   };
 
@@ -84,7 +86,7 @@ export default function OrdersPage() {
       fetchOrders();
       setSelectedOrder(null);
     } catch (err) {
-      alert("Failed to cancel order");
+      toast("Failed to cancel order", "error");
     }
   };
 

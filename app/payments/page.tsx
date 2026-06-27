@@ -10,6 +10,7 @@ import StatsCard from "@/components/ui/StatsCard";
 import Modal from "@/components/ui/Modal";
 import { formatCurrency, formatDateTime } from "@/lib/utils";
 import { Search, CreditCard, TrendingUp, DollarSign, RefreshCcw, RotateCcw } from "lucide-react";
+import { useToast } from "@/components/ui/Toast";
 
 // redBus color palette
 const RB_COLORS = {
@@ -68,6 +69,7 @@ const samplePayments = [
 
 export default function PaymentsPage() {
   const { token } = useAuth();
+  const toast = useToast();
   const [statusFilter, setStatusFilter] = useState("all");
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<any>(null);
@@ -94,9 +96,9 @@ export default function PaymentsPage() {
       await paymentsAPI.refund(token, selected.id, parseFloat(refundAmount), refundReason);
       setRefundModal(false);
       setSelected(null);
-      alert("Refund issued successfully");
+      toast("Refund issued successfully");
     } catch (err) {
-      alert("Failed to process refund");
+      toast("Failed to process refund", "error");
     }
   };
 

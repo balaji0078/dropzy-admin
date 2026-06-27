@@ -9,6 +9,7 @@ import { formatDate } from "@/lib/utils";
 import { Search, Filter, X, MapPin, Phone, Mail, Package, Scale, Clock, Plus, ChevronDown } from "lucide-react";
 import { INDIA_PINCODES, INDIA_STATES, getCityCode, searchPincodes } from "@/lib/india-pincodes";
 import type { IndianLocation } from "@/lib/india-pincodes";
+import { useToast } from "@/components/ui/Toast";
 
 // redBus red theme
 const REDBUS_RED = "#D82C2C";
@@ -517,6 +518,7 @@ const getPincodeOptionsForFilters = (state: string, district: string) => {
 
 export default function ParcelsPage() {
   const { token } = useAuth();
+  const toast = useToast();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [selectedParcel, setSelectedParcel] = useState<(typeof allParcels)[0] | null>(null);
@@ -911,7 +913,7 @@ export default function ParcelsPage() {
             </button>
             <button
               onClick={() => {
-                alert("Parcel booked successfully! (Demo mode)");
+                toast("Parcel booked successfully! (Demo mode)");
                 setShowNewParcel(false);
                 setNewParcelPickup("");
                 setNewParcelDestination("");
