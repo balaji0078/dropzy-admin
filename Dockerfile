@@ -2,13 +2,13 @@
 FROM node:18-alpine AS deps
 WORKDIR /app
 COPY package.json package-lock.json* ./
-RUN npm ci --only=production 2>/dev/null || npm install --only=production
+RUN npm ci --only=production --legacy-peer-deps 2>/dev/null || npm install --only=production --legacy-peer-deps
 
 # ─── Stage 2: Build ───
 FROM node:18-alpine AS builder
 WORKDIR /app
 COPY package.json package-lock.json* ./
-RUN npm ci 2>/dev/null || npm install
+RUN npm ci --legacy-peer-deps 2>/dev/null || npm install --legacy-peer-deps
 COPY . .
 
 # Production API URL baked into the build
