@@ -19,6 +19,12 @@ import {
   UserCheck,
   MessageSquare,
   Settings,
+  Building2,
+  Boxes,
+  Layers,
+  Wallet,
+  ShieldCheck,
+  LifeBuoy,
 } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/lib/auth-context";
@@ -47,6 +53,17 @@ const navSections = [
       { href: "/payments", label: "Payments", icon: CreditCard },
       { href: "/pricing", label: "Pricing", icon: Tags },
       { href: "/cost-estimator", label: "Cost Estimator", icon: Calculator },
+    ],
+  },
+  {
+    title: "Marketplace",
+    items: [
+      { href: "/operators", label: "Operators", icon: Building2 },
+      { href: "/shipments", label: "Shipments", icon: Boxes },
+      { href: "/capacity", label: "Capacity Marketplace", icon: Layers },
+      { href: "/settlements", label: "Settlements", icon: Wallet },
+      { href: "/support", label: "Support", icon: LifeBuoy },
+      { href: "/users-roles", label: "Users & Roles", icon: ShieldCheck },
     ],
   },
   {

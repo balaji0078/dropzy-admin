@@ -28,6 +28,24 @@ const statusStyles: Record<string, { bg: string; text: string; dot: string }> = 
   maintenance: { bg: "bg-orange-50", text: "text-orange-700", dot: "bg-orange-500" },
   idle: { bg: "bg-gray-100", text: "text-gray-600", dot: "bg-gray-400" },
   active: { bg: "bg-green-50", text: "text-green-700", dot: "bg-green-500" },
+  // marketplace (PRD) statuses
+  approved: { bg: "bg-green-50", text: "text-green-700", dot: "bg-green-500" },
+  paid: { bg: "bg-green-50", text: "text-green-700", dot: "bg-green-500" },
+  resolved: { bg: "bg-green-50", text: "text-green-700", dot: "bg-green-500" },
+  kyc_review: { bg: "bg-amber-50", text: "text-amber-700", dot: "bg-amber-500" },
+  reserved: { bg: "bg-amber-50", text: "text-amber-700", dot: "bg-amber-500" },
+  investigating: { bg: "bg-amber-50", text: "text-amber-700", dot: "bg-amber-500" },
+  warehouse_hold: { bg: "bg-orange-50", text: "text-orange-700", dot: "bg-orange-500" },
+  booking_confirmed: { bg: "bg-gray-100", text: "text-gray-600", dot: "bg-gray-400" },
+  generated: { bg: "bg-blue-50", text: "text-blue-700", dot: "bg-blue-500" },
+  allocated: { bg: "bg-blue-50", text: "text-blue-700", dot: "bg-blue-500" },
+  assigned: { bg: "bg-indigo-50", text: "text-indigo-700", dot: "bg-indigo-500" },
+  open: { bg: "bg-blue-50", text: "text-blue-700", dot: "bg-blue-500" },
+  blocked: { bg: "bg-red-50", text: "text-red-600", dot: "bg-red-500" },
+  suspended: { bg: "bg-red-50", text: "text-red-600", dot: "bg-red-500" },
+  high: { bg: "bg-red-50", text: "text-red-600", dot: "bg-red-500" },
+  medium: { bg: "bg-amber-50", text: "text-amber-700", dot: "bg-amber-500" },
+  low: { bg: "bg-gray-100", text: "text-gray-600", dot: "bg-gray-400" },
 };
 
 export default function StatusBadge({ status, className }: StatusBadgeProps) {
