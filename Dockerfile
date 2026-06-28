@@ -14,6 +14,9 @@ COPY . .
 # Production API URL baked into the build
 ARG NEXT_PUBLIC_API_URL=http://18.60.129.43:8080/api/v1
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+# Make the Marketplace pages hit the live backend instead of in-memory mock
+ARG NEXT_PUBLIC_MARKETPLACE_LIVE=true
+ENV NEXT_PUBLIC_MARKETPLACE_LIVE=$NEXT_PUBLIC_MARKETPLACE_LIVE
 ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN npm run build
