@@ -116,69 +116,11 @@ jobs:
               -e NEXT_PUBLIC_API_URL="http://${{ secrets.EC2_PUBLIC_IP }}:8080/api/v1" \
               ${{ steps.ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:latest
 
-            # ─── Setup Nginx (first time only) ───
-            if ! docker ps -q -f name=dropzy-nginx | grep -q .; then
-              echo "Setting up Nginx reverse proxy..."
-
-              mkdir -p /home/ubuntu/nginx
-              cat > /home/ubuntu/nginx/default.conf << 'NGINXEOF'
-            upstream nextjs {
-                server 127.0.0.1:3000;
-            }
-
-            upstream gobackend {
-                server 127.0.0.1:8080;
-            }
-
-            server {
-                listen 80;
-                server_name _;
-
-                location /api/ {
-                    proxy_pass http://gobackend;
-                    proxy_http_version 1.1;
-                    proxy_set_header Host $host;
-                    proxy_set_header X-Real-IP $remote_addr;
-                    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-                    proxy_set_header X-Forwarded-Proto $scheme;
-                    proxy_set_header Upgrade $http_upgrade;
-                    proxy_set_header Connection "upgrade";
-                    proxy_connect_timeout 30s;
-                    proxy_read_timeout 60s;
-                }
-
-                location / {
-                    proxy_pass http://nextjs;
-                    proxy_http_version 1.1;
-                    proxy_set_header Host $host;
-                    proxy_set_header X-Real-IP $remote_addr;
-                    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-                    proxy_set_header Upgrade $http_upgrade;
-                    proxy_set_header Connection "upgrade";
-                }
-
-                location /_next/static/ {
-                    proxy_pass http://nextjs;
-                    add_header Cache-Control "public, max-age=31536000, immutable";
-                }
-
-                gzip on;
-                gzip_types text/plain text/css application/json application/javascript text/xml text/javascript image/svg+xml;
-                gzip_min_length 1000;
-                client_max_body_size 20M;
-            }
-            NGINXEOF
-
-              docker run -d \
-                --name dropzy-nginx \
-                --restart unless-stopped \
-                --network host \
-                -v /home/ubuntu/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro \
-                nginx:alpine
-            else
-              echo "Nginx already running, reloading config..."
-              docker exec dropzy-nginx nginx -s reload 2>/dev/null || true
-            fi
+            # ─── Reverse proxy ───
+            # Nginx runs as a HOST service on this box (systemd), proxying
+            # :80 -> :3000 (admin) and :80/api -> :8080 (backend).
+            # The deploy does NOT manage nginx in a container to avoid a
+            # port-80 conflict with the host nginx.
 
             # Wait for startup
             echo "Waiting for admin dashboard to start..."
