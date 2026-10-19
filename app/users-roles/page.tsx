@@ -1,5 +1,8 @@
 "use client";
 
+import { CORE_API } from "@/lib/config";
+import CoreUsersRoles from "@/components/core/pages/UsersRoles";
+
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { useToast } from "@/components/ui/Toast";
@@ -30,7 +33,7 @@ const matrix = [
 ];
 const emptyForm = { name: "", email: "", role: "support_agent" };
 
-export default function UsersRolesPage() {
+function LegacyUsersRolesPage() {
   const { token } = useAuth();
   const toast = useToast();
   const [rows, setRows] = useState<any[]>([]);
@@ -110,4 +113,9 @@ export default function UsersRolesPage() {
       </Modal>
     </div>
   );
+}
+
+// NEXT_PUBLIC_CORE_API=true → P14 core users & roles (/admin/users); otherwise the marketplace mock page (unchanged).
+export default function UsersRolesPage() {
+  return CORE_API ? <CoreUsersRoles /> : <LegacyUsersRolesPage />;
 }

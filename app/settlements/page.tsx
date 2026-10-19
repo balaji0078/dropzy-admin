@@ -1,5 +1,7 @@
 "use client";
 
+import { CORE_API } from "@/lib/config";
+
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { useToast } from "@/components/ui/Toast";
@@ -9,13 +11,15 @@ import StatusBadge from "@/components/ui/StatusBadge";
 import FilterTabs from "@/components/ui/FilterTabs";
 import { Download } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
+import { downloadCsv } from "@/lib/csv";
+import { Redirect } from "@/components/core/ui";
 
 const statusTabs = [
   { label: "All", value: "all" }, { label: "Generated", value: "generated" },
   { label: "Approved", value: "approved" }, { label: "Paid", value: "paid" },
 ];
 
-export default function SettlementsPage() {
+function LegacySettlementsPage() {
   const { token } = useAuth();
   const toast = useToast();
   const [rows, setRows] = useState<any[]>([]);
@@ -28,11 +32,8 @@ export default function SettlementsPage() {
   const release = async (s: any) => { await settlementsAPI.release(token || "", s.id); setRows((r) => r.map((x) => (x.id === s.id ? { ...x, status: "paid" } : x))); toast(`Payout released to ${s.operator}`); };
 
   const exportCsv = () => {
-    const header = "Operator,Period,Revenue,Commission,Gateway Fee,Payout,Status";
-    const lines = rows.map((s) => [s.operator, s.period, s.revenue, s.commission, s.gateway_fee, s.payout, s.status].join(","));
-    const blob = new Blob([[header, ...lines].join("\n")], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a"); a.href = url; a.download = "settlements.csv"; a.click(); URL.revokeObjectURL(url);
+    downloadCsv("settlements.csv", ["Operator", "Period", "Revenue", "Commission", "Gateway Fee", "Payout", "Status"],
+      rows.map((s) => [s.operator, s.period, s.revenue, s.commission, s.gateway_fee, s.payout, s.status]));
     toast("Settlements exported");
   };
 
@@ -62,4 +63,9 @@ export default function SettlementsPage() {
       <DataTable columns={columns} data={filtered} loading={loading} emptyMessage="No settlements found" />
     </div>
   );
+}
+
+// NEXT_PUBLIC_CORE_API=true → the mock list is replaced by P15 /finance/settlements (CLIENT_CONTRACTS.md §4.1).
+export default function SettlementsPage() {
+  return CORE_API ? <Redirect to="/finance/settlements" /> : <LegacySettlementsPage />;
 }
