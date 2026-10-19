@@ -1,5 +1,8 @@
 "use client";
 
+import { CORE_API } from "@/lib/config";
+import CoreShipmentsSearch from "@/components/core/pages/ShipmentsSearch";
+
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { useToast } from "@/components/ui/Toast";
@@ -17,7 +20,7 @@ const statusTabs = [
   { label: "In Transit", value: "in_transit" }, { label: "Delivered", value: "delivered" }, { label: "Warehouse Hold", value: "warehouse_hold" },
 ];
 
-export default function ShipmentsPage() {
+function LegacyShipmentsPage() {
   const { token } = useAuth();
   const toast = useToast();
   const [rows, setRows] = useState<any[]>([]);
@@ -64,4 +67,9 @@ export default function ShipmentsPage() {
       <DataTable columns={columns} data={filtered} loading={loading} emptyMessage="No shipments found" />
     </div>
   );
+}
+
+// NEXT_PUBLIC_CORE_API=true → P3 core shipment search (replaces the legacy mock list, CLIENT_CONTRACTS.md §4.1).
+export default function ShipmentsPage() {
+  return CORE_API ? <CoreShipmentsSearch /> : <LegacyShipmentsPage />;
 }

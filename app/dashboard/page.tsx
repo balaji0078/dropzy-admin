@@ -1,5 +1,8 @@
 "use client";
 
+import { CORE_API } from "@/lib/config";
+import CoreDashboard from "@/components/core/pages/Dashboard";
+
 import { useState, useMemo } from "react";
 import dynamic from "next/dynamic";
 import { useAuth } from "@/lib/auth-context";
@@ -72,7 +75,7 @@ const stats = [
   { icon: Users, label: "Happy Customers", value: "50K+", color: "#1565C0" },
 ];
 
-export default function DashboardPage() {
+function LegacyDashboardPage() {
   const { token } = useAuth();
   const [fromCity, setFromCity] = useState("");
   const [toCity, setToCity] = useState("");
@@ -516,4 +519,9 @@ export default function DashboardPage() {
       </div>
     </div>
   );
+}
+
+// NEXT_PUBLIC_CORE_API=true → P2 operations dashboard; otherwise the legacy dashboard (unchanged).
+export default function DashboardPage() {
+  return CORE_API ? <CoreDashboard /> : <LegacyDashboardPage />;
 }
