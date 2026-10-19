@@ -1,5 +1,8 @@
 "use client";
 
+import { CORE_API } from "@/lib/config";
+import { Redirect } from "@/components/core/ui";
+
 import { useEffect, useState, useRef } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { ratesAPI } from "@/lib/api";
@@ -312,7 +315,7 @@ function CountryDropdown({
 }
 
 // ─── Main Component ───
-export default function CostEstimatorPage() {
+function LegacyCostEstimatorPage() {
   const { token, user } = useAuth();
   const [mode, setMode] = useState<Mode>("international");
   const [form, setForm] = useState<FormData>({
@@ -802,4 +805,10 @@ export default function CostEstimatorPage() {
       )}
     </div>
   );
+}
+
+// Legacy-authenticated page: core tokens are rejected by the legacy API, so with NEXT_PUBLIC_CORE_API=true the route
+// redirects to /dashboard (CLIENT_CONTRACTS.md §4.0). With the flag off the page is unchanged.
+export default function CostEstimatorPage() {
+  return CORE_API ? <Redirect to="/dashboard" /> : <LegacyCostEstimatorPage />;
 }

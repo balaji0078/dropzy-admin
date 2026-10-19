@@ -1,5 +1,8 @@
 "use client";
 
+import { CORE_API } from "@/lib/config";
+import { Redirect } from "@/components/core/ui";
+
 import { useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import StatsCard from "@/components/ui/StatsCard";
@@ -66,7 +69,7 @@ const roleColors: Record<string, string> = {
   admin: "bg-red-100 text-red-800",
 };
 
-export default function UsersPage() {
+function LegacyUsersPage() {
   const { user, token } = useAuth();
   const toast = useToast();
   const [filter, setFilter] = useState("all");
@@ -527,4 +530,10 @@ export default function UsersPage() {
       </Modal>
     </div>
   );
+}
+
+// Legacy-authenticated page: core tokens are rejected by the legacy API, so with NEXT_PUBLIC_CORE_API=true the route
+// redirects to /dashboard (CLIENT_CONTRACTS.md §4.0). With the flag off the page is unchanged.
+export default function UsersPage() {
+  return CORE_API ? <Redirect to="/dashboard" /> : <LegacyUsersPage />;
 }

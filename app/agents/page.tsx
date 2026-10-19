@@ -1,5 +1,8 @@
 "use client";
 
+import { CORE_API } from "@/lib/config";
+import { Redirect } from "@/components/core/ui";
+
 import { useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import StatsCard from "@/components/ui/StatsCard";
@@ -43,7 +46,7 @@ const mockAgents = [
   { id: 20, name: "Vishal Kumar", phone: "+91-79876-54321", email: "vishal.kumar@dropzy.in", hub: "Bangalore Koramangala", status: "active", parcels_today: 12, rating: 4.5, last_active: "2026-04-26T14:37:00", rfid_status: true, parcels_week: 59, parcels_month: 189, avg_handling_time: 12, recent_activity: [{ time: "2026-04-26T14:37:00", action: "Scanned parcel", parcel_id: "DZ-987603", status: "in_transit" }, { time: "2026-04-26T14:07:00", action: "Delivered parcel", parcel_id: "DZ-987602", status: "delivered" }, { time: "2026-04-26T13:28:00", action: "Received parcel", parcel_id: "DZ-987601", status: "pending" }] },
 ];
 
-export default function AgentsPage() {
+function LegacyAgentsPage() {
   const { user, token } = useAuth();
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
@@ -334,4 +337,10 @@ export default function AgentsPage() {
       </Modal>
     </div>
   );
+}
+
+// Legacy-authenticated page: core tokens are rejected by the legacy API, so with NEXT_PUBLIC_CORE_API=true the route
+// redirects to /dashboard (CLIENT_CONTRACTS.md §4.0). With the flag off the page is unchanged.
+export default function AgentsPage() {
+  return CORE_API ? <Redirect to="/dashboard" /> : <LegacyAgentsPage />;
 }

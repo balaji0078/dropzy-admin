@@ -1,5 +1,8 @@
 "use client";
 
+import { CORE_API } from "@/lib/config";
+import { Redirect } from "@/components/core/ui";
+
 import { useState, useCallback, useMemo } from "react";
 import dynamic from "next/dynamic";
 import { useAuth } from "@/lib/auth-context";
@@ -204,7 +207,7 @@ function formatTripDuration(start: string, end: string): string {
   return `${Math.floor(diff / 3600000)}h ${Math.floor((diff % 3600000) / 60000)}m`;
 }
 
-export default function FleetPage() {
+function LegacyFleetPage() {
   const { token } = useAuth();
   const [selectedBus, setSelectedBus] = useState<(typeof allBuses)[0] | null>(null);
   const [filterStatus, setFilterStatus] = useState<string | null>(null);
@@ -413,4 +416,10 @@ export default function FleetPage() {
       </div>
     </div>
   );
+}
+
+// Legacy-authenticated page: core tokens are rejected by the legacy API, so with NEXT_PUBLIC_CORE_API=true the route
+// redirects to /dashboard (CLIENT_CONTRACTS.md §4.0). With the flag off the page is unchanged.
+export default function FleetPage() {
+  return CORE_API ? <Redirect to="/dashboard" /> : <LegacyFleetPage />;
 }

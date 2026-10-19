@@ -2,11 +2,17 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { CORE_API } from "@/lib/config";
 
 export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
+    // Core mode: tokens are never in storage; /login restores a cookie session and forwards to the role's landing page.
+    if (CORE_API) {
+      router.push("/login");
+      return;
+    }
     const token = localStorage.getItem("accessToken");
     if (token) {
       router.push("/dashboard");

@@ -1,0 +1,230 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { ImageOff, FileText, Timer } from "lucide-react";
+import { coreEvidence } from "@/lib/core-api";
+import { API_ORIGIN } from "@/lib/config";
+import type { Evidence, SurchargeBreakdown, SurchargeQuote } from "@/lib/core-types";
+import { formatBps, formatCountdown, formatGrams, formatIST, formatKg, formatPaise, formatSignedKg } from "@/lib/format";
+import { useNow } from "@/lib/use-core";
+import { cn } from "@/lib/utils";
+import qrcode from "qrcode-generator";
+
+// ───────────────────────────── §6.1 surcharge breakdown ─────────────────────────────
+/** Renders CLIENT_CONTRACTS.md §6.1 from the server `breakdown` (display strings and *Paise values only). */
+export function SurchargeBreakdownView({ breakdown, quote, title = "Extra weight charge" }: { breakdown: SurchargeBreakdown | undefined | null; quote?: Pick<SurchargeQuote, "version" | "status" | "taxRateBps"> | null; title?: string }) {
+  if (!breakdown) return <p className="text-[13px] text-gray-500">No breakdown available.</p>;
+  const b = breakdown;
+  const d = b.display || {};
+  const lines = b.lines || [];
+  const sur = lines.filter((l) => l.code === "SURCHARGE");
+  const fee = lines.filter((l) => l.code === "FEE");
+  const tax = lines.filter((l) => l.code === "TAX");
+  const taxLabel = quote?.taxRateBps !== undefined && quote?.taxRateBps !== null ? `GST ${formatBps(quote.taxRateBps)}` : undefined;
+  const rows: [string, string][] = [
+    ["Declared weight", d.declared || formatKg(b.declaredWeightGrams)],
+    ["Measured weight", d.actual || formatKg(b.actualWeightGrams)],
+    ["Difference", d.rawDifference || formatSignedKg(b.rawDifferenceGrams)],
+    ["Allowed variance", formatGrams(b.toleranceGrams)],
+    ["Billable extra weight", `${d.billableDifference || formatKg(b.billableDifferenceGrams)} (${b.extraUnits ?? 0} × ${formatGrams(b.incrementGrams)})`],
+    ...sur.map((l): [string, string] => [`Extra weight (${b.extraUnits ?? 0} × ${formatPaise(b.ratePerIncrementPaise)})`, formatPaise(l.amountPaise)]),
+    ...fee.map((l): [string, string] => [l.label || "Surcharge handling fee", formatPaise(l.amountPaise)]),
+    ...tax.map((l): [string, string] => [taxLabel || (l.label?.split(" on ")[0] ?? "GST"), formatPaise(l.amountPaise)]),
+  ];
+  const isOpen = !quote || quote.status === "OPEN";
+  return (
+    <div className="rounded-xl border border-gray-200 p-4 text-[13px]">
+      <p className="font-bold text-gray-900 mb-2">{title}</p>
+      <table className="w-full">
+        <tbody>
+          {rows.map(([k, v], i) => (
+            <tr key={i}>
+              <th scope="row" className="text-left font-normal text-gray-600 py-0.5 pr-4">{k}</th>
+              <td className="text-right text-gray-900 tabular-nums">{v}</td>
+            </tr>
+          ))}
+          <tr className="border-t border-gray-200">
+            <th scope="row" className="text-left font-bold text-gray-900 pt-1.5">{isOpen ? "Total due" : `Total (${quote?.status?.toLowerCase()})`}</th>
+            <td className="text-right font-bold text-gray-900 pt-1.5 tabular-nums">{d.total || formatPaise(b.totalPaise)}</td>
+          </tr>
+        </tbody>
+      </table>
+      <p className="mt-2 text-[11px] text-gray-500">
+        Tariff version {b.tariffVersion ?? "—"}
+        {quote ? ` · Quote v${quote.version}` : ""}
+      </p>
+    </div>
+  );
+}
+
+// ───────────────────────────── countdown ─────────────────────────────
+/** Deadline with live countdown: "19 Oct, 03:35 PM (1 h 25 min left)" / "passed". */
+export function Deadline({ at, compact }: { at: string | null | undefined; compact?: boolean }) {
+  const now = useNow(30000);
+  if (!at) return <span className="text-gray-400">—</span>;
+  const ms = new Date(at).getTime() - now;
+  const passed = ms <= 0;
+  return (
+    <span className={cn("inline-flex flex-col", compact && "flex-row gap-1.5 items-center")}>
+      <span className="text-gray-900">{formatIST(at)}</span>
+      <span className={cn("inline-flex items-center gap-1 text-[11px] font-semibold", passed ? "text-red-600" : ms < 3600000 ? "text-amber-700" : "text-gray-500")}>
+        <Timer className="w-3 h-3" aria-hidden />
+        {passed ? `Passed ${formatCountdown(-ms)} ago` : `${formatCountdown(ms)} left`}
+      </span>
+    </span>
+  );
+}
+
+// ───────────────────────────── OTP boxes ─────────────────────────────
+/** `length` boxes (from codeLength; default 6). Paste and keyboard friendly. */
+export function OtpInput({ length = 6, value, onChange, disabled, label = "One-time code", autoFocus }: { length?: number; value: string; onChange: (v: string) => void; disabled?: boolean; label?: string; autoFocus?: boolean }) {
+  const refs = useRef<(HTMLInputElement | null)[]>([]);
+  const n = Math.min(Math.max(length || 6, 4), 8);
+  useEffect(() => {
+    if (autoFocus) refs.current[0]?.focus();
+  }, [autoFocus, n]);
+  const set = (i: number, ch: string) => {
+    const arr = value.padEnd(n, " ").slice(0, n).split("");
+    arr[i] = ch || " ";
+    onChange(arr.join("").replace(/\s+$/, "").replace(/\s/g, ""));
+  };
+  return (
+    <div role="group" aria-label={label} className="flex gap-2">
+      {Array.from({ length: n }).map((_, i) => (
+        <input
+          key={i}
+          ref={(el) => {
+            refs.current[i] = el;
+          }}
+          aria-label={`${label} digit ${i + 1} of ${n}`}
+          inputMode="numeric"
+          autoComplete={i === 0 ? "one-time-code" : "off"}
+          maxLength={1}
+          disabled={disabled}
+          value={value[i] || ""}
+          onChange={(e) => {
+            const v = e.target.value.replace(/\D/g, "");
+            if (v.length > 1) {
+              onChange(v.slice(0, n));
+              refs.current[Math.min(v.length, n) - 1]?.focus();
+              return;
+            }
+            set(i, v);
+            if (v && i < n - 1) refs.current[i + 1]?.focus();
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Backspace" && !value[i] && i > 0) refs.current[i - 1]?.focus();
+            if (e.key === "ArrowLeft" && i > 0) refs.current[i - 1]?.focus();
+            if (e.key === "ArrowRight" && i < n - 1) refs.current[i + 1]?.focus();
+          }}
+          onPaste={(e) => {
+            const v = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, n);
+            if (v) {
+              e.preventDefault();
+              onChange(v);
+              refs.current[Math.min(v.length, n) - 1]?.focus();
+            }
+          }}
+          className="w-11 h-12 text-center text-[18px] font-bold rounded-lg border border-gray-300 focus:outline-none focus:border-[#D82C2C] focus:ring-2 focus:ring-red-100 disabled:bg-gray-50"
+        />
+      ))}
+    </div>
+  );
+}
+
+// ───────────────────────────── evidence ─────────────────────────────
+export function evidenceUrl(e: Evidence | undefined | null): string | null {
+  if (!e?.downloadUrl) return null;
+  return /^https?:\/\//.test(e.downloadUrl) ? e.downloadUrl : `${API_ORIGIN}${e.downloadUrl.startsWith("/") ? "" : "/"}${e.downloadUrl}`;
+}
+
+/** Thumbnail for an evidence id: GET /evidence/{id} for a short-lived signed URL (permission checked server side). */
+export function EvidenceThumb({ id, size = 64, known }: { id: string | null | undefined; size?: number; known?: Evidence }) {
+  const [ev, setEv] = useState<Evidence | null>(known || null);
+  const [failed, setFailed] = useState(false);
+  useEffect(() => {
+    if (!id || known) return;
+    let cancelled = false;
+    coreEvidence
+      .get(id)
+      .then((e) => !cancelled && setEv(e))
+      .catch(() => !cancelled && setFailed(true));
+    return () => {
+      cancelled = true;
+    };
+  }, [id, known]);
+  if (!id) return <span className="text-gray-400">—</span>;
+  const url = evidenceUrl(ev);
+  if (failed || (ev && !url)) return <span className="inline-flex items-center gap-1 text-[11px] text-gray-400"><ImageOff className="w-3.5 h-3.5" aria-hidden />Unavailable</span>;
+  if (!ev) return <span className="inline-block rounded-lg bg-gray-100 animate-pulse" style={{ width: size, height: size }} aria-label="Loading evidence" />;
+  if (ev.contentType === "application/pdf")
+    return (
+      <a href={url!} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-[12px] text-blue-700 underline">
+        <FileText className="w-3.5 h-3.5" aria-hidden />PDF evidence
+      </a>
+    );
+  return (
+    <a href={url!} target="_blank" rel="noreferrer" title={`${ev.kind || "Evidence"} · ${formatIST(ev.createdAt)}`} className="inline-block">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={url!} alt={`${ev.kind || "Evidence"} photo`} width={size} height={size} className="rounded-lg object-cover border border-gray-200" style={{ width: size, height: size }} />
+    </a>
+  );
+}
+
+/** File input for an evidence photo (camera on mobile). */
+export function PhotoInput({ label, file, onChange, disabled }: { label: string; file: File | null; onChange: (f: File | null) => void; disabled?: boolean }) {
+  const [preview, setPreview] = useState<string | null>(null);
+  useEffect(() => {
+    if (!file) {
+      setPreview(null);
+      return;
+    }
+    const u = URL.createObjectURL(file);
+    setPreview(u);
+    return () => URL.revokeObjectURL(u);
+  }, [file]);
+  return (
+    <div className="space-y-1">
+      <label className="block text-[12px] font-semibold text-gray-600">
+        {label}
+        <input
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          capture="environment"
+          disabled={disabled}
+          onChange={(e) => {
+            const f = e.target.files?.[0] || null;
+            if (f && f.size > 5 * 1024 * 1024) {
+              e.target.value = "";
+              onChange(null);
+              alert("Photos must be 5 MB or smaller.");
+              return;
+            }
+            onChange(f);
+          }}
+          className="mt-1 block w-full text-[12px] text-gray-600 file:mr-3 file:rounded-lg file:border-0 file:bg-gray-100 file:px-3 file:py-2 file:text-[12px] file:font-semibold"
+        />
+      </label>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      {preview && <img src={preview} alt="Selected photo preview" className="h-24 rounded-lg border border-gray-200 object-cover" />}
+    </div>
+  );
+}
+
+// ───────────────────────────── QR (rendered locally; secrets never leave the browser) ─────────────────────────────
+
+export function QrCode({ value, size = 184, label }: { value: string; size?: number; label: string }) {
+  const qr = qrcode(0, "M");
+  qr.addData(value);
+  qr.make();
+  const n = qr.getModuleCount();
+  const margin = 2;
+  let d = "";
+  for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) if (qr.isDark(r, c)) d += `M${c + margin} ${r + margin}h1v1h-1z`;
+  return (
+    <svg role="img" aria-label={label} width={size} height={size} viewBox={`0 0 ${n + margin * 2} ${n + margin * 2}`} shapeRendering="crispEdges" className="bg-white">
+      <rect width="100%" height="100%" fill="#fff" />
+      <path d={d} fill="#111" />
+    </svg>
+  );
+}

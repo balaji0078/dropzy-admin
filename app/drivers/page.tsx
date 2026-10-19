@@ -1,5 +1,8 @@
 "use client";
 
+import { CORE_API } from "@/lib/config";
+import { Redirect } from "@/components/core/ui";
+
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { driversAPI } from "@/lib/api";
@@ -17,7 +20,7 @@ const statusTabs = [
   { label: "Unavailable", value: "unavailable" },
 ];
 
-export default function DriversPage() {
+function LegacyDriversPage() {
   const { token } = useAuth();
   const [drivers, setDrivers] = useState<any[]>([]);
   const [filtered, setFiltered] = useState<any[]>([]);
@@ -199,4 +202,10 @@ export default function DriversPage() {
       </Modal>
     </div>
   );
+}
+
+// Legacy-authenticated page: core tokens are rejected by the legacy API, so with NEXT_PUBLIC_CORE_API=true the route
+// redirects to /dashboard (CLIENT_CONTRACTS.md §4.0). With the flag off the page is unchanged.
+export default function DriversPage() {
+  return CORE_API ? <Redirect to="/dashboard" /> : <LegacyDriversPage />;
 }

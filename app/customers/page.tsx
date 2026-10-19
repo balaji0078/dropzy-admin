@@ -1,5 +1,8 @@
 "use client";
 
+import { CORE_API } from "@/lib/config";
+import { Redirect } from "@/components/core/ui";
+
 import { useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import DataTable from "@/components/ui/DataTable";
@@ -25,7 +28,7 @@ const sampleCustomers = [
   { id: "u4", first_name: "Anita", last_name: "Patel", email: "anita@example.com", phone: "+919876543213", city: "Delhi", is_active: false, is_verified: true, total_orders: 0, total_spent: 0, created_at: "2026-03-28T16:00:00Z" },
 ];
 
-export default function CustomersPage() {
+function LegacyCustomersPage() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<any>(null);
@@ -168,4 +171,10 @@ export default function CustomersPage() {
       </Modal>
     </div>
   );
+}
+
+// Legacy-authenticated page: core tokens are rejected by the legacy API, so with NEXT_PUBLIC_CORE_API=true the route
+// redirects to /dashboard (CLIENT_CONTRACTS.md §4.0). With the flag off the page is unchanged.
+export default function CustomersPage() {
+  return CORE_API ? <Redirect to="/dashboard" /> : <LegacyCustomersPage />;
 }

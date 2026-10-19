@@ -29,6 +29,8 @@ import {
 import { useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { cn, getInitials } from "@/lib/utils";
+import { CORE_API } from "@/lib/config";
+import { navForRoles, ROLE_LABEL } from "@/lib/roles";
 
 const navSections = [
   {
@@ -78,8 +80,11 @@ const navSections = [
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const { user, logout } = useAuth();
+  const { user, logout, roles, me } = useAuth();
   const [collapsed, setCollapsed] = useState(false);
+  // Core mode: role-filtered PRD v2 navigation (legacy-authenticated pages are not listed, CLIENT_CONTRACTS §4.0).
+  const sections = CORE_API ? navForRoles(roles) : navSections;
+  const subtitle = CORE_API ? roles.map((r) => ROLE_LABEL[r]).join(", ") : user?.email || "";
 
   return (
     <aside
@@ -107,6 +112,7 @@ export default function Sidebar() {
         )}
         <button
           onClick={() => setCollapsed(!collapsed)}
+          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 transition-colors"
         >
           {collapsed ? <Menu className="w-[18px] h-[18px]" /> : <ChevronLeft className="w-[18px] h-[18px]" />}
@@ -114,8 +120,8 @@ export default function Sidebar() {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-3 py-3 overflow-y-auto space-y-5">
-        {navSections.map((section) => (
+      <nav className="flex-1 px-3 py-3 overflow-y-auto space-y-5" aria-label="Main navigation">
+        {sections.map((section) => (
           <div key={section.title}>
             {!collapsed && (
               <p className="px-3 mb-2 text-[10px] font-bold uppercase tracking-widest text-gray-400">
@@ -134,6 +140,7 @@ export default function Sidebar() {
                       isActive ? "sidebar-link-active" : "sidebar-link-inactive"
                     )}
                     title={collapsed ? item.label : undefined}
+                    aria-current={isActive ? "page" : undefined}
                   >
                     <item.icon className="w-[18px] h-[18px] flex-shrink-0" />
                     {!collapsed && <span>{item.label}</span>}
@@ -159,12 +166,14 @@ export default function Sidebar() {
               <p className="text-[13px] font-semibold text-gray-900 truncate">
                 {user ? `${user.first_name} ${user.last_name}` : "Admin"}
               </p>
-              <p className="text-[11px] text-gray-400 truncate">{user?.email || ""}</p>
+              <p className="text-[11px] text-gray-400 truncate" title={me?.phone || subtitle}>{subtitle}</p>
             </div>
           )}
           {!collapsed && (
             <button
               onClick={logout}
+              aria-label="Log out"
+              title="Log out"
               className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 transition-colors"
             >
               <LogOut className="w-4 h-4" />

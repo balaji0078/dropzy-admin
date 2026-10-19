@@ -1,5 +1,8 @@
 "use client";
 
+import { CORE_API } from "@/lib/config";
+import { Redirect } from "@/components/core/ui";
+
 import { useEffect, useState, useCallback } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { ordersAPI } from "@/lib/api";
@@ -20,7 +23,7 @@ const statusTabs = [
   { label: "Cancelled", value: "cancelled" },
 ];
 
-export default function OrdersPage() {
+function LegacyOrdersPage() {
   const { token } = useAuth();
   const toast = useToast();
   const [orders, setOrders] = useState<any[]>([]);
@@ -280,4 +283,10 @@ export default function OrdersPage() {
       </Modal>
     </div>
   );
+}
+
+// Legacy-authenticated page: core tokens are rejected by the legacy API, so with NEXT_PUBLIC_CORE_API=true the route
+// redirects to /dashboard (CLIENT_CONTRACTS.md §4.0). With the flag off the page is unchanged.
+export default function OrdersPage() {
+  return CORE_API ? <Redirect to="/dashboard" /> : <LegacyOrdersPage />;
 }

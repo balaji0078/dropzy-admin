@@ -1,3 +1,5 @@
+import { CORE_API } from "./config";
+
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://18.60.129.43:8080/api/v1";
 
 interface RequestOptions {
@@ -26,10 +28,13 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
   const res = await fetch(`${API_BASE}${endpoint}`, config);
 
   if (res.status === 401) {
-    if (typeof window !== "undefined") {
+    // Core mode: core tokens are rejected by the legacy middleware. Never clear core tokens or redirect here (that would
+    // loop 401 → /login → dashboard → 401); just reject the promise. Legacy mode: clear the legacy tokens and go to /login
+    // unless we are already there.
+    if (!CORE_API && typeof window !== "undefined") {
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
-      window.location.href = "/login";
+      if (!window.location.pathname.startsWith("/login")) window.location.href = "/login";
     }
     throw new Error("Unauthorized");
   }

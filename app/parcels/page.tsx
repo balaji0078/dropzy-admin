@@ -1,9 +1,13 @@
 "use client";
 
+import { CORE_API } from "@/lib/config";
+import { Redirect } from "@/components/core/ui";
+
 import { useState, useMemo, useCallback } from "react";
 import { useAuth } from "@/lib/auth-context";
 import StatusBadge from "@/components/ui/StatusBadge";
 import Modal from "@/components/ui/Modal";
+import Timeline from "@/components/ui/Timeline";
 import SearchableDropdown from "@/components/ui/SearchableDropdown";
 import { formatDate } from "@/lib/utils";
 import { Search, Filter, X, MapPin, Phone, Mail, Package, Scale, Clock, Plus, ChevronDown } from "lucide-react";
@@ -414,46 +418,17 @@ function ParcelDetailModal({ parcel, onClose }: ParcelDetailModalProps) {
               <Clock className="w-4 h-4" style={{ color: "#D82C2C" }} />
               Delivery Timeline
             </h3>
-            <div className="relative">
-              {PARCEL_PHASES.map((phase, index) => {
+            <Timeline
+              items={PARCEL_PHASES.map((phase) => {
                 const timelineEntry = parcel.timeline.find((t) => t.phase === phase);
-                const isCompleted = parcel.timeline.some((t) => t.phase === phase);
-                const phaseLabel = phase
-                  .split("_")
-                  .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-                  .join(" ");
-
-                return (
-                  <div key={phase} className="flex gap-4 mb-4 last:mb-0">
-                    <div className="flex flex-col items-center">
-                      <div
-                        className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white"
-                        style={{
-                          backgroundColor: isCompleted ? "#34C759" : "rgba(0,0,0,0.08)",
-                          color: isCompleted ? "white" : "rgba(0,0,0,0.4)",
-                        }}
-                      >
-                        {index + 1}
-                      </div>
-                      {index < PARCEL_PHASES.length - 1 && (
-                        <div
-                          className="w-0.5 h-12"
-                          style={{
-                            backgroundColor: isCompleted ? "#34C759" : "rgba(0,0,0,0.08)",
-                          }}
-                        />
-                      )}
-                    </div>
-                    <div className="flex-1 pt-1">
-                      <p className="font-medium text-gray-900 text-[13px]">{phaseLabel}</p>
-                      {timelineEntry && (
-                        <p className="text-[12px] text-gray-500">{timelineEntry.timestamp}</p>
-                      )}
-                    </div>
-                  </div>
-                );
+                return {
+                  key: phase,
+                  title: phase.split("_").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" "),
+                  subtitle: timelineEntry?.timestamp,
+                  completed: parcel.timeline.some((t) => t.phase === phase),
+                };
               })}
-            </div>
+            />
           </div>
 
           {/* Communications Log */}
@@ -516,7 +491,7 @@ const getPincodeOptionsForFilters = (state: string, district: string) => {
   }));
 };
 
-export default function ParcelsPage() {
+function LegacyParcelsPage() {
   const { token } = useAuth();
   const toast = useToast();
   const [searchQuery, setSearchQuery] = useState("");
@@ -927,4 +902,10 @@ export default function ParcelsPage() {
       </Modal>
     </div>
   );
+}
+
+// Legacy-authenticated page: core tokens are rejected by the legacy API, so with NEXT_PUBLIC_CORE_API=true the route
+// redirects to /dashboard (CLIENT_CONTRACTS.md §4.0). With the flag off the page is unchanged.
+export default function ParcelsPage() {
+  return CORE_API ? <Redirect to="/dashboard" /> : <LegacyParcelsPage />;
 }

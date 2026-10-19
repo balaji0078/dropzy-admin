@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Package, Eye, EyeOff, Truck, Shield, Clock, CheckCircle2, ArrowRight, Loader2 } from "lucide-react";
 import { AuthProvider, useAuth } from "@/lib/auth-context";
+import { CORE_API } from "@/lib/config";
+import CoreLoginPage from "@/components/core/pages/Login";
 
 function LoginForm() {
   const [email, setEmail] = useState("");
@@ -164,6 +166,11 @@ function LoginForm() {
   );
 }
 
-export default function LoginPage() {
+function LegacyLoginPage() {
   return <AuthProvider><LoginForm /></AuthProvider>;
+}
+
+// NEXT_PUBLIC_CORE_API=true → phone OTP + MFA (P1); otherwise the legacy email/password admin login.
+export default function LoginPage() {
+  return CORE_API ? <CoreLoginPage /> : <LegacyLoginPage />;
 }

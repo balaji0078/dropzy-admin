@@ -1,5 +1,8 @@
 "use client";
 
+import { CORE_API } from "@/lib/config";
+import { Redirect } from "@/components/core/ui";
+
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { notificationsAPI } from "@/lib/api";
@@ -37,7 +40,7 @@ const typeIcons: Record<string, any> = {
   default: Bell,
 };
 
-export default function NotificationsPage() {
+function LegacyNotificationsPage() {
   const { token } = useAuth();
   const [notifications, setNotifications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -244,4 +247,10 @@ export default function NotificationsPage() {
       </div>
     </div>
   );
+}
+
+// Legacy-authenticated page: core tokens are rejected by the legacy API, so with NEXT_PUBLIC_CORE_API=true the route
+// redirects to /dashboard (CLIENT_CONTRACTS.md §4.0). With the flag off the page is unchanged.
+export default function NotificationsPage() {
+  return CORE_API ? <Redirect to="/dashboard" /> : <LegacyNotificationsPage />;
 }
