@@ -1,5 +1,8 @@
 "use client";
 
+import { CORE_API } from "@/lib/config";
+import CoreSupport from "@/components/core/pages/Support";
+
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { useToast } from "@/components/ui/Toast";
@@ -14,7 +17,7 @@ const statusTabs = [
   { label: "Investigating", value: "investigating" }, { label: "Resolved", value: "resolved" },
 ];
 
-export default function SupportPage() {
+function LegacySupportPage() {
   const { token } = useAuth();
   const toast = useToast();
   const [rows, setRows] = useState<any[]>([]);
@@ -59,4 +62,9 @@ export default function SupportPage() {
       <DataTable columns={columns} data={filtered} loading={loading} emptyMessage="No tickets found" />
     </div>
   );
+}
+
+// NEXT_PUBLIC_CORE_API=true → P11 core support queue (replaces the legacy mock, CLIENT_CONTRACTS.md §4.1).
+export default function SupportPage() {
+  return CORE_API ? <CoreSupport /> : <LegacySupportPage />;
 }
