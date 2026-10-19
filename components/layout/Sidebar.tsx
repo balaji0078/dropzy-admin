@@ -106,7 +106,7 @@ export default function Sidebar() {
             </div>
             <span className="text-[17px] font-bold text-gray-900">Dropzy</span>
             <span className="text-[10px] font-bold px-1.5 py-0.5 rounded" style={{ background: "#FEF2F2", color: "#D82C2C" }}>
-              Admin
+              {CORE_API ? "Staff" : "Admin"}
             </span>
           </Link>
         )}

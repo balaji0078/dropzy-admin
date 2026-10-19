@@ -99,18 +99,25 @@ export function OtpInput({ length = 6, value, onChange, disabled, label = "One-t
           aria-label={`${label} digit ${i + 1} of ${n}`}
           inputMode="numeric"
           autoComplete={i === 0 ? "one-time-code" : "off"}
-          maxLength={1}
           disabled={disabled}
           value={value[i] || ""}
           onChange={(e) => {
+            // No maxLength: autofill / "one-time-code" suggestions insert the whole code at once and must not be truncated.
             const v = e.target.value.replace(/\D/g, "");
-            if (v.length > 1) {
-              onChange(v.slice(0, n));
-              refs.current[Math.min(v.length, n) - 1]?.focus();
+            const prev = value[i] || "";
+            if (v.length <= 1) {
+              set(i, v);
+              if (v && i < n - 1) refs.current[i + 1]?.focus();
               return;
             }
-            set(i, v);
-            if (v && i < n - 1) refs.current[i + 1]?.focus();
+            if (v.length === 2 && prev && v.includes(prev)) {
+              set(i, v[0] === prev ? v[1] : v[0]); // overtyping a filled box
+              if (i < n - 1) refs.current[i + 1]?.focus();
+              return;
+            }
+            const merged = (value.slice(0, i) + v).slice(0, n);
+            onChange(merged);
+            refs.current[Math.min(merged.length, n) - 1]?.focus();
           }}
           onKeyDown={(e) => {
             if (e.key === "Backspace" && !value[i] && i > 0) refs.current[i - 1]?.focus();
