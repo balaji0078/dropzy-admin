@@ -1,5 +1,8 @@
 "use client";
 
+import { CORE_API } from "@/lib/config";
+import CoreOperators from "@/components/core/pages/Operators";
+
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { useToast } from "@/components/ui/Toast";
@@ -16,7 +19,7 @@ const statusTabs = [
 ];
 const emptyForm = { name: "", gst_number: "", city: "", mobile: "", email: "", buses: "", routes: "" };
 
-export default function OperatorsPage() {
+function LegacyOperatorsPage() {
   const { token } = useAuth();
   const toast = useToast();
   const [rows, setRows] = useState<any[]>([]);
@@ -114,4 +117,9 @@ export default function OperatorsPage() {
       </Modal>
     </div>
   );
+}
+
+// NEXT_PUBLIC_CORE_API=true → P13 core operators catalog (/admin/operators); otherwise the marketplace mock page (unchanged).
+export default function OperatorsPage() {
+  return CORE_API ? <CoreOperators /> : <LegacyOperatorsPage />;
 }
