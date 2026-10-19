@@ -1,5 +1,8 @@
 "use client";
 
+import { CORE_API } from "@/lib/config";
+import CoreNotificationLog from "@/components/core/pages/NotificationLog";
+
 import { useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import StatsCard from "@/components/ui/StatsCard";
@@ -72,7 +75,7 @@ const mockNotifications = [
   { id: 50, timestamp: "2026-04-26T12:35:00", channel: "sms", recipient_name: "Sneha Das", recipient_phone: "+91-89876-54321", template: "Driver Accepted", status: "failed", parcel_id: "DZ-987605", message: null, read_receipt: null },
 ];
 
-export default function NotificationLogsPage() {
+function LegacyNotificationLogsPage() {
   const { user, token } = useAuth();
   const [filter, setFilter] = useState("all");
   const [dateRange, setDateRange] = useState("today");
@@ -410,4 +413,9 @@ export default function NotificationLogsPage() {
       </Modal>
     </div>
   );
+}
+
+// NEXT_PUBLIC_CORE_API=true → P18 core notification log (masked recipients); otherwise the legacy mock page (unchanged).
+export default function NotificationLogsPage() {
+  return CORE_API ? <CoreNotificationLog /> : <LegacyNotificationLogsPage />;
 }
