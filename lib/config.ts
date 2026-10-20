@@ -4,7 +4,7 @@
 export const CORE_API = process.env.NEXT_PUBLIC_CORE_API === "true";
 
 /** API base URL including the /api/v1 prefix. */
-export const API_URL = (process.env.NEXT_PUBLIC_API_URL || "http://18.60.129.43:8080/api/v1").replace(/\/+$/, "");
+export const API_URL = (process.env.NEXT_PUBLIC_API_URL || "http://16.112.168.63:8080/api/v1").replace(/\/+$/, "");
 
 /** Origin of the API (signed evidence URLs and checkout paths are relative to it). */
 export const API_ORIGIN = (() => {

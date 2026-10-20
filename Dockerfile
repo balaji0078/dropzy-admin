@@ -12,7 +12,7 @@ RUN npm ci --legacy-peer-deps 2>/dev/null || npm install --legacy-peer-deps
 COPY . .
 
 # Production API URL baked into the build
-ARG NEXT_PUBLIC_API_URL=http://18.60.129.43:8080/api/v1
+ARG NEXT_PUBLIC_API_URL=http://16.112.168.63:8080/api/v1
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 # Make the Marketplace pages hit the live backend instead of in-memory mock
 ARG NEXT_PUBLIC_MARKETPLACE_LIVE=true

@@ -1,6 +1,6 @@
 import { CORE_API } from "./config";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://18.60.129.43:8080/api/v1";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://16.112.168.63:8080/api/v1";
 
 interface RequestOptions {
   method?: string;

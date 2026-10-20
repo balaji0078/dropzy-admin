@@ -7,7 +7,7 @@
 // When the backend ships the routes from BACKEND_MARKETPLACE_MODULES_SPEC.md,
 // set NEXT_PUBLIC_MARKETPLACE_LIVE=true and every call hits the real API.
 // ---------------------------------------------------------------------------
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://18.60.129.43:8080/api/v1";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://16.112.168.63:8080/api/v1";
 const MOCK = process.env.NEXT_PUBLIC_MARKETPLACE_LIVE !== "true";
 
 const delay = (ms = 300) => new Promise((r) => setTimeout(r, ms));

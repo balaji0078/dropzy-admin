@@ -6,7 +6,7 @@ set -e
 #  Run this on EC2: bash deploy.sh
 # ═══════════════════════════════════════════
 
-EC2_IP="18.60.129.43"
+EC2_IP="16.112.168.63"
 API_URL="http://${EC2_IP}:8080/api/v1"
 ADMIN_DIR="/home/ubuntu/dropzy-admin"
 
