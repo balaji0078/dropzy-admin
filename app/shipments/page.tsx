@@ -40,29 +40,29 @@ function LegacyShipmentsPage() {
     return true;
   });
   const columns = [
-    { key: "dcn", label: "DCN", render: (s: any) => <span className="font-mono text-xs text-gray-600">{s.dcn}</span> },
-    { key: "route", label: "Route", render: (s: any) => <span className="text-gray-900">{s.route}</span> },
+    { key: "dcn", label: "DCN", render: (s: any) => <span className="font-mono text-xs text-ink-soft">{s.dcn}</span> },
+    { key: "route", label: "Route", render: (s: any) => <span className="text-ink">{s.route}</span> },
     { key: "operator", label: "Operator" },
     { key: "weight", label: "Weight", render: (s: any) => (
-      <span className={s.actual_kg > s.declared_kg ? "text-red-600 font-medium" : "text-gray-700"}>{s.actual_kg}kg{s.actual_kg > s.declared_kg ? ` (decl ${s.declared_kg})` : ""}</span>) },
+      <span className={s.actual_kg > s.declared_kg ? "text-danger font-medium" : "text-ink"}>{s.actual_kg}kg{s.actual_kg > s.declared_kg ? ` (decl ${s.declared_kg})` : ""}</span>) },
     { key: "fare", label: "Fare", render: (s: any) => formatCurrency(s.fare) },
     { key: "status", label: "Status", render: (s: any) => <StatusBadge status={s.status} /> },
     { key: "actions", label: "Operations", render: (s: any) => {
       const ns = nextOf(s.status); const done = ["delivered", "cancelled"].includes(s.status);
       return (<div className="flex items-center gap-2">
-        {ns && <button onClick={() => advance(s)} className="inline-flex items-center gap-1 text-[12px] font-semibold text-gray-700 hover:bg-gray-100 px-2 py-1 rounded-md"><ChevronRight className="w-3.5 h-3.5" />{ns.split("_")[0]}</button>}
-        {!done && <button onClick={() => cancel(s)} className="inline-flex items-center gap-1 text-[12px] font-semibold text-red-600 hover:bg-red-50 px-2 py-1 rounded-md"><XCircle className="w-3.5 h-3.5" />Cancel</button>}
-        {done && <span className="text-xs text-gray-400">—</span>}
+        {ns && <button onClick={() => advance(s)} className="inline-flex items-center gap-1 text-[12px] font-semibold text-ink hover:bg-surface-raised px-2 py-1 rounded-md"><ChevronRight className="w-3.5 h-3.5" />{ns.split("_")[0]}</button>}
+        {!done && <button onClick={() => cancel(s)} className="inline-flex items-center gap-1 text-[12px] font-semibold text-danger hover:bg-danger/10 px-2 py-1 rounded-md"><XCircle className="w-3.5 h-3.5" />Cancel</button>}
+        {done && <span className="text-xs text-ink-faint">—</span>}
       </div>); } },
   ];
   return (
     <div className="space-y-5">
-      <div><h1 className="text-[22px] font-bold text-gray-900">Shipments</h1>
-        <p className="text-[13px] text-gray-500">DCN tracking, weight validation & custody operations (PRD Ch.15.8 / 27)</p></div>
+      <div><h1 className="text-[22px] font-bold text-ink">Shipments</h1>
+        <p className="text-[13px] text-ink-soft">DCN tracking, weight validation & custody operations (PRD Ch.15.8 / 27)</p></div>
       <div className="flex items-center justify-between gap-4">
         <FilterTabs tabs={statusTabs} activeTab={statusFilter} onChange={setStatusFilter} />
-        <div className="relative"><Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-          <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search DCN / route…" className="pl-9 pr-3 py-2 rounded-lg border border-gray-200 text-[13px] focus:outline-none focus:border-[#D82C2C]" /></div>
+        <div className="relative"><Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-ink-faint" />
+          <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search DCN / route…" className="pl-9 pr-3 py-2 rounded-lg border border-line text-[13px] focus:outline-none focus:border-gold" /></div>
       </div>
       <DataTable columns={columns} data={filtered} loading={loading} emptyMessage="No shipments found" />
     </div>

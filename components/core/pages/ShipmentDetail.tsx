@@ -101,20 +101,20 @@ function ShipmentDetailBody({ id }: { id: string }) {
         <LastSynced at={s?.serverTime || q.syncedAt} onRefresh={q.reload} />
       </div>
       <ErrorBanner error={q.error} onRetry={q.reload} />
-      {!d && q.loading && <p className="text-[13px] text-gray-500" role="status">Loading shipment…</p>}
+      {!d && q.loading && <p className="text-[13px] text-ink-soft" role="status">Loading shipment…</p>}
       {d && s && (
         <>
           <div className="rb-card-flat p-5 flex flex-wrap items-start justify-between gap-4">
             <div className="space-y-1">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="font-mono text-[15px] font-bold text-gray-900">{s.dcn || "(no DCN yet)"}</span>
+                <span className="font-mono text-[15px] font-bold text-ink">{s.dcn || "(no DCN yet)"}</span>
                 <StatusBadge status={s.state} kind="shipmentState" />
                 {s.surcharge?.driverLabel && <StatusBadge status={s.surcharge.driverLabel} kind="driverLabel" />}
                 {(s.holds || []).filter((h) => h.status === "ACTIVE").map((h) => <StatusBadge key={h.id} status={h.type} kind="hold" />)}
               </div>
-              <p className="text-[13px] text-gray-600">Customer label: “{s.stateLabel}” · version {s.version}</p>
+              <p className="text-[13px] text-ink-soft">Customer label: “{s.stateLabel}” · version {s.version}</p>
             </div>
-            <div className="text-[12px] text-gray-600 text-right">
+            <div className="text-[12px] text-ink-soft text-right">
               <p>Cutoff</p>
               <Deadline at={s.cutoffAt} />
             </div>
@@ -175,7 +175,7 @@ function Overview({ d, roles, actionState, onAction, returnStartedByMe }: {
       out.push(
         <span key={code} className="inline-flex flex-col">
           <button className={rowAction(color)} disabled={!st.enabled} onClick={() => onAction({ kind, hold: h })}>{label}</button>
-          {st.message && <span className="text-[11px] text-gray-500 max-w-[220px]">{st.message}</span>}
+          {st.message && <span className="text-[11px] text-ink-soft max-w-[220px]">{st.message}</span>}
         </span>,
       );
     };
@@ -224,7 +224,7 @@ function Overview({ d, roles, actionState, onAction, returnStartedByMe }: {
 
         <Card title="Holds">
           {holds.length === 0 ? (
-            <p className="text-[13px] text-gray-500">No holds.</p>
+            <p className="text-[13px] text-ink-soft">No holds.</p>
           ) : (
             <div className="overflow-x-auto">
               <table className="rb-table">
@@ -234,7 +234,7 @@ function Overview({ d, roles, actionState, onAction, returnStartedByMe }: {
                     <tr key={h.id}>
                       <td><StatusBadge status={h.type} kind="hold" /></td>
                       <td><StatusBadge status={h.status} kind="generic" /></td>
-                      <td className="text-[12px]"><p className="font-medium">{humanize(h.reasonCode)}</p>{h.reasonText && <p className="text-gray-500">{h.reasonText}</p>}{h.clearReason && <p className="text-gray-500">Cleared: {h.clearReason}</p>}</td>
+                      <td className="text-[12px]"><p className="font-medium">{humanize(h.reasonCode)}</p>{h.reasonText && <p className="text-ink-soft">{h.reasonText}</p>}{h.clearReason && <p className="text-ink-soft">Cleared: {h.clearReason}</p>}</td>
                       <td className="text-[12px]">{formatIST(h.placedAt)}</td>
                       <td className="text-[12px]">{h.loadGateExempt ? "Exempt" : "—"}</td>
                       <td><div className="flex flex-wrap gap-2">{holdButtons(h)}</div></td>
@@ -244,7 +244,7 @@ function Overview({ d, roles, actionState, onAction, returnStartedByMe }: {
               </table>
             </div>
           )}
-          {active.length > 0 && <p className="mt-2 text-[11px] text-gray-500">SURCHARGE_UNPAID clears on verified payment or waiver; DISPUTE clears only on dispute resolution.</p>}
+          {active.length > 0 && <p className="mt-2 text-[11px] text-ink-soft">SURCHARGE_UNPAID clears on verified payment or waiver; DISPUTE clears only on dispute resolution.</p>}
         </Card>
 
         {s.warehouse && (
@@ -267,7 +267,7 @@ function Overview({ d, roles, actionState, onAction, returnStartedByMe }: {
       <div className="space-y-4">
         <Card title="Override actions">
           {buttons.length === 0 ? (
-            <p className="text-[13px] text-gray-500">No override actions are available for your role in the current state.</p>
+            <p className="text-[13px] text-ink-soft">No override actions are available for your role in the current state.</p>
           ) : (
             <ul className="space-y-2">
               {buttons.map((a) => {
@@ -278,11 +278,11 @@ function Overview({ d, roles, actionState, onAction, returnStartedByMe }: {
                     <button
                       onClick={() => onAction({ kind: a.dialog })}
                       disabled={!enabled}
-                      className={`w-full text-left px-3 py-2 rounded-lg border text-[13px] font-semibold disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-red-300 ${a.danger ? "border-red-200 text-red-700 hover:bg-red-50" : "border-gray-200 text-gray-800 hover:bg-gray-50"}`}
+                      className={`w-full text-left px-3 py-2 rounded-lg border text-[13px] font-semibold disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-gold/40 ${a.danger ? "border-danger/35 text-danger hover:bg-danger/10" : "border-line text-ink hover:bg-surface-alt"}`}
                     >
                       {a.label}
                     </button>
-                    {(fourEyes || a.st.message) && <p className="mt-1 text-[11px] text-gray-500">{fourEyes ? RETURN_FOUR_EYES : a.st.message}</p>}
+                    {(fourEyes || a.st.message) && <p className="mt-1 text-[11px] text-ink-soft">{fourEyes ? RETURN_FOUR_EYES : a.st.message}</p>}
                   </li>
                 );
               })}
@@ -297,7 +297,7 @@ function Overview({ d, roles, actionState, onAction, returnStartedByMe }: {
                 <StatusBadge status={sc.driverLabel} kind="driverLabel" label={sc.driverLabelText || undefined} />
                 {sc.customerLabel && sc.customerLabel !== "NONE" && <StatusBadge status={sc.customerLabel} kind="customerLabel" />}
               </div>
-              {sc.driverLabelSubtext && <p className="text-[12px] text-gray-600">{sc.driverLabelSubtext}</p>}
+              {sc.driverLabelSubtext && <p className="text-[12px] text-ink-soft">{sc.driverLabelSubtext}</p>}
               <KV cols={2} items={[
                 ["Amount due", sc.amountDueDisplay || formatPaise(sc.amountDuePaise)],
                 ["Payment deadline", <Deadline key="dl" at={sc.paymentDeadline} />],
@@ -307,17 +307,17 @@ function Overview({ d, roles, actionState, onAction, returnStartedByMe }: {
               {sc.currentQuote && <SurchargeBreakdownView breakdown={sc.currentQuote.breakdown} quote={sc.currentQuote} />}
             </div>
           ) : (
-            <p className="text-[13px] text-gray-500">No surcharge information.</p>
+            <p className="text-[13px] text-ink-soft">No surcharge information.</p>
           )}
         </Card>
 
         <Card title="Allowed / blocked actions">
           <div className="flex flex-wrap gap-1 mb-2">
-            {(s.allowedActions || []).length ? s.allowedActions.map((a) => <span key={a} className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-green-50 text-green-800 ring-1 ring-green-200">✓ {a}</span>) : <span className="text-[12px] text-gray-500">None allowed</span>}
+            {(s.allowedActions || []).length ? s.allowedActions.map((a) => <span key={a} className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-success/10 text-success ring-1 ring-success/40">✓ {a}</span>) : <span className="text-[12px] text-ink-soft">None allowed</span>}
           </div>
           <ul className="space-y-1">
             {(s.blockedActions || []).map((b, i) => (
-              <li key={i} className="text-[12px]"><span className="font-mono text-red-800">✗ {b.action}</span> <span className="text-gray-600">— {b.message}</span></li>
+              <li key={i} className="text-[12px]"><span className="font-mono text-danger">✗ {b.action}</span> <span className="text-ink-soft">— {b.message}</span></li>
             ))}
           </ul>
         </Card>
@@ -331,8 +331,8 @@ function WeightTab({ measurements, reviews, evidence }: { measurements: WeightMe
   return (
     <div className="space-y-4 mt-4">
       <DataTable caption="Weight measurements" rowKey={(m) => m.id} data={measurements} emptyMessage="No measurements yet" columns={[
-        { key: "seq", label: "#", render: (m: WeightMeasurement) => <span>{m.sequence}{m.isCurrent && <span className="ml-1 text-[10px] font-bold text-green-700">CURRENT</span>}</span> },
-        { key: "actual", label: "Actual (entered)", render: (m: WeightMeasurement) => <span className="tabular-nums">{formatKg(m.actualWeightGrams)} <span className="text-gray-400 text-[11px]">({m.valueInput} {m.unitInput})</span></span> },
+        { key: "seq", label: "#", render: (m: WeightMeasurement) => <span>{m.sequence}{m.isCurrent && <span className="ml-1 text-[10px] font-bold text-success">CURRENT</span>}</span> },
+        { key: "actual", label: "Actual (entered)", render: (m: WeightMeasurement) => <span className="tabular-nums">{formatKg(m.actualWeightGrams)} <span className="text-ink-faint text-[11px]">({m.valueInput} {m.unitInput})</span></span> },
         { key: "declared", label: "Declared", render: (m: WeightMeasurement) => formatKg(m.declaredWeightGrams) },
         { key: "diff", label: "Difference", render: (m: WeightMeasurement) => formatSignedKg(m.rawDifferenceGrams) },
         { key: "billable", label: "Billable diff.", render: (m: WeightMeasurement) => formatKg(m.billableDifferenceGrams) },
@@ -375,7 +375,7 @@ function QuotesTab({ quotes }: { quotes: SurchargeQuote[] }) {
         const q = quotes.find((x) => x.id === open);
         return q ? <SurchargeBreakdownView breakdown={q.breakdown} quote={q} /> : null;
       })()}
-      {quotes.length > 0 && <p className="text-[11px] text-gray-500">Select a row to show its preserved breakdown.</p>}
+      {quotes.length > 0 && <p className="text-[11px] text-ink-soft">Select a row to show its preserved breakdown.</p>}
     </div>
   );
 }
@@ -383,7 +383,7 @@ function QuotesTab({ quotes }: { quotes: SurchargeQuote[] }) {
 function PaymentsTab({ invoices, payments, refunds }: { invoices: Invoice[]; payments: PaymentIntent[]; refunds: Refund[] }) {
   return (
     <div className="space-y-4 mt-4">
-      <h3 className="text-[13px] font-bold text-gray-900">Invoices</h3>
+      <h3 className="text-[13px] font-bold text-ink">Invoices</h3>
       <DataTable caption="Invoices" rowKey={(i) => i.id} data={invoices} emptyMessage="No invoices" columns={[
         { key: "no", label: "Invoice", render: (i: Invoice) => <span className="font-mono text-[12px]">{i.invoiceNumber}</span> },
         { key: "kind", label: "Kind", render: (i: Invoice) => humanize(i.kind) },
@@ -395,7 +395,7 @@ function PaymentsTab({ invoices, payments, refunds }: { invoices: Invoice[]; pay
         { key: "due", label: "Due", render: (i: Invoice) => formatIST(i.dueAt) },
         { key: "paidAt", label: "Paid at", render: (i: Invoice) => formatIST(i.paidAt) },
       ]} />
-      <h3 className="text-[13px] font-bold text-gray-900">Payment intents</h3>
+      <h3 className="text-[13px] font-bold text-ink">Payment intents</h3>
       <DataTable caption="Payment intents" rowKey={(p) => p.id} data={payments} emptyMessage="No payment intents" columns={[
         { key: "id", label: "Intent", render: (p: PaymentIntent) => <span className="font-mono text-[11px]" title={p.id}>{shortId(p.id)}</span> },
         { key: "kind", label: "For", render: (p: PaymentIntent) => humanize(p.invoiceKind) },
@@ -406,7 +406,7 @@ function PaymentsTab({ invoices, payments, refunds }: { invoices: Invoice[]; pay
         { key: "created", label: "Created / succeeded", render: (p: PaymentIntent) => <span className="text-[11px]">{formatIST(p.createdAt)}<br />{formatIST(p.succeededAt)}</span> },
         { key: "fail", label: "Failure", render: (p: PaymentIntent) => <span className="text-[11px]">{p.failureMessage || p.failureCode || (p.isOrphan ? "Orphan" : "—")}</span> },
       ]} />
-      <h3 className="text-[13px] font-bold text-gray-900">Refunds</h3>
+      <h3 className="text-[13px] font-bold text-ink">Refunds</h3>
       <DataTable caption="Refunds" rowKey={(r) => r.id} data={refunds} emptyMessage="No refunds" columns={[
         { key: "amount", label: "Amount", render: (r: Refund) => formatPaise(r.amountPaise) },
         { key: "status", label: "Status", render: (r: Refund) => (r.status ? <StatusBadge status={r.status} kind="generic" /> : "—") },
@@ -425,21 +425,21 @@ function CustodyTab({ events, evidence }: { events: CustodyEvent[]; evidence: Ma
       <DataTable caption="Custody events" rowKey={(e) => e.id} data={events} emptyMessage="No custody events" columns={[
         { key: "type", label: "Event", render: (e: CustodyEvent) => <span className="font-medium">{humanize(e.eventType)}</span> },
         { key: "states", label: "From → to", render: (e: CustodyEvent) => <span className="text-[12px]">{e.fromState ? badgeLabel(e.fromState, "shipmentState") : "—"} → {e.toState ? badgeLabel(e.toState, "shipmentState") : "—"}</span> },
-        { key: "actor", label: "Actor", render: (e: CustodyEvent) => <span className="text-[12px]">{humanize(e.actorRole)} <span className="font-mono text-gray-400">{shortId(e.actorId)}</span></span> },
+        { key: "actor", label: "Actor", render: (e: CustodyEvent) => <span className="text-[12px]">{humanize(e.actorRole)} <span className="font-mono text-ink-faint">{shortId(e.actorId)}</span></span> },
         { key: "device", label: "Device time", render: (e: CustodyEvent) => <span className="text-[12px]">{formatIST(e.deviceTime)}</span> },
         { key: "server", label: "Server time", render: (e: CustodyEvent) => <span className="text-[12px]">{formatIST(e.serverTime)}</span> },
         { key: "skew", label: "Clock skew", render: (e: CustodyEvent) => {
           const sk = e.clockSkewSeconds;
           if (sk === null || sk === undefined) return "—";
           return Math.abs(sk) > 300
-            ? <span className="inline-flex items-center gap-1 text-[11px] font-bold text-red-700"><Clock3 className="w-3 h-3" aria-hidden />Skew {sk} s</span>
-            : <span className="text-[12px] text-gray-500">{sk} s</span>;
+            ? <span className="inline-flex items-center gap-1 text-[11px] font-bold text-danger"><Clock3 className="w-3 h-3" aria-hidden />Skew {sk} s</span>
+            : <span className="text-[12px] text-ink-soft">{sk} s</span>;
         } },
         { key: "collector", label: "Collector / OTP", render: (e: CustodyEvent) => <span className="text-[12px]">{e.collectorName || "—"}{e.otpVerified ? " · OTP ✓" : ""}</span> },
         { key: "reason", label: "Reason", render: (e: CustodyEvent) => humanize(e.reasonCode) },
         { key: "ev", label: "Evidence", render: (e: CustodyEvent) => (e.evidenceId ? <EvidenceThumb id={e.evidenceId} size={48} known={evidence.get(e.evidenceId)} /> : "—") },
       ]} />
-      <p className="mt-2 text-[11px] text-gray-500">Device times are recorded but never used for decisions; skew above 5 minutes is flagged.</p>
+      <p className="mt-2 text-[11px] text-ink-soft">Device times are recorded but never used for decisions; skew above 5 minutes is flagged.</p>
     </div>
   );
 }
@@ -475,16 +475,16 @@ export function AuditTable({ rows, page, totalPages, onPageChange, loading }: { 
         onPageChange={onPageChange}
         emptyMessage="No audit entries"
         onRowClick={(a) => setOpen(open === a.id ? null : a.id)}
-        rowClassName={(a) => (a.outcome === "REJECTED" ? "bg-red-50 hover:!bg-red-100" : undefined)}
+        rowClassName={(a) => (a.outcome === "REJECTED" ? "dz-row-danger" : undefined)}
         columns={[
           { key: "time", label: "Time", render: (a: AuditLog) => <span className="text-[12px] whitespace-nowrap">{formatIST(a.occurredAt)}</span> },
-          { key: "actor", label: "Actor", render: (a: AuditLog) => <span className="text-[12px]">{humanize(a.actorRole || a.actorType)} <span className="font-mono text-gray-400">{shortId(a.actorId)}</span></span> },
+          { key: "actor", label: "Actor", render: (a: AuditLog) => <span className="text-[12px]">{humanize(a.actorRole || a.actorType)} <span className="font-mono text-ink-faint">{shortId(a.actorId)}</span></span> },
           { key: "action", label: "Action", render: (a: AuditLog) => <span className="font-mono text-[12px]">{a.action}</span> },
-          { key: "entity", label: "Entity", render: (a: AuditLog) => <span className="text-[12px]">{a.entityType} <span className="font-mono text-gray-400">{shortId(a.entityId)}</span></span> },
+          { key: "entity", label: "Entity", render: (a: AuditLog) => <span className="text-[12px]">{a.entityType} <span className="font-mono text-ink-faint">{shortId(a.entityId)}</span></span> },
           { key: "outcome", label: "Outcome", render: (a: AuditLog) => (a.outcome ? <StatusBadge status={a.outcome} kind="generic" /> : "—") },
-          { key: "error", label: "Error", render: (a: AuditLog) => <span className="font-mono text-[11px] text-red-700">{a.errorCode || ""}</span> },
+          { key: "error", label: "Error", render: (a: AuditLog) => <span className="font-mono text-[11px] text-danger">{a.errorCode || ""}</span> },
           { key: "reason", label: "Reason", render: (a: AuditLog) => <span className="text-[12px]">{a.reason || "—"}</span> },
-          { key: "corr", label: "Correlation", render: (a: AuditLog) => <span className="font-mono text-[10px] text-gray-500 select-all">{a.correlationId || "—"}</span> },
+          { key: "corr", label: "Correlation", render: (a: AuditLog) => <span className="font-mono text-[10px] text-ink-soft select-all">{a.correlationId || "—"}</span> },
         ]}
       />
       {open && (() => {
@@ -518,10 +518,10 @@ function NotificationsTab({ rows }: { rows: CoreNotification[] }) {
 export function LedgerTab({ rows }: { rows: LedgerTransaction[] }) {
   return (
     <div className="mt-4 space-y-3">
-      {rows.length === 0 && <p className="text-[13px] text-gray-500">No ledger transactions.</p>}
+      {rows.length === 0 && <p className="text-[13px] text-ink-soft">No ledger transactions.</p>}
       {rows.map((t) => (
-        <Card key={t.id} title={<span>{humanize(t.kind)} <span className="text-[12px] font-normal text-gray-500">· {formatIST(t.occurredAt)}</span></span>}>
-          {t.description && <p className="text-[12px] text-gray-600 mb-2">{t.description}</p>}
+        <Card key={t.id} title={<span>{humanize(t.kind)} <span className="text-[12px] font-normal text-ink-soft">· {formatIST(t.occurredAt)}</span></span>}>
+          {t.description && <p className="text-[12px] text-ink-soft mb-2">{t.description}</p>}
           <table className="rb-table">
             <thead><tr><th scope="col">Account</th><th scope="col" className="text-right">Debit</th><th scope="col" className="text-right">Credit</th><th scope="col">Reference</th></tr></thead>
             <tbody>
@@ -530,7 +530,7 @@ export function LedgerTab({ rows }: { rows: LedgerTransaction[] }) {
                   <td className="font-mono text-[12px]">{e.accountCode}</td>
                   <td className="text-right tabular-nums">{e.debitPaise ? formatPaise(e.debitPaise) : ""}</td>
                   <td className="text-right tabular-nums">{e.creditPaise ? formatPaise(e.creditPaise) : ""}</td>
-                  <td className="text-[11px] text-gray-500">{e.reference || ""}</td>
+                  <td className="text-[11px] text-ink-soft">{e.reference || ""}</td>
                 </tr>
               ))}
             </tbody>
@@ -603,7 +603,7 @@ function ActionDialog({ state, detail, onClose, onDone, onConflict }: { state: D
           {state.kind === "placeHold" ? (
             <SelectField label="Hold type" value={holdType} onChange={(t) => { setHoldType(t); setReasonCode(""); }} options={[{ value: "IDENTITY", label: "Identity" }, { value: "SAFETY", label: "Safety" }, { value: "OPERATIONAL", label: "Operational" }]} />
           ) : (
-            <p className="text-[12px] text-gray-600">Type: Identity (support may place IDENTITY holds only).</p>
+            <p className="text-[12px] text-ink-soft">Type: Identity (support may place IDENTITY holds only).</p>
           )}
           <SelectField label="Reason code" value={reasonCode} onChange={setReasonCode} placeholder="Select…" required options={reasons} />
         </ReasonDialog>
@@ -644,7 +644,7 @@ function ActionDialog({ state, detail, onClose, onDone, onConflict }: { state: D
         <ReasonDialog open title="Reassign trip" busy={busy} onClose={onClose} confirmLabel="Reassign" canConfirm={!!tripId}
           summary={<>Move <strong>{dcn}</strong> to another trip of {s.route?.routeName || "the same route"}. Planned times and the cutoff are recomputed.</>}
           onConfirm={(reason) => submit(() => coreAdmin.reassignTrip(sid, { tripId, reason }), "Shipment reassigned")}>
-          {trips === null ? <p className="text-[12px] text-gray-500">Loading trips…</p> : trips.length === 0 ? <Notice tone="warning">No other scheduled trips on this route.</Notice> : (
+          {trips === null ? <p className="text-[12px] text-ink-soft">Loading trips…</p> : trips.length === 0 ? <Notice tone="warning">No other scheduled trips on this route.</Notice> : (
             <SelectField label="Target trip" value={tripId} onChange={setTripId} placeholder="Select a trip…" required
               options={trips.map((t) => ({ value: t.id, label: `${formatIST(t.departureAt)} · ${t.vehicleReg || "no vehicle"} · ${humanize(t.status)}` }))} />
           )}
@@ -681,7 +681,7 @@ function ActionDialog({ state, detail, onClose, onDone, onConflict }: { state: D
               onClick={async () => { const r = await run(() => coreShipments.issueReceiverOtp(sid), { errorContext: "receiverOtp" }); if (r) setOtpIssued(r); }}>
               {otpIssued ? "Resend OTP to sender" : "Send OTP to sender"}
             </button>
-            {otpIssued && <p className="text-[12px] text-gray-600">OTP sent to {otpIssued.sentTo || "the sender"}; valid until {formatIST(otpIssued.expiresAt)}.{otpIssued.devCode ? ` (development code ${otpIssued.devCode})` : ""}</p>}
+            {otpIssued && <p className="text-[12px] text-ink-soft">OTP sent to {otpIssued.sentTo || "the sender"}; valid until {formatIST(otpIssued.expiresAt)}.{otpIssued.devCode ? ` (development code ${otpIssued.devCode})` : ""}</p>}
             <OtpInput length={otpIssued?.codeLength || 6} value={otp} onChange={setOtp} label="Sender OTP" />
           </div>
           <TextField label="Collector name" value={collector} onChange={setCollector} required maxLength={120} />

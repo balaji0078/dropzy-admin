@@ -30,12 +30,12 @@ interface Loaded { shipment: ShipmentView; gates: GateReport | null; gateError: 
 type Check = "ok" | "fail" | "pending";
 function CheckRow({ state, text }: { state: Check; text: string }) {
   const Icon = state === "ok" ? CheckCircle2 : state === "fail" ? XCircle : Clock;
-  const cls = state === "ok" ? "text-green-700" : state === "fail" ? "text-red-700" : "text-gray-500";
+  const cls = state === "ok" ? "text-success" : state === "fail" ? "text-danger" : "text-ink-soft";
   return (
     <li className={`flex items-center gap-2 text-[13px] ${cls}`}>
       <Icon className="w-4 h-4 flex-shrink-0" aria-hidden />
       <span className="font-semibold w-4" aria-hidden>{state === "ok" ? "✓" : state === "fail" ? "✗" : "…"}</span>
-      <span className="text-gray-900">{text}</span>
+      <span className="text-ink">{text}</span>
       <span className="sr-only">{state === "ok" ? "passed" : state === "fail" ? "failed" : "pending"}</span>
     </li>
   );
@@ -174,7 +174,7 @@ function ReleaseBody({ id }: { id: string }) {
                 ["Received", formatIST(s.warehouse?.inventory?.receivedAt)],
               ]} />
               {(s.pickupRequirements || []).length > 0 && (
-                <ul className="mt-3 list-disc pl-5 text-[12px] text-gray-600">{s.pickupRequirements!.map((p, i) => <li key={i}>{p}</li>)}</ul>
+                <ul className="mt-3 list-disc pl-5 text-[12px] text-ink-soft">{s.pickupRequirements!.map((p, i) => <li key={i}>{p}</li>)}</ul>
               )}
               {!TERMINAL.includes(s.state) && (
                 <button className={`${btnOutline} mt-4`} onClick={() => { setHoldDialog(true); setHoldReason(""); }}>
@@ -192,7 +192,7 @@ function ReleaseBody({ id }: { id: string }) {
                   <CheckRow state="pending" text="Receiver OTP verified" />
                   <CheckRow state={gateForbidden || codes.has("TRIP_ASSIGNMENT_MISMATCH") ? "fail" : check(false)} text="You are authorised for this warehouse" />
                 </ul>
-                <p className="mt-2 text-[11px] text-gray-500">
+                <p className="mt-2 text-[11px] text-ink-soft">
                   Receiver OTP is checked when you release. Evaluated by the server at {formatISTTime(gates?.evaluatedAt)}{blocked ? " · refreshing every 5 s" : ""}.
                 </p>
                 <div className="mt-3 space-y-2">
@@ -219,14 +219,14 @@ function ReleaseBody({ id }: { id: string }) {
                   {otpInfo ? "Resend OTP" : isReturn ? "Send OTP to sender" : "Send OTP to receiver"}
                 </button>
                 {otpInfo && (
-                  <p className="text-[12px] text-gray-600">
+                  <p className="text-[12px] text-ink-soft">
                     OTP sent to {otpInfo.sentTo || (isReturn ? "the sender" : "the receiver")}, valid until {formatISTTime(otpInfo.expiresAt)}
                     {otpInfo.issuesLeft24h !== undefined ? ` · ${otpInfo.issuesLeft24h} more today` : ""}
                     {otpInfo.devCode ? ` · development code ${otpInfo.devCode}` : ""}
                   </p>
                 )}
                 <OtpInput length={codeLength} value={otp} onChange={(v) => { setOtp(v); setOtpError(null); }} disabled={!otpInfo || !!done} label={isReturn ? "Sender OTP" : "Receiver OTP"} />
-                {otpError && <p className="text-[12px] text-red-700" role="alert">{otpError}</p>}
+                {otpError && <p className="text-[12px] text-danger" role="alert">{otpError}</p>}
               </div>
               <TextField label="Collector name" value={collector} onChange={setCollector} required maxLength={120} disabled={!!done} />
               {!isReturn && <SelectField label="Photo ID type" value={idType} onChange={setIdType} placeholder="Select…" options={ID_TYPES} disabled={!!done} />}
@@ -235,7 +235,7 @@ function ReleaseBody({ id }: { id: string }) {
               <div className="flex justify-end">
                 <button type="submit" className={btnPrimary} disabled={!canSubmit || busy}>{isReturn ? "Complete return" : "Release parcel"}</button>
               </div>
-              {!isReturn && !releaseAllowed && !done && <p className="text-[11px] text-gray-500 text-right">Release is disabled until the server reports the parcel as eligible.</p>}
+              {!isReturn && !releaseAllowed && !done && <p className="text-[11px] text-ink-soft text-right">Release is disabled until the server reports the parcel as eligible.</p>}
             </form>
           </Card>
         </div>

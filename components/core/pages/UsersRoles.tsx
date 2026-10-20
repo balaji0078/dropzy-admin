@@ -59,27 +59,27 @@ function UserDetail({ user, onClose, onChanged, operators, warehouses }: { user:
       <div className="space-y-4">
         <div className="flex flex-wrap gap-2 text-[13px]">
           {user.status && <StatusBadge status={user.status} kind="generic" />}
-          <span className="text-gray-600">{user.phone}</span>
-          <span className="text-gray-600">MFA {user.mfaEnabled ? "enabled" : "not set up"}</span>
-          <span className="text-gray-600">Last login {formatIST(user.lastLoginAt)}</span>
+          <span className="text-ink-soft">{user.phone}</span>
+          <span className="text-ink-soft">MFA {user.mfaEnabled ? "enabled" : "not set up"}</span>
+          <span className="text-ink-soft">Last login {formatIST(user.lastLoginAt)}</span>
         </div>
         <div>
-          <h3 className="text-[13px] font-bold text-gray-900 mb-2">Roles</h3>
+          <h3 className="text-[13px] font-bold text-ink mb-2">Roles</h3>
           <ul className="space-y-1">
-            {(user.roles || []).length === 0 && <li className="text-[13px] text-gray-500">No roles.</li>}
+            {(user.roles || []).length === 0 && <li className="text-[13px] text-ink-soft">No roles.</li>}
             {(user.roles || []).map((g) => (
-              <li key={g.id} className="flex items-center justify-between rounded-lg border border-gray-200 px-3 py-2 text-[13px]">
-                <span><strong>{ROLE_LABEL[g.role] || g.role}</strong>{g.operatorId && ` · operator ${opName(g.operatorId) || g.operatorId}`}{g.warehouseId && ` · warehouse ${whName(g.warehouseId) || g.warehouseId}`}<span className="text-gray-400"> · since {formatIST(g.grantedAt)}</span></span>
-                {canWrite && <button className="p-1 rounded hover:bg-red-50 text-red-600" aria-label={`Revoke ${ROLE_LABEL[g.role]}`} onClick={() => setRevoking(g)}><Trash2 className="w-4 h-4" /></button>}
+              <li key={g.id} className="flex items-center justify-between rounded-lg border border-line px-3 py-2 text-[13px]">
+                <span><strong>{ROLE_LABEL[g.role] || g.role}</strong>{g.operatorId && ` · operator ${opName(g.operatorId) || g.operatorId}`}{g.warehouseId && ` · warehouse ${whName(g.warehouseId) || g.warehouseId}`}<span className="text-ink-faint"> · since {formatIST(g.grantedAt)}</span></span>
+                {canWrite && <button className="p-1 rounded hover:bg-danger/10 text-danger" aria-label={`Revoke ${ROLE_LABEL[g.role]}`} onClick={() => setRevoking(g)}><Trash2 className="w-4 h-4" /></button>}
               </li>
             ))}
           </ul>
         </div>
         {canWrite && (
-          <form className="rounded-lg border border-gray-200 p-3 space-y-3" onSubmit={(e) => { e.preventDefault(); grant(); }}>
-            <h3 className="text-[13px] font-bold text-gray-900">Grant a role</h3>
+          <form className="rounded-lg border border-line p-3 space-y-3" onSubmit={(e) => { e.preventDefault(); grant(); }}>
+            <h3 className="text-[13px] font-bold text-ink">Grant a role</h3>
             <RoleScope role={role} setRole={setRole} operatorId={operatorId} setOperatorId={setOperatorId} warehouseId={warehouseId} setWarehouseId={setWarehouseId} operators={operators} warehouses={warehouses} />
-            <p className="text-[11px] text-gray-500">Granting or revoking a role signs the user out of every session.</p>
+            <p className="text-[11px] text-ink-soft">Granting or revoking a role signs the user out of every session.</p>
             <div className="flex justify-end"><button type="submit" className={btnPrimary} disabled={!scopeOk(role, operatorId, warehouseId) || busy}>Grant role</button></div>
           </form>
         )}
@@ -112,8 +112,8 @@ function UserDetail({ user, onClose, onChanged, operators, warehouses }: { user:
       <Modal open={!!mfaCode} onClose={() => setMfaCode(null)} title="MFA setup code" size="sm">
         <div className="space-y-3 text-[13px]">
           <p>Give this one-time code to {user.name || user.phone} in person or by phone. It expires at {formatIST(mfaCode?.expiresAt)}.</p>
-          <p className="font-mono text-[15px] font-bold tracking-wider break-all select-all rounded-lg bg-gray-50 border border-gray-200 px-3 py-2">{mfaCode?.token}</p>
-          <p className="text-[11px] text-gray-500">The code is shown only once.</p>
+          <p className="font-mono text-[15px] font-bold tracking-wider break-all select-all rounded-lg bg-surface-alt border border-line px-3 py-2">{mfaCode?.token}</p>
+          <p className="text-[11px] text-ink-soft">The code is shown only once.</p>
           <div className="flex justify-end"><button className={btnPrimary} data-autofocus onClick={() => setMfaCode(null)}>Done</button></div>
         </div>
       </Modal>
@@ -174,7 +174,7 @@ function UsersBody() {
       <DataTable caption="Users" rowKey={(u) => u.id} data={q.data?.data || []} loading={q.loading && !q.data} emptyMessage="No users" onRowClick={setOpen}
         page={q.data?.meta?.page || page} totalPages={q.data?.meta?.totalPages || 1} onPageChange={setPage}
         columns={[
-          { key: "name", label: "User", render: (u: AdminUser) => <div><p className="font-medium text-gray-900">{u.name || "—"}</p><p className="text-xs text-gray-500">{u.phone}</p></div> },
+          { key: "name", label: "User", render: (u: AdminUser) => <div><p className="font-medium text-ink">{u.name || "—"}</p><p className="text-xs text-ink-soft">{u.phone}</p></div> },
           { key: "roles", label: "Roles", render: (u: AdminUser) => <span className="text-[12px]">{(u.roles || []).map((g) => ROLE_LABEL[g.role] || g.role).join(", ") || "—"}</span> },
           { key: "status", label: "Status", render: (u: AdminUser) => (u.status ? <StatusBadge status={u.status} kind="generic" /> : "—") },
           { key: "mfa", label: "MFA", render: (u: AdminUser) => (u.mfaEnabled ? "Enabled" : "Not set up") },

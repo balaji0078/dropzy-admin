@@ -10,6 +10,7 @@ import type { AuthResult, MfaEnrolment, OtpChallenge, Role } from "@/lib/core-ty
 import { landingRoute } from "@/lib/roles";
 import { OtpInput, QrCode } from "@/components/core/domain";
 import { inputCls } from "@/components/core/ui";
+import DropzyScene from "@/components/layout/DropzyScene";
 
 type Step = "phone" | "otp" | "mfa" | "enrol-token" | "enrol-code";
 const PHONE_RE = /^[6-9][0-9]{9}$/;
@@ -161,36 +162,47 @@ function LoginFlow() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-6 py-12">
-      <div className="w-full max-w-[400px]">
-        <div className="text-center mb-8">
-          <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg" style={{ background: "#D82C2C" }}>
-            <Package className="w-7 h-7 text-white" aria-hidden />
+    <div className="relative min-h-screen flex items-center justify-center bg-canvas px-6 py-12 overflow-hidden">
+      {/* soft violet glow behind the card (DropzyColors.glow) */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[420px] bg-dz-glow" aria-hidden />
+      <div className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[640px] h-[640px] rounded-full bg-primary/10 blur-3xl" aria-hidden />
+      <div className="relative w-full max-w-[420px]">
+        <div className="rounded-2xl overflow-hidden border border-line shadow-rb-xl bg-surface">
+          {/* Hero header, like the customer app's DropzyHero */}
+          <div className="relative h-[188px] bg-dz-hero">
+            <DropzyScene className="absolute inset-0 w-full h-full" sun={[370, 112]} />
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold to-transparent" aria-hidden />
+            <div className="relative z-10 px-6 pt-6 flex items-start gap-3">
+              <div className="w-11 h-11 rounded-xl flex items-center justify-center bg-dz-offer ring-1 ring-gold/60 shadow-violet flex-shrink-0">
+                <Package className="w-6 h-6 text-gold" aria-hidden />
+              </div>
+              <div>
+                <h1 className="text-[22px] font-extrabold text-white leading-tight">Dropzy Staff Portal</h1>
+                <p className="text-[13px] text-[#CFC8E6] mt-0.5">Operations · Warehouse · Support · Finance</p>
+              </div>
+            </div>
           </div>
-          <h1 className="text-[22px] font-bold text-gray-900">Dropzy Staff Portal</h1>
-          <p className="text-[13px] text-gray-500 mt-1">Operations · Warehouse · Support · Finance</p>
-        </div>
 
-        <div className="bg-white rounded-2xl p-7 shadow-rb-lg border border-gray-100 space-y-4">
-          {info && <p className="rounded-xl bg-amber-50 border border-amber-100 px-4 py-3 text-[13px] text-amber-800" role="status">{info}</p>}
+        <div className="p-7 space-y-4 border-t border-line">
+          {info && <p className="rounded-xl bg-warning/10 border border-warning/40 px-4 py-3 text-[13px] text-warning" role="status">{info}</p>}
           {error && (
-            <div className="rounded-xl bg-red-50 border border-red-100 px-4 py-3 text-[13px] text-red-700" role="alert">
+            <div className="rounded-xl bg-danger/10 border border-danger/40 px-4 py-3 text-[13px] text-danger" role="alert">
               <p>{error.title}</p>
-              {error.ref && <p className="text-[11px] font-mono mt-1 text-red-500">Ref: {error.ref}</p>}
+              {error.ref && <p className="text-[11px] font-mono mt-1 text-danger">Ref: {error.ref}</p>}
             </div>
           )}
 
           {step === "phone" && (
             <form onSubmit={requestOtp} className="space-y-4">
               <div className="space-y-1.5">
-                <label htmlFor="phone" className="block text-[12px] font-bold text-gray-500 uppercase tracking-wider">Mobile number</label>
+                <label htmlFor="phone" className="block text-[12px] font-bold text-ink-soft uppercase tracking-wider">Mobile number</label>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[14px] text-gray-500" aria-hidden>+91</span>
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[14px] text-ink-soft" aria-hidden>+91</span>
                   <input id="phone" type="tel" inputMode="numeric" autoComplete="tel-national" autoFocus maxLength={10} value={phone}
                     onChange={(e) => { setPhone(e.target.value.replace(/\D/g, "")); setError(null); }}
                     placeholder="10-digit mobile" className="rb-input pl-12" aria-describedby="phone-hint" />
                 </div>
-                <p id="phone-hint" className="text-[11px] text-gray-500">Use the phone number registered for your staff account.</p>
+                <p id="phone-hint" className="text-[11px] text-ink-soft">Use the phone number registered for your staff account.</p>
               </div>
               <button type="submit" disabled={!PHONE_RE.test(phone) || busy} className="rb-btn rb-btn-primary w-full py-3 text-sm rounded-xl disabled:opacity-50 disabled:cursor-not-allowed">
                 {busy ? <><Loader2 className="w-4 h-4 animate-spin" aria-hidden />Sending…</> : <>Get OTP<ArrowRight className="w-4 h-4" aria-hidden /></>}
@@ -200,18 +212,18 @@ function LoginFlow() {
 
           {step === "otp" && challenge && (
             <form onSubmit={verifyOtp} className="space-y-4">
-              <div className="flex items-center gap-2 text-[13px] text-gray-600">
+              <div className="flex items-center gap-2 text-[13px] text-ink-soft">
                 <Smartphone className="w-4 h-4" aria-hidden />
                 Enter the code sent to {challenge.phoneMasked || `+91 ${phone}`}
               </div>
               <OtpInput length={challenge.codeLength || 6} value={code} onChange={(v) => { setCode(v); setError(null); }} autoFocus label="Login code" />
-              {challenge.devCode && <p className="text-[11px] text-gray-400">Development code: <span className="font-mono">{challenge.devCode}</span></p>}
+              {challenge.devCode && <p className="text-[11px] text-ink-faint">Development code: <span className="font-mono">{challenge.devCode}</span></p>}
               <button type="submit" disabled={code.length !== (challenge.codeLength || 6) || busy} className="rb-btn rb-btn-primary w-full py-3 text-sm rounded-xl disabled:opacity-50 disabled:cursor-not-allowed">
                 {busy ? <><Loader2 className="w-4 h-4 animate-spin" aria-hidden />Verifying…</> : "Verify"}
               </button>
               <div className="flex items-center justify-between text-[12px]">
-                <button type="button" onClick={back} className="inline-flex items-center gap-1 text-gray-500 hover:text-gray-800"><ArrowLeft className="w-3.5 h-3.5" aria-hidden />Change number</button>
-                <button type="button" onClick={() => requestOtp()} disabled={resendIn > 0 || busy} className="font-semibold text-[#D82C2C] disabled:text-gray-400">
+                <button type="button" onClick={back} className="inline-flex items-center gap-1 text-ink-soft hover:text-gold"><ArrowLeft className="w-3.5 h-3.5" aria-hidden />Change number</button>
+                <button type="button" onClick={() => requestOtp()} disabled={resendIn > 0 || busy} className="font-semibold text-primary-light hover:text-gold disabled:text-ink-faint disabled:hover:text-ink-faint">
                   {resendIn > 0 ? `Resend in ${resendIn} s` : "Resend"}
                 </button>
               </div>
@@ -220,41 +232,41 @@ function LoginFlow() {
 
           {step === "mfa" && (
             <form onSubmit={verifyMfa} className="space-y-4">
-              <div className="flex items-center gap-2 text-[13px] text-gray-700 font-semibold"><KeyRound className="w-4 h-4" aria-hidden />Two-factor authentication</div>
-              <p className="text-[12px] text-gray-500">Enter the 6-digit code from your authenticator app.</p>
+              <div className="flex items-center gap-2 text-[13px] text-ink font-semibold"><KeyRound className="w-4 h-4" aria-hidden />Two-factor authentication</div>
+              <p className="text-[12px] text-ink-soft">Enter the 6-digit code from your authenticator app.</p>
               <OtpInput length={6} value={totp} onChange={(v) => { setTotp(v); setError(null); }} autoFocus label="Authenticator code" />
               <button type="submit" disabled={totp.length !== 6 || busy} className="rb-btn rb-btn-primary w-full py-3 text-sm rounded-xl disabled:opacity-50 disabled:cursor-not-allowed">
                 {busy ? <><Loader2 className="w-4 h-4 animate-spin" aria-hidden />Verifying…</> : "Verify"}
               </button>
-              <button type="button" onClick={back} className="inline-flex items-center gap-1 text-[12px] text-gray-500 hover:text-gray-800"><ArrowLeft className="w-3.5 h-3.5" aria-hidden />Start again</button>
+              <button type="button" onClick={back} className="inline-flex items-center gap-1 text-[12px] text-ink-soft hover:text-gold"><ArrowLeft className="w-3.5 h-3.5" aria-hidden />Start again</button>
             </form>
           )}
 
           {step === "enrol-token" && (
             <form onSubmit={startEnrolment} className="space-y-4">
-              <div className="flex items-center gap-2 text-[13px] text-gray-700 font-semibold"><KeyRound className="w-4 h-4" aria-hidden />Set up two-factor authentication</div>
+              <div className="flex items-center gap-2 text-[13px] text-ink font-semibold"><KeyRound className="w-4 h-4" aria-hidden />Set up two-factor authentication</div>
               <div className="space-y-1.5">
-                <label htmlFor="enrol" className="block text-[12px] text-gray-600">Enter the one-time setup code you received from your administrator.</label>
+                <label htmlFor="enrol" className="block text-[12px] text-ink-soft">Enter the one-time setup code you received from your administrator.</label>
                 <input id="enrol" autoFocus value={enrolmentToken} onChange={(e) => { setEnrolmentToken(e.target.value); setError(null); }} className={inputCls} autoComplete="off" maxLength={128} />
               </div>
               <button type="submit" disabled={enrolmentToken.trim().length < 16 || busy} className="rb-btn rb-btn-primary w-full py-3 text-sm rounded-xl disabled:opacity-50 disabled:cursor-not-allowed">
                 {busy ? <><Loader2 className="w-4 h-4 animate-spin" aria-hidden />Checking…</> : "Continue"}
               </button>
-              <button type="button" onClick={back} className="inline-flex items-center gap-1 text-[12px] text-gray-500 hover:text-gray-800"><ArrowLeft className="w-3.5 h-3.5" aria-hidden />Start again</button>
+              <button type="button" onClick={back} className="inline-flex items-center gap-1 text-[12px] text-ink-soft hover:text-gold"><ArrowLeft className="w-3.5 h-3.5" aria-hidden />Start again</button>
             </form>
           )}
 
           {step === "enrol-code" && enrolment && (
             <form onSubmit={confirmEnrolment} className="space-y-4">
-              <div className="flex items-center gap-2 text-[13px] text-gray-700 font-semibold"><KeyRound className="w-4 h-4" aria-hidden />Set up two-factor authentication</div>
-              <p className="text-[12px] text-gray-600">Scan this QR code with your authenticator app, or enter the secret manually. Then enter the 6-digit code it shows.</p>
+              <div className="flex items-center gap-2 text-[13px] text-ink font-semibold"><KeyRound className="w-4 h-4" aria-hidden />Set up two-factor authentication</div>
+              <p className="text-[12px] text-ink-soft">Scan this QR code with your authenticator app, or enter the secret manually. Then enter the 6-digit code it shows.</p>
               <div className="flex flex-col items-center gap-2">
                 <QrCode value={enrolment.otpauthUrl} label="QR code for your authenticator app" />
-                <a href={enrolment.otpauthUrl} className="text-[12px] text-blue-700 underline">Open in authenticator app</a>
+                <a href={enrolment.otpauthUrl} className="text-[12px] text-primary-light underline hover:text-gold">Open in authenticator app</a>
               </div>
-              <div className="rounded-lg bg-gray-50 border border-gray-200 px-3 py-2">
-                <p className="text-[11px] text-gray-500">Secret</p>
-                <p className="font-mono text-[13px] tracking-wider select-all break-all">{enrolment.secret}</p>
+              <div className="rounded-lg bg-surface-alt border border-line px-3 py-2">
+                <p className="text-[11px] text-ink-soft">Secret</p>
+                <p className="font-mono text-[13px] tracking-wider select-all break-all text-gold">{enrolment.secret}</p>
               </div>
               <OtpInput length={6} value={totp} onChange={(v) => { setTotp(v); setError(null); }} autoFocus label="Authenticator code" />
               <button type="submit" disabled={totp.length !== 6 || busy} className="rb-btn rb-btn-primary w-full py-3 text-sm rounded-xl disabled:opacity-50 disabled:cursor-not-allowed">
@@ -263,9 +275,10 @@ function LoginFlow() {
             </form>
           )}
         </div>
+        </div>
 
-        <div className="mt-6 flex items-center justify-center gap-2 text-[11px] text-gray-400">
-          <Shield className="w-3.5 h-3.5" aria-hidden /><span>Dropzy staff only — phone OTP and two-factor authentication</span>
+        <div className="mt-6 flex items-center justify-center gap-2 text-[11px] text-ink-faint">
+          <Shield className="w-3.5 h-3.5 text-gold" aria-hidden /><span>Dropzy staff only — phone OTP and two-factor authentication</span>
         </div>
       </div>
     </div>

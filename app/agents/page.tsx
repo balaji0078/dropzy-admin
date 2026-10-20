@@ -82,42 +82,42 @@ function LegacyAgentsPage() {
           title="Total Agents"
           value={mockAgents.length}
           icon={Users}
-          iconBg="bg-blue-50"
-          iconColor="text-blue-600"
+          iconBg="bg-info/10"
+          iconColor="text-info"
         />
         <StatsCard
           title="Active Today"
           value={activeCount}
           icon={Wifi}
-          iconBg="bg-green-50"
-          iconColor="text-emerald-600"
+          iconBg="bg-success/10"
+          iconColor="text-success"
         />
         <StatsCard
           title="Parcels Handled Today"
           value={totalParcels}
           icon={Package}
-          iconBg="bg-purple-50"
-          iconColor="text-purple-600"
+          iconBg="bg-purple-400/10"
+          iconColor="text-purple-400"
         />
         <StatsCard
           title="Avg Handling Time"
           value={`${Math.round(avgTime)} min`}
           icon={Clock}
-          iconBg="bg-amber-50"
-          iconColor="text-amber-600"
+          iconBg="bg-warning/10"
+          iconColor="text-warning"
         />
       </div>
 
       {/* Filter and Search */}
       <div className="rb-card p-6 space-y-4">
         <div className="flex items-center gap-2 mb-4">
-          <Search className="w-5 h-5 text-gray-400" />
+          <Search className="w-5 h-5 text-ink-faint" />
           <input
             type="text"
             placeholder="Search by name, hub, or phone..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 outline-none text-sm text-gray-900 placeholder-gray-500"
+            className="flex-1 outline-none text-sm text-ink placeholder-ink-faint"
           />
         </div>
 
@@ -136,60 +136,60 @@ function LegacyAgentsPage() {
       <div className="rb-card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead style={{ borderBottom: "1px solid rgba(0,0,0,0.06)" }}>
+            <thead style={{ borderBottom: "1px solid var(--dz-line)" }}>
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-3 text-left text-xs font-medium text-ink-soft uppercase">
                   Name
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-3 text-left text-xs font-medium text-ink-soft uppercase">
                   Phone
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-3 text-left text-xs font-medium text-ink-soft uppercase">
                   Hub Location
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-3 text-left text-xs font-medium text-ink-soft uppercase">
                   Status
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-3 text-left text-xs font-medium text-ink-soft uppercase">
                   Parcels Today
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-3 text-left text-xs font-medium text-ink-soft uppercase">
                   Rating
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-3 text-left text-xs font-medium text-ink-soft uppercase">
                   Last Active
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-3 text-left text-xs font-medium text-ink-soft uppercase">
                   Action
                 </th>
               </tr>
             </thead>
-            <tbody style={{ borderTop: "1px solid rgba(0,0,0,0.06)" }}>
+            <tbody style={{ borderTop: "1px solid var(--dz-line)" }}>
               {filteredAgents.length > 0 ? (
                 filteredAgents.map((agent) => (
-                  <tr key={agent.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                  <tr key={agent.id} className="hover:bg-surface-alt transition-colors">
+                    <td className="px-6 py-4 text-sm font-medium text-ink">
                       {agent.name}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-600 flex items-center gap-2">
-                      <Phone className="w-4 h-4 text-gray-400" />
+                    <td className="px-6 py-4 text-sm text-ink-soft flex items-center gap-2">
+                      <Phone className="w-4 h-4 text-ink-faint" />
                       {agent.phone}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-600 flex items-center gap-2">
-                      <MapPin className="w-4 h-4 text-gray-400" />
+                    <td className="px-6 py-4 text-sm text-ink-soft flex items-center gap-2">
+                      <MapPin className="w-4 h-4 text-ink-faint" />
                       {agent.hub}
                     </td>
                     <td className="px-6 py-4">
                       <StatusBadge status={agent.status} />
                     </td>
-                    <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                    <td className="px-6 py-4 text-sm font-medium text-ink">
                       {agent.parcels_today}
                     </td>
                     <td className="px-6 py-4 text-sm flex items-center gap-1">
-                      <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+                      <Star className="w-4 h-4 text-warning fill-warning" />
                       {agent.rating}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">
+                    <td className="px-6 py-4 text-sm text-ink-soft">
                       {formatDateTime(agent.last_active)}
                     </td>
                     <td className="px-6 py-4">
@@ -207,7 +207,7 @@ function LegacyAgentsPage() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={8} className="px-6 py-8 text-center text-gray-500">
+                  <td colSpan={8} className="px-6 py-8 text-center text-ink-soft">
                     No agents found
                   </td>
                 </tr>
@@ -228,75 +228,75 @@ function LegacyAgentsPage() {
           <div className="space-y-6">
             {/* Profile Info */}
             <div>
-              <h3 className="text-sm font-semibold text-gray-900 mb-4">Profile Information</h3>
+              <h3 className="text-sm font-semibold text-ink mb-4">Profile Information</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">
+                  <p className="text-xs text-ink-soft uppercase tracking-wide mb-1">
                     Name
                   </p>
-                  <p className="text-sm font-medium text-gray-900">{selectedAgent.name}</p>
+                  <p className="text-sm font-medium text-ink">{selectedAgent.name}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">
+                  <p className="text-xs text-ink-soft uppercase tracking-wide mb-1">
                     Phone
                   </p>
-                  <p className="text-sm font-medium text-gray-900">{selectedAgent.phone}</p>
+                  <p className="text-sm font-medium text-ink">{selectedAgent.phone}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">
+                  <p className="text-xs text-ink-soft uppercase tracking-wide mb-1">
                     Email
                   </p>
-                  <p className="text-sm font-medium text-gray-900">{selectedAgent.email}</p>
+                  <p className="text-sm font-medium text-ink">{selectedAgent.email}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">
+                  <p className="text-xs text-ink-soft uppercase tracking-wide mb-1">
                     Hub Location
                   </p>
-                  <p className="text-sm font-medium text-gray-900">{selectedAgent.hub}</p>
+                  <p className="text-sm font-medium text-ink">{selectedAgent.hub}</p>
                 </div>
               </div>
             </div>
 
             {/* Performance Metrics */}
             <div>
-              <h3 className="text-sm font-semibold text-gray-900 mb-4">Performance Metrics</h3>
+              <h3 className="text-sm font-semibold text-ink mb-4">Performance Metrics</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div className="rb-card-flat rounded-xl p-4">
-                  <p className="text-[12px] font-semibold text-gray-600 uppercase tracking-wider mb-1">This Week</p>
-                  <p className="text-[22px] font-bold text-gray-900">{selectedAgent.parcels_week}</p>
-                  <p className="text-[12px] text-gray-500">parcels handled</p>
+                  <p className="text-[12px] font-semibold text-ink-soft uppercase tracking-wider mb-1">This Week</p>
+                  <p className="text-[22px] font-bold text-ink">{selectedAgent.parcels_week}</p>
+                  <p className="text-[12px] text-ink-soft">parcels handled</p>
                 </div>
                 <div className="rb-card-flat rounded-xl p-4">
-                  <p className="text-[12px] font-semibold text-gray-600 uppercase tracking-wider mb-1">This Month</p>
-                  <p className="text-[22px] font-bold text-gray-900">{selectedAgent.parcels_month}</p>
-                  <p className="text-[12px] text-gray-500">parcels handled</p>
+                  <p className="text-[12px] font-semibold text-ink-soft uppercase tracking-wider mb-1">This Month</p>
+                  <p className="text-[22px] font-bold text-ink">{selectedAgent.parcels_month}</p>
+                  <p className="text-[12px] text-ink-soft">parcels handled</p>
                 </div>
                 <div className="rb-card-flat rounded-xl p-4">
-                  <p className="text-[12px] font-semibold text-gray-600 uppercase tracking-wider mb-1">Avg Handling Time</p>
-                  <p className="text-[22px] font-bold text-gray-900">{selectedAgent.avg_handling_time}</p>
-                  <p className="text-[12px] text-gray-500">minutes</p>
+                  <p className="text-[12px] font-semibold text-ink-soft uppercase tracking-wider mb-1">Avg Handling Time</p>
+                  <p className="text-[22px] font-bold text-ink">{selectedAgent.avg_handling_time}</p>
+                  <p className="text-[12px] text-ink-soft">minutes</p>
                 </div>
                 <div className="rb-card-flat rounded-xl p-4">
-                  <p className="text-[12px] font-semibold text-gray-600 uppercase tracking-wider mb-1">Customer Rating</p>
-                  <p className="text-[22px] font-bold text-gray-900">{selectedAgent.rating}</p>
-                  <p className="text-[12px] text-gray-500">out of 5</p>
+                  <p className="text-[12px] font-semibold text-ink-soft uppercase tracking-wider mb-1">Customer Rating</p>
+                  <p className="text-[22px] font-bold text-ink">{selectedAgent.rating}</p>
+                  <p className="text-[12px] text-ink-soft">out of 5</p>
                 </div>
               </div>
             </div>
 
             {/* RFID Scanner Status */}
             <div>
-              <h3 className="text-sm font-semibold text-gray-900 mb-3">RFID Scanner Status</h3>
+              <h3 className="text-sm font-semibold text-ink mb-3">RFID Scanner Status</h3>
               <div className="flex items-center gap-3 p-4 rb-card-flat rounded-xl">
                 {selectedAgent.rfid_status ? (
                   <>
-                    <Wifi className="w-5 h-5 text-emerald-600" />
-                    <span className="text-sm font-medium text-emerald-900">Connected</span>
+                    <Wifi className="w-5 h-5 text-success" />
+                    <span className="text-sm font-medium text-success">Connected</span>
                   </>
                 ) : (
                   <>
-                    <WifiOff className="w-5 h-5 text-gray-400" />
-                    <span className="text-sm font-medium text-gray-600">Disconnected</span>
+                    <WifiOff className="w-5 h-5 text-ink-faint" />
+                    <span className="text-sm font-medium text-ink-soft">Disconnected</span>
                   </>
                 )}
               </div>
@@ -304,7 +304,7 @@ function LegacyAgentsPage() {
 
             {/* Recent Activity */}
             <div>
-              <h3 className="text-sm font-semibold text-gray-900 mb-4">Recent Activity</h3>
+              <h3 className="text-sm font-semibold text-ink mb-4">Recent Activity</h3>
               {selectedAgent.recent_activity.length > 0 ? (
                 <div className="space-y-3">
                   {selectedAgent.recent_activity.map((activity: any, idx: number) => (
@@ -312,15 +312,15 @@ function LegacyAgentsPage() {
                       key={idx}
                       className="flex items-start gap-4 p-3 rb-card-flat rounded-lg"
                     >
-                      <Package className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
+                      <Package className="w-4 h-4 text-ink-faint mt-0.5 flex-shrink-0" />
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-900">
+                        <p className="text-sm font-medium text-ink">
                           {activity.action}
                         </p>
-                        <p className="text-xs text-gray-500 mt-1">
+                        <p className="text-xs text-ink-soft mt-1">
                           Parcel: {activity.parcel_id}
                         </p>
-                        <p className="text-xs text-gray-400 mt-1">
+                        <p className="text-xs text-ink-faint mt-1">
                           {formatDateTime(activity.time)}
                         </p>
                       </div>
@@ -329,7 +329,7 @@ function LegacyAgentsPage() {
                   ))}
                 </div>
               ) : (
-                <p className="text-sm text-gray-500 italic">No recent activity</p>
+                <p className="text-sm text-ink-soft italic">No recent activity</p>
               )}
             </div>
           </div>

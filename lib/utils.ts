@@ -32,28 +32,28 @@ export function formatDateTime(date: string | Date): string {
 
 export function getStatusColor(status: string): string {
   const colors: Record<string, string> = {
-    pending: "bg-yellow-100 text-yellow-800",
-    confirmed: "bg-blue-100 text-blue-800",
-    picked_up: "bg-indigo-100 text-indigo-800",
-    in_transit: "bg-purple-100 text-purple-800",
-    delivered: "bg-green-100 text-green-800",
-    cancelled: "bg-red-100 text-red-800",
-    available: "bg-green-100 text-green-800",
-    on_duty: "bg-blue-100 text-blue-800",
-    unavailable: "bg-gray-100 text-gray-800",
-    completed: "bg-green-100 text-green-800",
-    failed: "bg-red-100 text-red-800",
-    refunded: "bg-purple-100 text-purple-800",
-    active: "bg-green-100 text-green-800",
-    inactive: "bg-gray-100 text-gray-800",
-    booked: "bg-blue-100 text-blue-800",
-    accepted: "bg-cyan-100 text-cyan-800",
-    arrived_at_office: "bg-indigo-100 text-indigo-800",
-    ready_for_pickup: "bg-amber-100 text-amber-800",
-    idle: "bg-gray-100 text-gray-800",
-    maintenance: "bg-orange-100 text-orange-800",
+    pending: "bg-warning/15 text-warning",
+    confirmed: "bg-info/15 text-info",
+    picked_up: "bg-info/15 text-info",
+    in_transit: "bg-purple-400/15 text-purple-400",
+    delivered: "bg-success/15 text-success",
+    cancelled: "bg-danger/15 text-danger",
+    available: "bg-success/15 text-success",
+    on_duty: "bg-info/15 text-info",
+    unavailable: "bg-surface-alt text-ink",
+    completed: "bg-success/15 text-success",
+    failed: "bg-danger/15 text-danger",
+    refunded: "bg-purple-400/15 text-purple-400",
+    active: "bg-success/15 text-success",
+    inactive: "bg-surface-alt text-ink",
+    booked: "bg-info/15 text-info",
+    accepted: "bg-cyan-400/15 text-cyan-400",
+    arrived_at_office: "bg-info/15 text-info",
+    ready_for_pickup: "bg-warning/15 text-warning",
+    idle: "bg-surface-alt text-ink",
+    maintenance: "bg-orange-400/15 text-orange-400",
   };
-  return colors[status] || "bg-gray-100 text-gray-800";
+  return colors[status] || "bg-surface-alt text-ink";
 }
 
 export function getInitials(firstName: string, lastName: string): string {

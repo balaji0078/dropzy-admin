@@ -88,7 +88,7 @@ function LegacyPricingPage() {
       label: "Vehicle",
       render: (r: any) => (
         <span className="capitalize flex items-center gap-2">
-          <Truck className="w-4 h-4 text-gray-400" /> {r.vehicle_type}
+          <Truck className="w-4 h-4 text-ink-faint" /> {r.vehicle_type}
         </span>
       ),
     },
@@ -125,7 +125,7 @@ function LegacyPricingPage() {
       key: "is_active",
       label: "Active",
       render: (r: any) => (
-        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${r.is_active !== false ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-600"}`}>
+        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${r.is_active !== false ? "bg-success/15 text-success" : "bg-surface-alt text-ink-soft"}`}>
           {r.is_active !== false ? "Active" : "Inactive"}
         </span>
       ),
@@ -136,8 +136,8 @@ function LegacyPricingPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-[16px] font-bold text-gray-900">Pricing Rules</h2>
-          <p className="text-[13px] text-gray-500">Manage delivery pricing per vehicle type</p>
+          <h2 className="text-[16px] font-bold text-ink">Pricing Rules</h2>
+          <p className="text-[13px] text-ink-soft">Manage delivery pricing per vehicle type</p>
         </div>
         <div className="flex gap-3">
           <button onClick={() => setShowEstimate(true)} className="rb-btn rb-btn-outline flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium">
@@ -157,8 +157,8 @@ function LegacyPricingPage() {
       <Modal open={showCreate} onClose={() => setShowCreate(false)} title="Create Pricing Rule">
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Vehicle Type</label>
-            <select value={createForm.vehicle_type} onChange={(e) => setCreateForm({ ...createForm, vehicle_type: e.target.value })} className="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm">
+            <label className="block text-sm font-medium text-ink mb-1">Vehicle Type</label>
+            <select value={createForm.vehicle_type} onChange={(e) => setCreateForm({ ...createForm, vehicle_type: e.target.value })} className="w-full px-4 py-2 border border-line rounded-lg text-sm">
               {["bike", "auto", "car", "mini", "van", "truck"].map((v) => (
                 <option key={v} value={v}>{v}</option>
               ))}
@@ -166,8 +166,8 @@ function LegacyPricingPage() {
           </div>
           {["base_price", "price_per_km", "price_per_kg", "min_price", "max_price"].map((field) => (
             <div key={field}>
-              <label className="block text-sm font-medium text-gray-700 mb-1 capitalize">{field.replace(/_/g, " ")}</label>
-              <input type="number" value={(createForm as any)[field]} onChange={(e) => setCreateForm({ ...createForm, [field]: parseFloat(e.target.value) })} className="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm" />
+              <label className="block text-sm font-medium text-ink mb-1 capitalize">{field.replace(/_/g, " ")}</label>
+              <input type="number" value={(createForm as any)[field]} onChange={(e) => setCreateForm({ ...createForm, [field]: parseFloat(e.target.value) })} className="w-full px-4 py-2 border border-line rounded-lg text-sm" />
             </div>
           ))}
           <button onClick={handleCreateRule} className="rb-btn rb-btn-primary w-full py-2.5 rounded-xl text-sm font-medium">Create Rule</button>
@@ -178,8 +178,8 @@ function LegacyPricingPage() {
       <Modal open={showEstimate} onClose={() => { setShowEstimate(false); setEstimateResult(null); }} title="Price Estimate Tester">
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Vehicle Type</label>
-            <select value={estimateForm.vehicle_type} onChange={(e) => setEstimateForm({ ...estimateForm, vehicle_type: e.target.value })} className="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm">
+            <label className="block text-sm font-medium text-ink mb-1">Vehicle Type</label>
+            <select value={estimateForm.vehicle_type} onChange={(e) => setEstimateForm({ ...estimateForm, vehicle_type: e.target.value })} className="w-full px-4 py-2 border border-line rounded-lg text-sm">
               {["bike", "auto", "car", "mini", "van", "truck"].map((v) => (
                 <option key={v} value={v}>{v}</option>
               ))}
@@ -187,12 +187,12 @@ function LegacyPricingPage() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Distance (km)</label>
-              <input type="number" value={estimateForm.distance_km} onChange={(e) => setEstimateForm({ ...estimateForm, distance_km: parseFloat(e.target.value) })} className="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm" />
+              <label className="block text-sm font-medium text-ink mb-1">Distance (km)</label>
+              <input type="number" value={estimateForm.distance_km} onChange={(e) => setEstimateForm({ ...estimateForm, distance_km: parseFloat(e.target.value) })} className="w-full px-4 py-2 border border-line rounded-lg text-sm" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Weight (kg)</label>
-              <input type="number" value={estimateForm.weight_kg} onChange={(e) => setEstimateForm({ ...estimateForm, weight_kg: parseFloat(e.target.value) })} className="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm" />
+              <label className="block text-sm font-medium text-ink mb-1">Weight (kg)</label>
+              <input type="number" value={estimateForm.weight_kg} onChange={(e) => setEstimateForm({ ...estimateForm, weight_kg: parseFloat(e.target.value) })} className="w-full px-4 py-2 border border-line rounded-lg text-sm" />
             </div>
           </div>
           <button onClick={handleEstimate} className="rb-btn rb-btn-primary w-full py-2.5 rounded-xl text-sm font-medium">Calculate</button>
@@ -203,11 +203,11 @@ function LegacyPricingPage() {
               <div className="flex justify-between text-sm"><span>Distance ({estimateResult.distance_km} km)</span><span>{formatCurrency(estimateResult.distance_price)}</span></div>
               <div className="flex justify-between text-sm"><span>Weight ({estimateResult.weight_kg} kg)</span><span>{formatCurrency(estimateResult.weight_price)}</span></div>
               {estimateResult.surge_price > 0 && (
-                <div className="flex justify-between text-sm text-orange-600"><span>Surge ({estimateResult.surge_multiplier}x)</span><span>{formatCurrency(estimateResult.surge_price)}</span></div>
+                <div className="flex justify-between text-sm text-orange-400"><span>Surge ({estimateResult.surge_multiplier}x)</span><span>{formatCurrency(estimateResult.surge_price)}</span></div>
               )}
-              <div className="flex justify-between text-base font-bold pt-2 mt-2" style={{ borderTop: "1px solid rgba(0,0,0,0.06)" }}>
+              <div className="flex justify-between text-base font-bold pt-2 mt-2" style={{ borderTop: "1px solid var(--dz-line)" }}>
                 <span>Total</span>
-                <span className="text-[#D82C2C]">{formatCurrency(estimateResult.total_price)}</span>
+                <span className="text-primary-light">{formatCurrency(estimateResult.total_price)}</span>
               </div>
             </div>
           )}

@@ -48,9 +48,9 @@ function ReconBody() {
             { key: "date", label: "Business date", render: (r: ReconRun) => formatISTDate(r.businessDate) },
             { key: "status", label: "Status", render: (r: ReconRun) => (r.status ? <StatusBadge status={r.status} kind="generic" /> : "—") },
             { key: "counts", label: "Provider / internal / matched", render: (r: ReconRun) => <span className="tabular-nums">{r.providerTxnCount ?? "—"} / {r.internalTxnCount ?? "—"} / {r.matchedCount ?? "—"}</span> },
-            { key: "exceptions", label: "Exceptions", render: (r: ReconRun) => <span className={`tabular-nums font-semibold ${(r.exceptionCount || 0) > 0 ? "text-red-700" : ""}`}>{r.exceptionCount ?? "—"}</span> },
+            { key: "exceptions", label: "Exceptions", render: (r: ReconRun) => <span className={`tabular-nums font-semibold ${(r.exceptionCount || 0) > 0 ? "text-danger" : ""}`}>{r.exceptionCount ?? "—"}</span> },
             { key: "time", label: "Completed", render: (r: ReconRun) => <span className="text-[12px]">{formatIST(r.completedAt || r.startedAt)}</span> },
-            { key: "error", label: "Error", render: (r: ReconRun) => <span className="text-[12px] text-red-700">{r.error || ""}</span> },
+            { key: "error", label: "Error", render: (r: ReconRun) => <span className="text-[12px] text-danger">{r.error || ""}</span> },
           ]} />
         </div>
       </Card>
@@ -68,7 +68,7 @@ function ReconBody() {
             { key: "amounts", label: "Provider / internal / ledger", render: (i: ReconItem) => <span className="tabular-nums text-[12px]">{formatPaise(i.providerAmountPaise)} / {formatPaise(i.internalAmountPaise)} / {formatPaise(i.ledgerAmountPaise)}</span> },
             { key: "status", label: "Status", render: (i: ReconItem) => (i.status ? <StatusBadge status={i.status} kind="generic" /> : "—") },
             { key: "note", label: "Resolution", render: (i: ReconItem) => <span className="text-[12px]">{i.resolutionNote ? `${i.resolutionNote} · ${formatIST(i.resolvedAt)}` : "—"}</span> },
-            { key: "ops", label: "Operations", render: (i: ReconItem) => (canWrite && i.status === "OPEN" ? <button className={rowAction("green")} onClick={() => setResolving(i)}>Resolve</button> : <span className="text-gray-400">—</span>) },
+            { key: "ops", label: "Operations", render: (i: ReconItem) => (canWrite && i.status === "OPEN" ? <button className={rowAction("green")} onClick={() => setResolving(i)}>Resolve</button> : <span className="text-ink-faint">—</span>) },
           ]} />
       </Card>
       <ConfirmDialog open={confirmRun} title="Run reconciliation" busy={busy} confirmLabel="Run" onClose={() => setConfirmRun(false)} onConfirm={startRun}

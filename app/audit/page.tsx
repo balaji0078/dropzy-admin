@@ -45,7 +45,7 @@ function AuditBody() {
         </div>
       </form>
       <ErrorBanner error={q.error} onRetry={q.reload} />
-      <p className="text-[12px] text-gray-500 -mb-2">Rejected attempts are highlighted. Select a row to see the before/after summaries.</p>
+      <p className="text-[12px] text-ink-soft -mb-2">Rejected attempts are highlighted. Select a row to see the before/after summaries.</p>
       <AuditTable rows={q.data?.data || []} loading={q.loading && !q.data} page={q.data?.meta?.page || page} totalPages={q.data?.meta?.totalPages || 1} onPageChange={setPage} />
     </>
   );

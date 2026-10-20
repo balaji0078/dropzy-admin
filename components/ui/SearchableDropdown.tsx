@@ -62,21 +62,21 @@ export default function SearchableDropdown({
   return (
     <div ref={containerRef} className={`relative ${className}`}>
       {label && (
-        <label className="block text-[12px] font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
+        <label className="block text-[12px] font-semibold text-ink-soft uppercase tracking-wider mb-1.5">
           {label}
         </label>
       )}
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-[13px] transition-all duration-200"
+        className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-[13px] transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
         style={{
-          background: "rgba(255, 255, 255, 0.8)",
-          border: isOpen ? "1px solid rgba(216, 44, 44, 0.3)" : "1px solid rgba(0, 0, 0, 0.08)",
-          boxShadow: isOpen ? "0 0 0 3px rgba(216, 44, 44, 0.08)" : "none",
+          background: "var(--dz-surface-alt)",
+          border: isOpen ? "1px solid var(--dz-gold)" : "1px solid var(--dz-line)",
+          boxShadow: isOpen ? "0 0 0 3px rgba(245,196,81,0.18)" : "none",
         }}
       >
-        <span className={selectedOption ? "text-gray-900 font-medium" : "text-gray-400"}>
+        <span className={selectedOption ? "text-ink font-medium" : "text-ink-faint"}>
           {selectedOption ? selectedOption.label : placeholder}
         </span>
         <div className="flex items-center gap-1">
@@ -87,13 +87,13 @@ export default function SearchableDropdown({
                 onChange("");
                 setSearch("");
               }}
-              className="p-0.5 hover:bg-black/[0.04] rounded-md transition-colors"
+              className="p-0.5 hover:bg-surface-alt rounded-md transition-colors"
             >
-              <X className="w-3.5 h-3.5 text-gray-400" />
+              <X className="w-3.5 h-3.5 text-ink-faint" />
             </span>
           )}
           <ChevronDown
-            className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+            className={`w-4 h-4 text-ink-faint transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
           />
         </div>
       </button>
@@ -102,34 +102,34 @@ export default function SearchableDropdown({
         <div
           className="absolute z-50 mt-1.5 w-full overflow-hidden animate-scale-in"
           style={{
-            background: "rgba(255, 255, 255, 0.95)",
+            background: "rgba(27, 24, 38, 0.97)",
             backdropFilter: "blur(20px)",
             WebkitBackdropFilter: "blur(20px)",
-            border: "1px solid rgba(0, 0, 0, 0.08)",
+            border: "1px solid var(--dz-line)",
             borderRadius: "14px",
-            boxShadow: "0 8px 40px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(255, 255, 255, 0.5) inset",
+            boxShadow: "0 12px 40px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.03) inset",
           }}
         >
-          <div className="p-2" style={{ borderBottom: "1px solid rgba(0, 0, 0, 0.05)" }}>
+          <div className="p-2" style={{ borderBottom: "1px solid var(--dz-line)" }}>
             <div className="relative">
-              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
+              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-ink-faint" />
               <input
                 ref={inputRef}
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Type to search..."
-                className="w-full pl-8 pr-3 py-1.5 text-[13px] rounded-lg focus:outline-none"
+                className="w-full pl-8 pr-3 py-1.5 text-[13px] rounded-lg text-ink placeholder:text-ink-faint focus:outline-none focus:ring-2 focus:ring-gold/25"
                 style={{
-                  background: "rgba(0, 0, 0, 0.03)",
-                  border: "1px solid rgba(0, 0, 0, 0.04)",
+                  background: "var(--dz-surface-alt)",
+                  border: "1px solid var(--dz-line)",
                 }}
               />
             </div>
           </div>
           <div className="max-h-56 overflow-y-auto p-1">
             {filteredOptions.length === 0 ? (
-              <div className="px-3 py-4 text-[13px] text-gray-400 text-center">No results found</div>
+              <div className="px-3 py-4 text-[13px] text-ink-faint text-center">No results found</div>
             ) : (
               filteredOptions.map((opt) => (
                 <button
@@ -142,22 +142,22 @@ export default function SearchableDropdown({
                   }}
                   className={`w-full text-left px-3 py-2 text-[13px] rounded-lg transition-colors duration-150 flex items-center justify-between ${
                     opt.value === value
-                      ? "bg-red-50 text-[#D82C2C]"
-                      : "text-gray-700 hover:bg-black/[0.03]"
+                      ? "bg-gold/10 text-gold"
+                      : "text-ink hover:bg-surface-alt"
                   }`}
                 >
                   <div>
                     <div className={opt.value === value ? "font-medium" : ""}>{opt.label}</div>
                     {opt.sublabel && (
-                      <div className="text-[11px] text-gray-400 mt-0.5">{opt.sublabel}</div>
+                      <div className="text-[11px] text-ink-faint mt-0.5">{opt.sublabel}</div>
                     )}
                   </div>
-                  {opt.value === value && <Check className="w-4 h-4 text-[#D82C2C]" />}
+                  {opt.value === value && <Check className="w-4 h-4 text-gold" />}
                 </button>
               ))
             )}
             {filteredOptions.length === 50 && search === "" && (
-              <div className="px-3 py-2 text-[11px] text-gray-400 text-center" style={{ borderTop: "1px solid rgba(0,0,0,0.04)" }}>
+              <div className="px-3 py-2 text-[11px] text-ink-faint text-center" style={{ borderTop: "1px solid var(--dz-line)" }}>
                 Type to search more results...
               </div>
             )}

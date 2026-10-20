@@ -199,11 +199,11 @@ function CityTypeahead({
 
   return (
     <div ref={ref} className="relative">
-      <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
+      <label className="block text-xs font-semibold text-ink-soft uppercase tracking-wider mb-1.5">
         {label}
       </label>
       <div className="relative">
-        <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+        <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-faint" />
         <input
           type="text"
           value={value}
@@ -212,21 +212,21 @@ function CityTypeahead({
           placeholder={placeholder}
           className={cn(
             "w-full rb-input pl-10 pr-4 py-2.5 transition-all",
-            error ? "border-red-400 focus:ring-2 focus:ring-red-100" : "focus:border-[#D82C2C] focus:ring-2 focus:ring-[#D82C2C]/10"
+            error ? "border-danger/60 focus:ring-2 focus:ring-danger/30" : "focus:border-gold focus:ring-2 focus:ring-gold/40"
           )}
         />
       </div>
-      {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
+      {error && <p className="text-xs text-danger mt-1">{error}</p>}
       {open && filtered.length > 0 && (
         <div className="absolute z-20 w-full mt-1 rb-card rounded-xl shadow-lg max-h-48 overflow-y-auto">
           {filtered.map((city) => (
             <button
               key={city.pincode}
-              className="w-full text-left px-4 py-2.5 text-sm hover:bg-red-50 transition-colors flex justify-between items-center"
+              className="w-full text-left px-4 py-2.5 text-sm hover:bg-surface-alt hover:text-gold transition-colors flex justify-between items-center"
               onClick={() => { onSelect(city); setOpen(false); }}
             >
-              <span className="font-medium text-gray-900">{city.city}, {city.state}</span>
-              <span className="text-xs text-gray-400">{city.pincode}</span>
+              <span className="font-medium text-ink">{city.city}, {city.state}</span>
+              <span className="text-xs text-ink-faint">{city.pincode}</span>
             </button>
           ))}
         </div>
@@ -262,28 +262,28 @@ function CountryDropdown({
 
   return (
     <div ref={ref} className="relative">
-      <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
+      <label className="block text-xs font-semibold text-ink-soft uppercase tracking-wider mb-1.5">
         Destination Country
       </label>
       <button
         onClick={() => setOpen(!open)}
         className={cn(
           "rb-input w-full flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm text-left transition-all",
-          error ? "border-red-400" : ""
+          error ? "border-danger/60" : ""
         )}
       >
-        <Globe className="w-4 h-4 text-gray-400 flex-shrink-0" />
-        <span className={value ? "text-gray-900 flex-1" : "text-gray-400 flex-1"}>
+        <Globe className="w-4 h-4 text-ink-faint flex-shrink-0" />
+        <span className={value ? "text-ink flex-1" : "text-ink-faint flex-1"}>
           {value || "Select country"}
         </span>
-        <ChevronDown className={cn("w-4 h-4 text-gray-400 transition-transform", open && "rotate-180")} />
+        <ChevronDown className={cn("w-4 h-4 text-ink-faint transition-transform", open && "rotate-180")} />
       </button>
-      {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
+      {error && <p className="text-xs text-danger mt-1">{error}</p>}
       {open && (
         <div className="absolute z-20 w-full mt-1 rb-card rounded-xl shadow-lg">
-          <div className="p-2" style={{ borderBottom: "1px solid rgba(0,0,0,0.06)" }}>
+          <div className="p-2" style={{ borderBottom: "1px solid var(--dz-line)" }}>
             <div className="relative">
-              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
+              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-ink-faint" />
               <input
                 type="text"
                 placeholder="Search country..."
@@ -299,8 +299,8 @@ function CountryDropdown({
               <button
                 key={country}
                 className={cn(
-                  "w-full text-left px-4 py-2 text-sm hover:bg-red-50 transition-colors",
-                  value === country && "bg-red-50 text-[#D82C2C] font-medium"
+                  "w-full text-left px-4 py-2 text-sm hover:bg-surface-alt transition-colors",
+                  value === country && "bg-gold/10 text-gold font-medium"
                 )}
                 onClick={() => { onChange(country); setOpen(false); setSearch(""); }}
               >
@@ -456,8 +456,8 @@ function LegacyCostEstimatorPage() {
     <div className="space-y-6 max-w-3xl">
       {/* Header */}
       <div>
-        <h2 className="text-[16px] font-bold text-gray-900">Shipping Cost Estimator</h2>
-        <p className="text-[13px] text-gray-500">
+        <h2 className="text-[16px] font-bold text-ink">Shipping Cost Estimator</h2>
+        <p className="text-[13px] text-ink-soft">
           Calculate shipping costs and send estimates to customers
         </p>
       </div>
@@ -469,8 +469,8 @@ function LegacyCostEstimatorPage() {
           className={cn(
             "flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200",
             mode === "international"
-              ? "bg-[#1E3A5F] text-white shadow-md"
-              : "bg-white text-gray-600 border border-gray-200 hover:border-gray-300"
+              ? "bg-primary-deep text-white shadow-violet ring-1 ring-gold/60"
+              : "bg-surface text-ink-soft border border-line hover:border-line-strong"
           )}
         >
           <Globe className="w-4 h-4" />
@@ -481,8 +481,8 @@ function LegacyCostEstimatorPage() {
           className={cn(
             "flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200",
             mode === "domestic"
-              ? "bg-[#1E3A5F] text-white shadow-md"
-              : "bg-white text-gray-600 border border-gray-200 hover:border-gray-300"
+              ? "bg-primary-deep text-white shadow-violet ring-1 ring-gold/60"
+              : "bg-surface text-ink-soft border border-line hover:border-line-strong"
           )}
         >
           <MapPin className="w-4 h-4" />
@@ -523,11 +523,11 @@ function LegacyCostEstimatorPage() {
 
           {/* Shipment Value */}
           <div>
-            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-semibold text-ink-soft uppercase tracking-wider mb-1.5">
               Shipment Value (Approx.)
             </label>
             <div className="relative">
-              <IndianRupee className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <IndianRupee className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-faint" />
               <input
                 type="number"
                 value={form.shipment_value}
@@ -540,10 +540,10 @@ function LegacyCostEstimatorPage() {
 
           {/* Package Type */}
           <div>
-            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+            <label className="block text-xs font-semibold text-ink-soft uppercase tracking-wider mb-2">
               Package Type
             </label>
-            {errors.package_type && <p className="text-xs text-red-500 mb-2">{errors.package_type}</p>}
+            {errors.package_type && <p className="text-xs text-danger mb-2">{errors.package_type}</p>}
             <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-9 gap-2">
               {PACKAGE_TYPES.map((pkg) => {
                 const isSelected = form.package_type === pkg.id;
@@ -555,12 +555,12 @@ function LegacyCostEstimatorPage() {
                     className={cn(
                       "relative flex flex-col items-center gap-1.5 p-3 rounded-xl text-xs font-medium transition-all duration-200 border-2",
                       isSelected
-                        ? "border-[#34C759] bg-[#34C759]/10 text-[#34C759]"
-                        : "border-gray-200 rb-card-flat text-gray-600 hover:border-gray-300"
+                        ? "border-gold bg-gold/10 text-gold"
+                        : "border-line rb-card-flat text-ink-soft hover:border-line-strong"
                     )}
                   >
                     {isSelected && (
-                      <CheckCircle2 className="absolute -top-1.5 -right-1.5 w-4 h-4 text-[#34C759] bg-white rounded-full" />
+                      <CheckCircle2 className="absolute -top-1.5 -right-1.5 w-4 h-4 text-gold bg-surface rounded-full" />
                     )}
                     <Icon className="w-5 h-5" />
                     <span className="text-center leading-tight">{pkg.label}</span>
@@ -576,14 +576,14 @@ function LegacyCostEstimatorPage() {
                 value={form.package_type_custom}
                 onChange={(e) => setForm({ ...form, package_type_custom: e.target.value })}
                 placeholder="Describe your package (max 300 characters)"
-                className="mt-3 w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:border-[#D82C2C] focus:ring-2 focus:ring-red-100 transition-all"
+                className="mt-3 w-full px-4 py-2.5 border border-line rounded-lg text-sm focus:border-gold focus:ring-2 focus:ring-gold/40 transition-all"
               />
             )}
 
             {showRestrictionWarning && (
-              <div className="mt-3 flex items-start gap-2 p-3 bg-amber-50 border border-amber-200 rounded-lg">
-                <AlertTriangle className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
-                <p className="text-xs text-amber-700">
+              <div className="mt-3 flex items-start gap-2 p-3 bg-warning/10 border border-warning/35 rounded-lg">
+                <AlertTriangle className="w-4 h-4 text-warning flex-shrink-0 mt-0.5" />
+                <p className="text-xs text-warning">
                   {form.package_type === "MEDS"
                     ? "Prescription medicines require licensed pharmacy documents. Check our restricted items policy."
                     : "Food items are subject to customs restrictions for international shipments. Perishable items may require special packaging."}
@@ -595,17 +595,17 @@ function LegacyCostEstimatorPage() {
           {/* Weight & Mobile */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-              <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
+              <label className="block text-xs font-semibold text-ink-soft uppercase tracking-wider mb-1.5">
                 Select Weight
               </label>
               <div className="relative">
-                <Weight className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <Weight className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-faint" />
                 <select
                   value={form.weight_kg || ""}
                   onChange={(e) => setForm({ ...form, weight_kg: parseFloat(e.target.value) || 0 })}
                   className={cn(
                     "rb-input w-full pl-10 pr-4 py-2.5 text-sm appearance-none transition-all",
-                    errors.weight_kg ? "border-red-400" : ""
+                    errors.weight_kg ? "border-danger/60" : ""
                   )}
                 >
                   <option value="">Select weight</option>
@@ -613,19 +613,19 @@ function LegacyCostEstimatorPage() {
                     <option key={w.value} value={w.value}>{w.label}</option>
                   ))}
                 </select>
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-faint pointer-events-none" />
               </div>
-              {errors.weight_kg && <p className="text-xs text-red-500 mt-1">{errors.weight_kg}</p>}
+              {errors.weight_kg && <p className="text-xs text-danger mt-1">{errors.weight_kg}</p>}
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
+              <label className="block text-xs font-semibold text-ink-soft uppercase tracking-wider mb-1.5">
                 Mobile Number
               </label>
               <div className="relative">
-                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-faint" />
                 {mode === "international" && (
-                  <span className="absolute left-9 top-1/2 -translate-y-1/2 text-sm text-gray-500">+91</span>
+                  <span className="absolute left-9 top-1/2 -translate-y-1/2 text-sm text-ink-soft">+91</span>
                 )}
                 <input
                   type="tel"
@@ -636,11 +636,11 @@ function LegacyCostEstimatorPage() {
                   className={cn(
                     "rb-input w-full pr-4 py-2.5 text-sm transition-all",
                     mode === "international" ? "pl-16" : "pl-10",
-                    errors.mobile ? "border-red-400" : ""
+                    errors.mobile ? "border-danger/60" : ""
                   )}
                 />
               </div>
-              {errors.mobile && <p className="text-xs text-red-500 mt-1">{errors.mobile}</p>}
+              {errors.mobile && <p className="text-xs text-danger mt-1">{errors.mobile}</p>}
             </div>
           </div>
 
@@ -652,7 +652,7 @@ function LegacyCostEstimatorPage() {
               "rb-btn w-full flex items-center justify-center gap-2 py-3 rounded-xl text-base font-bold transition-all duration-200",
               isFormComplete && !loading
                 ? "rb-btn-primary"
-                : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                : "bg-line text-ink-faint cursor-not-allowed"
             )}
           >
             {mode === "international" ? "Check International Rates" : "Check Domestic Rates"}
@@ -665,12 +665,12 @@ function LegacyCostEstimatorPage() {
       {loading && (
         <div className="rb-card p-12 flex flex-col items-center justify-center gap-4">
           <div className="relative">
-            <div className="w-16 h-16 bg-[#D82C2C]/10 rounded-full flex items-center justify-center">
-              <Package className="w-8 h-8 text-[#D82C2C]" />
+            <div className="w-16 h-16 bg-primary/15 rounded-full flex items-center justify-center">
+              <Package className="w-8 h-8 text-primary-light" />
             </div>
-            <div className="absolute inset-0 w-16 h-16 border-4 border-[#D82C2C]/20 border-t-[#D82C2C] rounded-full animate-spin" />
+            <div className="absolute inset-0 w-16 h-16 border-4 border-primary/35 border-t-primary rounded-full animate-spin" />
           </div>
-          <p className="text-sm font-medium text-gray-600">Calculating shipping cost...</p>
+          <p className="text-sm font-medium text-ink-soft">Calculating shipping cost...</p>
         </div>
       )}
 
@@ -680,7 +680,7 @@ function LegacyCostEstimatorPage() {
           {/* Back button */}
           <button
             onClick={() => { setEstimate(null); setApiError(false); setSent(false); }}
-            className="flex items-center gap-1.5 text-sm text-[#D82C2C] hover:text-[#B71C1C] font-medium"
+            className="flex items-center gap-1.5 text-sm text-primary-light hover:text-gold font-medium"
           >
             <ArrowLeft className="w-4 h-4" />
             Modify Search
@@ -689,10 +689,10 @@ function LegacyCostEstimatorPage() {
           {/* Estimate Card */}
           <div className="rb-card overflow-hidden">
             {/* Header */}
-            <div className="bg-gradient-to-r from-[#1E3A5F] to-[#2a5080] px-6 py-4">
+            <div className="bg-dz-offer px-6 py-4 border-b border-gold/40">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
-                  <Package className="w-5 h-5 text-white" />
+                  <Package className="w-5 h-5 text-gold" />
                 </div>
                 <div>
                   <h3 className="text-white font-semibold text-lg">Dropzy {estimate.service_type}</h3>
@@ -708,21 +708,21 @@ function LegacyCostEstimatorPage() {
               {/* Route & Package Info */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="text-center p-3 rb-card-flat rounded-lg">
-                  <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Package</p>
-                  <p className="text-sm font-medium text-gray-900 mt-1">{PACKAGE_TYPES.find((p) => p.id === form.package_type)?.label}</p>
+                  <p className="text-[10px] font-semibold text-ink-faint uppercase tracking-wider">Package</p>
+                  <p className="text-sm font-medium text-ink mt-1">{PACKAGE_TYPES.find((p) => p.id === form.package_type)?.label}</p>
                 </div>
                 <div className="text-center p-3 rb-card-flat rounded-lg">
-                  <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Weight</p>
-                  <p className="text-sm font-medium text-gray-900 mt-1">{form.weight_kg} kg</p>
+                  <p className="text-[10px] font-semibold text-ink-faint uppercase tracking-wider">Weight</p>
+                  <p className="text-sm font-medium text-ink mt-1">{form.weight_kg} kg</p>
                 </div>
                 <div className="text-center p-3 rb-card-flat rounded-lg">
-                  <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Delivery</p>
-                  <p className="text-sm font-medium text-gray-900 mt-1">{estimate.estimated_days.min}–{estimate.estimated_days.max} Days</p>
+                  <p className="text-[10px] font-semibold text-ink-faint uppercase tracking-wider">Delivery</p>
+                  <p className="text-sm font-medium text-ink mt-1">{estimate.estimated_days.min}–{estimate.estimated_days.max} Days</p>
                 </div>
                 {form.shipment_value && (
                   <div className="text-center p-3 rb-card-flat rounded-lg">
-                    <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Declared Value</p>
-                    <p className="text-sm font-medium text-gray-900 mt-1">₹{parseInt(form.shipment_value).toLocaleString("en-IN")}</p>
+                    <p className="text-[10px] font-semibold text-ink-faint uppercase tracking-wider">Declared Value</p>
+                    <p className="text-sm font-medium text-ink mt-1">₹{parseInt(form.shipment_value).toLocaleString("en-IN")}</p>
                   </div>
                 )}
               </div>
@@ -730,21 +730,21 @@ function LegacyCostEstimatorPage() {
               {/* Price Breakdown */}
               <div className="rb-card-flat rounded-lg p-4 space-y-3">
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-500">Base Shipping Charge</span>
-                  <span className="text-gray-900 font-medium">₹{estimate.base_price.toLocaleString("en-IN")}</span>
+                  <span className="text-ink-soft">Base Shipping Charge</span>
+                  <span className="text-ink font-medium">₹{estimate.base_price.toLocaleString("en-IN")}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-500">GST (18%)</span>
-                  <span className="text-gray-900 font-medium">₹{estimate.gst.toLocaleString("en-IN")}</span>
+                  <span className="text-ink-soft">GST (18%)</span>
+                  <span className="text-ink font-medium">₹{estimate.gst.toLocaleString("en-IN")}</span>
                 </div>
-                <div className="pt-3 flex justify-between" style={{ borderTop: "1px solid rgba(0,0,0,0.06)" }}>
-                  <span className="text-base font-bold text-gray-900">Total Estimated Cost</span>
-                  <span className="text-2xl font-bold text-[#E8732A]">₹{estimate.total_price.toLocaleString("en-IN")}</span>
+                <div className="pt-3 flex justify-between" style={{ borderTop: "1px solid var(--dz-line)" }}>
+                  <span className="text-base font-bold text-ink">Total Estimated Cost</span>
+                  <span className="text-2xl font-bold dz-kpi">₹{estimate.total_price.toLocaleString("en-IN")}</span>
                 </div>
               </div>
 
               {/* Features */}
-              <div className="flex flex-wrap gap-3 text-xs text-gray-500">
+              <div className="flex flex-wrap gap-3 text-xs text-ink-soft">
                 <span className="flex items-center gap-1"><Truck className="w-3.5 h-3.5" /> Door-to-door delivery</span>
                 <span className="flex items-center gap-1"><Shield className="w-3.5 h-3.5" /> Shipment insurance included</span>
                 <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> Real-time tracking</span>
@@ -758,7 +758,7 @@ function LegacyCostEstimatorPage() {
                   className={cn(
                     "rb-btn flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all duration-200",
                     sent
-                      ? "bg-[#34C759] text-white"
+                      ? "bg-success/15 text-success border border-success/40"
                       : "rb-btn-primary"
                   )}
                 >
@@ -778,7 +778,7 @@ function LegacyCostEstimatorPage() {
                   onClick={handleCopyEstimate}
                   className="rb-btn rb-btn-outline flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium transition-all"
                 >
-                  {copied ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4 text-gray-500" />}
+                  {copied ? <Check className="w-4 h-4 text-success" /> : <Copy className="w-4 h-4 text-ink-soft" />}
                   {copied ? "Copied" : "Copy"}
                 </button>
               </div>
@@ -789,10 +789,10 @@ function LegacyCostEstimatorPage() {
 
       {/* API Error State */}
       {apiError && (
-        <div className="rb-card border-red-200 p-8 text-center">
-          <AlertTriangle className="w-10 h-10 text-red-400 mx-auto mb-3" />
-          <h3 className="text-lg font-semibold text-gray-900">Unable to calculate estimate</h3>
-          <p className="text-sm text-gray-500 mt-1">Something went wrong. Please try again.</p>
+        <div className="rb-card border-danger/35 p-8 text-center">
+          <AlertTriangle className="w-10 h-10 text-danger mx-auto mb-3" />
+          <h3 className="text-lg font-semibold text-ink">Unable to calculate estimate</h3>
+          <p className="text-sm text-ink-soft mt-1">Something went wrong. Please try again.</p>
           <div className="flex gap-3 justify-center mt-4">
             <button
               onClick={handleCheckRates}

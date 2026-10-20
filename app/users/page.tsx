@@ -63,10 +63,10 @@ const mockUsers = [
 ];
 
 const roleColors: Record<string, string> = {
-  customer: "bg-blue-100 text-blue-800",
-  driver: "bg-purple-100 text-purple-800",
-  agent: "bg-cyan-100 text-cyan-800",
-  admin: "bg-red-100 text-red-800",
+  customer: "bg-info/15 text-info",
+  driver: "bg-purple-400/15 text-purple-400",
+  agent: "bg-cyan-400/15 text-cyan-400",
+  admin: "bg-gold/10 text-gold border border-gold/40",
 };
 
 function LegacyUsersPage() {
@@ -141,49 +141,49 @@ function LegacyUsersPage() {
           title="Total Users"
           value={mockUsers.length}
           icon={Users}
-          iconBg="bg-blue-50"
-          iconColor="text-blue-600"
+          iconBg="bg-info/10"
+          iconColor="text-info"
         />
         <StatsCard
           title="Customers"
           value={customerCount}
           icon={UserCheck}
-          iconBg="bg-cyan-50"
-          iconColor="text-cyan-600"
+          iconBg="bg-cyan-400/10"
+          iconColor="text-cyan-400"
         />
         <StatsCard
           title="Drivers"
           value={driverCount}
           icon={UserCog}
-          iconBg="bg-purple-50"
-          iconColor="text-purple-600"
+          iconBg="bg-purple-400/10"
+          iconColor="text-purple-400"
         />
         <StatsCard
           title="Agents"
           value={agentCount}
           icon={Shield}
-          iconBg="bg-green-50"
-          iconColor="text-green-600"
+          iconBg="bg-success/10"
+          iconColor="text-success"
         />
         <StatsCard
           title="Active Users"
           value={activeCount}
           icon={UserCheck}
-          iconBg="bg-emerald-50"
-          iconColor="text-emerald-600"
+          iconBg="bg-success/10"
+          iconColor="text-success"
         />
       </div>
 
       {/* Filter and Search */}
       <div className="rb-card p-6 space-y-4">
         <div className="flex items-center gap-2 mb-4">
-          <Search className="w-5 h-5 text-gray-400" />
+          <Search className="w-5 h-5 text-ink-faint" />
           <input
             type="text"
             placeholder="Search by name, email, or phone..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 outline-none text-sm text-gray-900 placeholder-gray-500"
+            className="flex-1 outline-none text-sm text-ink placeholder-ink-faint"
           />
         </div>
 
@@ -202,8 +202,8 @@ function LegacyUsersPage() {
 
       {/* Bulk Actions */}
       {selectedUsers.length > 0 && (
-        <div className="rb-card border-[#D82C2C]/20 p-4 flex items-center justify-between">
-          <p className="text-sm font-medium text-gray-900">
+        <div className="rb-card border-primary/35 p-4 flex items-center justify-between">
+          <p className="text-sm font-medium text-ink">
             {selectedUsers.length} user(s) selected
           </p>
           <div className="flex gap-2">
@@ -228,7 +228,7 @@ function LegacyUsersPage() {
       <div className="rb-card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead style={{ borderBottom: "1px solid rgba(0,0,0,0.06)" }}>
+            <thead style={{ borderBottom: "1px solid var(--dz-line)" }}>
               <tr>
                 <th className="px-6 py-3 text-left">
                   <input
@@ -244,61 +244,61 @@ function LegacyUsersPage() {
                         setSelectedUsers([]);
                       }
                     }}
-                    className="w-4 h-4 rounded border-gray-300"
+                    className="w-4 h-4 rounded border-line-strong"
                   />
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-3 text-left text-xs font-medium text-ink-soft uppercase">
                   Name
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-3 text-left text-xs font-medium text-ink-soft uppercase">
                   Email
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-3 text-left text-xs font-medium text-ink-soft uppercase">
                   Phone
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-3 text-left text-xs font-medium text-ink-soft uppercase">
                   Role
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-3 text-left text-xs font-medium text-ink-soft uppercase">
                   Status
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-3 text-left text-xs font-medium text-ink-soft uppercase">
                   Registered
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-3 text-left text-xs font-medium text-ink-soft uppercase">
                   Last Active
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-3 text-left text-xs font-medium text-ink-soft uppercase">
                   Action
                 </th>
               </tr>
             </thead>
-            <tbody style={{ borderTop: "1px solid rgba(0,0,0,0.06)" }}>
+            <tbody style={{ borderTop: "1px solid var(--dz-line)" }}>
               {filteredUsers.length > 0 ? (
                 filteredUsers.map((u) => (
-                  <tr key={u.id} className="hover:bg-gray-50 transition-colors">
+                  <tr key={u.id} className="hover:bg-surface-alt transition-colors">
                     <td className="px-6 py-4">
                       <input
                         type="checkbox"
                         checked={selectedUsers.includes(u.id)}
                         onChange={() => toggleUserSelection(u.id)}
-                        className="w-4 h-4 rounded border-gray-300"
+                        className="w-4 h-4 rounded border-line-strong"
                       />
                     </td>
-                    <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                    <td className="px-6 py-4 text-sm font-medium text-ink">
                       {u.name}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-600 flex items-center gap-1.5">
-                      <Mail className="w-4 h-4 text-gray-400" />
+                    <td className="px-6 py-4 text-sm text-ink-soft flex items-center gap-1.5">
+                      <Mail className="w-4 h-4 text-ink-faint" />
                       {u.email}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">
+                    <td className="px-6 py-4 text-sm text-ink-soft">
                       {u.phone}
                     </td>
                     <td className="px-6 py-4">
                       <span
                         className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize ${
-                          roleColors[u.role] || "bg-gray-100 text-gray-800"
+                          roleColors[u.role] || "bg-surface-alt text-ink"
                         }`}
                       >
                         {u.role}
@@ -307,10 +307,10 @@ function LegacyUsersPage() {
                     <td className="px-6 py-4">
                       <StatusBadge status={u.status} />
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-600 whitespace-nowrap">
+                    <td className="px-6 py-4 text-sm text-ink-soft whitespace-nowrap">
                       {formatDate(u.registered_date)}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-600 whitespace-nowrap">
+                    <td className="px-6 py-4 text-sm text-ink-soft whitespace-nowrap">
                       {formatDateTime(u.last_active)}
                     </td>
                     <td className="px-6 py-4">
@@ -319,16 +319,16 @@ function LegacyUsersPage() {
                           setSelectedUser(u);
                           setShowModal(true);
                         }}
-                        className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                        className="p-2 hover:bg-surface-raised rounded-lg transition-colors"
                       >
-                        <MoreVertical className="w-4 h-4 text-gray-500" />
+                        <MoreVertical className="w-4 h-4 text-ink-soft" />
                       </button>
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={9} className="px-6 py-8 text-center text-gray-500">
+                  <td colSpan={9} className="px-6 py-8 text-center text-ink-soft">
                     No users found
                   </td>
                 </tr>
@@ -349,38 +349,38 @@ function LegacyUsersPage() {
           <div className="space-y-6">
             {/* Profile Info */}
             <div>
-              <h3 className="text-sm font-semibold text-gray-900 mb-4">
+              <h3 className="text-sm font-semibold text-ink mb-4">
                 Profile Information
               </h3>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">
+                  <p className="text-xs text-ink-soft uppercase tracking-wide mb-1">
                     Name
                   </p>
-                  <p className="text-sm font-medium text-gray-900">
+                  <p className="text-sm font-medium text-ink">
                     {selectedUser.name}
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">
+                  <p className="text-xs text-ink-soft uppercase tracking-wide mb-1">
                     Email
                   </p>
-                  <p className="text-sm font-medium text-gray-900 flex items-center gap-1">
-                    <Mail className="w-4 h-4 text-gray-400" />
+                  <p className="text-sm font-medium text-ink flex items-center gap-1">
+                    <Mail className="w-4 h-4 text-ink-faint" />
                     {selectedUser.email}
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">
+                  <p className="text-xs text-ink-soft uppercase tracking-wide mb-1">
                     Phone
                   </p>
-                  <p className="text-sm font-medium text-gray-900 flex items-center gap-1">
-                    <Phone className="w-4 h-4 text-gray-400" />
+                  <p className="text-sm font-medium text-ink flex items-center gap-1">
+                    <Phone className="w-4 h-4 text-ink-faint" />
                     {selectedUser.phone}
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">
+                  <p className="text-xs text-ink-soft uppercase tracking-wide mb-1">
                     Status
                   </p>
                   <StatusBadge status={selectedUser.status} />
@@ -390,24 +390,24 @@ function LegacyUsersPage() {
 
             {/* Role and Account Info */}
             <div>
-              <h3 className="text-sm font-semibold text-gray-900 mb-4">
+              <h3 className="text-sm font-semibold text-ink mb-4">
                 Account Information
               </h3>
               <div className="grid grid-cols-2 gap-4">
                 <div className="rb-card-flat rounded-lg p-4">
-                  <p className="text-xs text-gray-600 uppercase tracking-wide mb-1">
+                  <p className="text-xs text-ink-soft uppercase tracking-wide mb-1">
                     Role
                   </p>
-                  <p className="text-sm font-semibold text-gray-900 capitalize">
+                  <p className="text-sm font-semibold text-ink capitalize">
                     {selectedUser.role}
                   </p>
                 </div>
                 <div className="rb-card-flat rounded-lg p-4">
-                  <p className="text-xs text-gray-600 uppercase tracking-wide mb-1">
+                  <p className="text-xs text-ink-soft uppercase tracking-wide mb-1">
                     Registered
                   </p>
-                  <p className="text-sm font-semibold text-gray-900 flex items-center gap-1">
-                    <Calendar className="w-4 h-4 text-gray-400" />
+                  <p className="text-sm font-semibold text-ink flex items-center gap-1">
+                    <Calendar className="w-4 h-4 text-ink-faint" />
                     {formatDate(selectedUser.registered_date)}
                   </p>
                 </div>
@@ -416,17 +416,17 @@ function LegacyUsersPage() {
 
             {/* Activity Stats */}
             <div>
-              <h3 className="text-sm font-semibold text-gray-900 mb-4">
+              <h3 className="text-sm font-semibold text-ink mb-4">
                 Activity Summary
               </h3>
               <div className="grid grid-cols-2 gap-4">
                 {selectedUser.role === "customer" && (
                   <>
-                    <div className="rb-card-flat rounded-lg p-4 border-[#D82C2C]/20">
-                      <p className="text-xs text-[#D82C2C] uppercase tracking-wide mb-1">
+                    <div className="rb-card-flat rounded-lg p-4 border-primary/35">
+                      <p className="text-xs text-primary-light uppercase tracking-wide mb-1">
                         Orders Placed
                       </p>
-                      <p className="text-[22px] font-bold text-gray-900">
+                      <p className="text-[22px] font-bold text-ink">
                         {selectedUser.orders_placed}
                       </p>
                     </div>
@@ -434,11 +434,11 @@ function LegacyUsersPage() {
                 )}
                 {selectedUser.role === "driver" && (
                   <>
-                    <div className="rb-card-flat rounded-lg p-4 border-purple-200/20">
-                      <p className="text-xs text-purple-600 uppercase tracking-wide mb-1">
+                    <div className="rb-card-flat rounded-lg p-4 border-purple-400/20">
+                      <p className="text-xs text-purple-400 uppercase tracking-wide mb-1">
                         Deliveries Completed
                       </p>
-                      <p className="text-[22px] font-bold text-gray-900">
+                      <p className="text-[22px] font-bold text-ink">
                         {selectedUser.deliveries_completed}
                       </p>
                     </div>
@@ -446,11 +446,11 @@ function LegacyUsersPage() {
                 )}
                 {selectedUser.role === "agent" && (
                   <>
-                    <div className="rb-card-flat rounded-lg p-4 border-cyan-200/20">
-                      <p className="text-xs text-cyan-600 uppercase tracking-wide mb-1">
+                    <div className="rb-card-flat rounded-lg p-4 border-cyan-400/20">
+                      <p className="text-xs text-cyan-400 uppercase tracking-wide mb-1">
                         Parcels Handled
                       </p>
-                      <p className="text-[22px] font-bold text-gray-900">
+                      <p className="text-[22px] font-bold text-ink">
                         {selectedUser.parcels_handled}
                       </p>
                     </div>
@@ -458,22 +458,22 @@ function LegacyUsersPage() {
                 )}
                 {selectedUser.role === "admin" && (
                   <>
-                    <div className="rb-card-flat rounded-lg p-4 border-red-200/20">
-                      <p className="text-xs text-red-600 uppercase tracking-wide mb-1">
+                    <div className="rb-card-flat rounded-lg p-4 border-danger/20">
+                      <p className="text-xs text-danger uppercase tracking-wide mb-1">
                         Admin Actions
                       </p>
-                      <p className="text-[22px] font-bold text-gray-900">
+                      <p className="text-[22px] font-bold text-ink">
                         {selectedUser.admin_actions}
                       </p>
                     </div>
                   </>
                 )}
                 <div className="rb-card-flat rounded-lg p-4">
-                  <p className="text-xs text-gray-700 uppercase tracking-wide mb-1">
+                  <p className="text-xs text-ink uppercase tracking-wide mb-1">
                     Last Active
                   </p>
-                  <p className="text-sm font-semibold text-gray-900 flex items-center gap-1">
-                    <Clock className="w-4 h-4 text-gray-400" />
+                  <p className="text-sm font-semibold text-ink flex items-center gap-1">
+                    <Clock className="w-4 h-4 text-ink-faint" />
                     {formatDateTime(selectedUser.last_active)}
                   </p>
                 </div>
@@ -483,7 +483,7 @@ function LegacyUsersPage() {
             {/* Activity History */}
             {selectedUser.activity_history && selectedUser.activity_history.length > 0 && (
               <div>
-                <h3 className="text-sm font-semibold text-gray-900 mb-4">
+                <h3 className="text-sm font-semibold text-ink mb-4">
                   Recent Activity
                 </h3>
                 <div className="space-y-2">
@@ -491,12 +491,12 @@ function LegacyUsersPage() {
                     (activity: any, idx: number) => (
                       <div
                         key={idx}
-                        className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200"
+                        className="flex items-center justify-between p-3 bg-surface-alt rounded-lg border border-line"
                       >
-                        <span className="text-sm text-gray-600">
+                        <span className="text-sm text-ink-soft">
                           {activity.action}
                         </span>
-                        <span className="text-xs text-gray-500">
+                        <span className="text-xs text-ink-soft">
                           {formatDateTime(activity.date)}
                         </span>
                       </div>
@@ -507,15 +507,15 @@ function LegacyUsersPage() {
             )}
 
             {/* Action Buttons */}
-            <div className="flex gap-3 pt-4" style={{ borderTop: "1px solid rgba(0,0,0,0.06)" }}>
+            <div className="flex gap-3 pt-4" style={{ borderTop: "1px solid var(--dz-line)" }}>
               {selectedUser.status === "active" && (
-                <button className="flex-1 px-4 py-2 bg-red-100 text-red-700 rounded-xl text-sm font-medium hover:bg-red-200 flex items-center justify-center gap-2">
+                <button className="flex-1 px-4 py-2 bg-danger/15 text-danger rounded-xl text-sm font-medium hover:bg-danger/25 flex items-center justify-center gap-2">
                   <UserX className="w-4 h-4" />
                   Suspend Account
                 </button>
               )}
               {selectedUser.status === "suspended" && (
-                <button className="flex-1 px-4 py-2 bg-[#34C759]/10 text-[#34C759] rounded-xl text-sm font-medium hover:bg-[#34C759]/20 flex items-center justify-center gap-2">
+                <button className="flex-1 px-4 py-2 bg-success/10 text-success rounded-xl text-sm font-medium hover:bg-success/20 flex items-center justify-center gap-2">
                   <UserCheck className="w-4 h-4" />
                   Activate Account
                 </button>

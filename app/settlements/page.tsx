@@ -40,24 +40,24 @@ function LegacySettlementsPage() {
   const filtered = rows.filter((s) => statusFilter === "all" || s.status === statusFilter);
   const columns = [
     { key: "operator", label: "Operator", render: (s: any) => (
-      <div><p className="font-medium text-gray-900">{s.operator}</p><p className="text-xs text-gray-400">{s.period}</p></div>) },
+      <div><p className="font-medium text-ink">{s.operator}</p><p className="text-xs text-ink-faint">{s.period}</p></div>) },
     { key: "revenue", label: "Revenue", render: (s: any) => formatCurrency(s.revenue) },
     { key: "commission", label: "Commission", render: (s: any) => formatCurrency(s.commission) },
-    { key: "payout", label: "Payout", render: (s: any) => <span className="font-semibold text-gray-900">{formatCurrency(s.payout)}</span> },
+    { key: "payout", label: "Payout", render: (s: any) => <span className="font-semibold text-ink">{formatCurrency(s.payout)}</span> },
     { key: "status", label: "Status", render: (s: any) => <StatusBadge status={s.status} /> },
     { key: "actions", label: "Operations", render: (s: any) => (
       <div className="flex items-center gap-2">
-        {s.status === "generated" && <button onClick={() => approve(s)} className="text-[12px] font-semibold text-green-600 hover:bg-green-50 px-2 py-1 rounded-md">Approve</button>}
-        {s.status === "approved" && <button onClick={() => release(s)} className="text-[12px] font-semibold text-blue-600 hover:bg-blue-50 px-2 py-1 rounded-md">Release payout</button>}
-        {s.status === "paid" && <span className="text-[12px] font-semibold text-green-600">Settled</span>}
+        {s.status === "generated" && <button onClick={() => approve(s)} className="text-[12px] font-semibold text-success hover:bg-success/10 px-2 py-1 rounded-md">Approve</button>}
+        {s.status === "approved" && <button onClick={() => release(s)} className="text-[12px] font-semibold text-info hover:bg-info/10 px-2 py-1 rounded-md">Release payout</button>}
+        {s.status === "paid" && <span className="text-[12px] font-semibold text-success">Settled</span>}
       </div>) },
   ];
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between">
-        <div><h1 className="text-[22px] font-bold text-gray-900">Settlements</h1>
-          <p className="text-[13px] text-gray-500">Approve & release weekly operator payouts (PRD Ch.51)</p></div>
-        <button onClick={exportCsv} className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 text-[13px] font-semibold text-gray-700 hover:bg-gray-50"><Download className="w-4 h-4" /> Export CSV</button>
+        <div><h1 className="text-[22px] font-bold text-ink">Settlements</h1>
+          <p className="text-[13px] text-ink-soft">Approve & release weekly operator payouts (PRD Ch.51)</p></div>
+        <button onClick={exportCsv} className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-line text-[13px] font-semibold text-ink hover:bg-surface-alt"><Download className="w-4 h-4" /> Export CSV</button>
       </div>
       <FilterTabs tabs={statusTabs} activeTab={statusFilter} onChange={setStatusFilter} />
       <DataTable columns={columns} data={filtered} loading={loading} emptyMessage="No settlements found" />

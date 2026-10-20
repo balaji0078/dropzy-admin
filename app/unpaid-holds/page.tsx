@@ -32,13 +32,13 @@ function UnpaidHoldsBody() {
   const q = useCoreQuery(() => coreAdmin.unpaidHolds({ location, warehouseId: warehouseId || undefined, minAgeHours, page, limit: 50 }), [location, warehouseId, minAgeHours, page], { pollMs: 30000 });
 
   const columns = [
-    { key: "dcn", label: "DCN", render: (r: UnpaidHoldRow) => <Link href={`/shipments/${r.shipmentId}`} onClick={(e) => e.stopPropagation()} className="font-mono text-xs text-blue-700 hover:underline">{r.dcn || shortId(r.shipmentId)}</Link> },
+    { key: "dcn", label: "DCN", render: (r: UnpaidHoldRow) => <Link href={`/shipments/${r.shipmentId}`} onClick={(e) => e.stopPropagation()} className="font-mono text-xs text-primary-light hover:text-gold hover:underline">{r.dcn || shortId(r.shipmentId)}</Link> },
     { key: "state", label: "State", render: (r: UnpaidHoldRow) => (r.state ? <StatusBadge status={r.state} kind="shipmentState" /> : "—") },
-    { key: "location", label: "Location", render: (r: UnpaidHoldRow) => <span>{humanize(r.location)}{r.location === "WAREHOUSE" && <span className="block text-[11px] text-gray-500">{whName(r.warehouseId)}</span>}</span> },
+    { key: "location", label: "Location", render: (r: UnpaidHoldRow) => <span>{humanize(r.location)}{r.location === "WAREHOUSE" && <span className="block text-[11px] text-ink-soft">{whName(r.warehouseId)}</span>}</span> },
     { key: "amount", label: "Amount due", render: (r: UnpaidHoldRow) => <span className="font-semibold tabular-nums">{formatPaise(r.amountDuePaise)}</span> },
-    { key: "age", label: "Age", render: (r: UnpaidHoldRow) => <span className={(r.ageHours || 0) >= 72 ? "text-red-700 font-semibold" : ""}>{formatAgeHours(r.ageHours)}<span className="block text-[11px] text-gray-500">since {formatIST(r.placedAt)}</span></span> },
+    { key: "age", label: "Age", render: (r: UnpaidHoldRow) => <span className={(r.ageHours || 0) >= 72 ? "text-danger font-semibold" : ""}>{formatAgeHours(r.ageHours)}<span className="block text-[11px] text-ink-soft">since {formatIST(r.placedAt)}</span></span> },
     { key: "cutoff", label: "Cutoff", render: (r: UnpaidHoldRow) => <Deadline at={r.cutoffAt} /> },
-    { key: "exempt", label: "Load exemption", render: (r: UnpaidHoldRow) => (r.loadGateExempt ? <span className="inline-flex items-center gap-1 text-[12px] font-semibold text-amber-700"><ShieldCheck className="w-3.5 h-3.5" aria-hidden />Exempt</span> : <span className="text-gray-400">No</span>) },
+    { key: "exempt", label: "Load exemption", render: (r: UnpaidHoldRow) => (r.loadGateExempt ? <span className="inline-flex items-center gap-1 text-[12px] font-semibold text-warning"><ShieldCheck className="w-3.5 h-3.5" aria-hidden />Exempt</span> : <span className="text-ink-faint">No</span>) },
     { key: "operator", label: "Operator", render: (r: UnpaidHoldRow) => r.operatorName || "—" },
     { key: "phone", label: "Customer", render: (r: UnpaidHoldRow) => <span className="font-mono text-[12px]">{r.customerPhoneMasked || "—"}</span> },
   ];
@@ -53,6 +53,7 @@ function UnpaidHoldsBody() {
       </div>
       <ErrorBanner error={q.error} onRetry={q.reload} />
       <DataTable caption="Unpaid holds" rowKey={(r) => r.holdId} columns={columns} data={q.data?.data || []} loading={q.loading && !q.data} emptyMessage="No unpaid holds"
+        rowClassName={(r) => ((r.ageHours || 0) >= 72 || (r.cutoffAt && new Date(r.cutoffAt).getTime() - Date.now() < 3600000) ? "dz-row-highlight" : undefined)}
         onRowClick={(r) => router.push(`/shipments/${r.shipmentId}`)} page={q.data?.meta?.page || page} totalPages={q.data?.meta?.totalPages || 1} onPageChange={setPage} />
     </>
   );

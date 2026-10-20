@@ -13,7 +13,7 @@ import qrcode from "qrcode-generator";
 // ───────────────────────────── §6.1 surcharge breakdown ─────────────────────────────
 /** Renders CLIENT_CONTRACTS.md §6.1 from the server `breakdown` (display strings and *Paise values only). */
 export function SurchargeBreakdownView({ breakdown, quote, title = "Extra weight charge" }: { breakdown: SurchargeBreakdown | undefined | null; quote?: Pick<SurchargeQuote, "version" | "status" | "taxRateBps"> | null; title?: string }) {
-  if (!breakdown) return <p className="text-[13px] text-gray-500">No breakdown available.</p>;
+  if (!breakdown) return <p className="text-[13px] text-ink-soft">No breakdown available.</p>;
   const b = breakdown;
   const d = b.display || {};
   const lines = b.lines || [];
@@ -33,23 +33,23 @@ export function SurchargeBreakdownView({ breakdown, quote, title = "Extra weight
   ];
   const isOpen = !quote || quote.status === "OPEN";
   return (
-    <div className="rounded-xl border border-gray-200 p-4 text-[13px]">
-      <p className="font-bold text-gray-900 mb-2">{title}</p>
+    <div className="rounded-xl border border-line p-4 text-[13px]">
+      <p className="font-bold text-ink mb-2">{title}</p>
       <table className="w-full">
         <tbody>
           {rows.map(([k, v], i) => (
             <tr key={i}>
-              <th scope="row" className="text-left font-normal text-gray-600 py-0.5 pr-4">{k}</th>
-              <td className="text-right text-gray-900 tabular-nums">{v}</td>
+              <th scope="row" className="text-left font-normal text-ink-soft py-0.5 pr-4">{k}</th>
+              <td className="text-right text-ink tabular-nums">{v}</td>
             </tr>
           ))}
-          <tr className="border-t border-gray-200">
-            <th scope="row" className="text-left font-bold text-gray-900 pt-1.5">{isOpen ? "Total due" : `Total (${quote?.status?.toLowerCase()})`}</th>
-            <td className="text-right font-bold text-gray-900 pt-1.5 tabular-nums">{d.total || formatPaise(b.totalPaise)}</td>
+          <tr className="border-t border-line">
+            <th scope="row" className="text-left font-bold text-ink pt-1.5">{isOpen ? "Total due" : `Total (${quote?.status?.toLowerCase()})`}</th>
+            <td className="text-right font-bold text-ink pt-1.5 tabular-nums">{d.total || formatPaise(b.totalPaise)}</td>
           </tr>
         </tbody>
       </table>
-      <p className="mt-2 text-[11px] text-gray-500">
+      <p className="mt-2 text-[11px] text-ink-soft">
         Tariff version {b.tariffVersion ?? "—"}
         {quote ? ` · Quote v${quote.version}` : ""}
       </p>
@@ -61,13 +61,13 @@ export function SurchargeBreakdownView({ breakdown, quote, title = "Extra weight
 /** Deadline with live countdown: "19 Oct, 03:35 PM (1 h 25 min left)" / "passed". */
 export function Deadline({ at, compact }: { at: string | null | undefined; compact?: boolean }) {
   const now = useNow(30000);
-  if (!at) return <span className="text-gray-400">—</span>;
+  if (!at) return <span className="text-ink-faint">—</span>;
   const ms = new Date(at).getTime() - now;
   const passed = ms <= 0;
   return (
     <span className={cn("inline-flex flex-col", compact && "flex-row gap-1.5 items-center")}>
-      <span className="text-gray-900">{formatIST(at)}</span>
-      <span className={cn("inline-flex items-center gap-1 text-[11px] font-semibold", passed ? "text-red-600" : ms < 3600000 ? "text-amber-700" : "text-gray-500")}>
+      <span className="text-ink">{formatIST(at)}</span>
+      <span className={cn("inline-flex items-center gap-1 text-[11px] font-semibold", passed ? "text-danger" : ms < 3600000 ? "text-gold" : "text-ink-soft")}>
         <Timer className="w-3 h-3" aria-hidden />
         {passed ? `Passed ${formatCountdown(-ms)} ago` : `${formatCountdown(ms)} left`}
       </span>
@@ -132,7 +132,7 @@ export function OtpInput({ length = 6, value, onChange, disabled, label = "One-t
               refs.current[Math.min(v.length, n) - 1]?.focus();
             }
           }}
-          className="w-11 h-12 text-center text-[18px] font-bold rounded-lg border border-gray-300 focus:outline-none focus:border-[#D82C2C] focus:ring-2 focus:ring-red-100 disabled:bg-gray-50"
+          className="w-11 h-12 text-center text-[18px] font-bold rounded-lg border border-line-strong focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/40 disabled:bg-surface-alt"
         />
       ))}
     </div>
@@ -160,20 +160,20 @@ export function EvidenceThumb({ id, size = 64, known }: { id: string | null | un
       cancelled = true;
     };
   }, [id, known]);
-  if (!id) return <span className="text-gray-400">—</span>;
+  if (!id) return <span className="text-ink-faint">—</span>;
   const url = evidenceUrl(ev);
-  if (failed || (ev && !url)) return <span className="inline-flex items-center gap-1 text-[11px] text-gray-400"><ImageOff className="w-3.5 h-3.5" aria-hidden />Unavailable</span>;
-  if (!ev) return <span className="inline-block rounded-lg bg-gray-100 animate-pulse" style={{ width: size, height: size }} aria-label="Loading evidence" />;
+  if (failed || (ev && !url)) return <span className="inline-flex items-center gap-1 text-[11px] text-ink-faint"><ImageOff className="w-3.5 h-3.5" aria-hidden />Unavailable</span>;
+  if (!ev) return <span className="inline-block rounded-lg bg-surface-alt animate-pulse" style={{ width: size, height: size }} aria-label="Loading evidence" />;
   if (ev.contentType === "application/pdf")
     return (
-      <a href={url!} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-[12px] text-blue-700 underline">
+      <a href={url!} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-[12px] text-info underline">
         <FileText className="w-3.5 h-3.5" aria-hidden />PDF evidence
       </a>
     );
   return (
     <a href={url!} target="_blank" rel="noreferrer" title={`${ev.kind || "Evidence"} · ${formatIST(ev.createdAt)}`} className="inline-block">
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={url!} alt={`${ev.kind || "Evidence"} photo`} width={size} height={size} className="rounded-lg object-cover border border-gray-200" style={{ width: size, height: size }} />
+      <img src={url!} alt={`${ev.kind || "Evidence"} photo`} width={size} height={size} className="rounded-lg object-cover border border-line" style={{ width: size, height: size }} />
     </a>
   );
 }
@@ -192,7 +192,7 @@ export function PhotoInput({ label, file, onChange, disabled }: { label: string;
   }, [file]);
   return (
     <div className="space-y-1">
-      <label className="block text-[12px] font-semibold text-gray-600">
+      <label className="block text-[12px] font-semibold text-ink-soft">
         {label}
         <input
           type="file"
@@ -209,11 +209,11 @@ export function PhotoInput({ label, file, onChange, disabled }: { label: string;
             }
             onChange(f);
           }}
-          className="mt-1 block w-full text-[12px] text-gray-600 file:mr-3 file:rounded-lg file:border-0 file:bg-gray-100 file:px-3 file:py-2 file:text-[12px] file:font-semibold"
+          className="mt-1 block w-full text-[12px] text-ink-soft file:mr-3 file:rounded-lg file:border-0 file:bg-surface-alt file:px-3 file:py-2 file:text-[12px] file:font-semibold"
         />
       </label>
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      {preview && <img src={preview} alt="Selected photo preview" className="h-24 rounded-lg border border-gray-200 object-cover" />}
+      {preview && <img src={preview} alt="Selected photo preview" className="h-24 rounded-lg border border-line object-cover" />}
     </div>
   );
 }
@@ -229,7 +229,7 @@ export function QrCode({ value, size = 184, label }: { value: string; size?: num
   let d = "";
   for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) if (qr.isDark(r, c)) d += `M${c + margin} ${r + margin}h1v1h-1z`;
   return (
-    <svg role="img" aria-label={label} width={size} height={size} viewBox={`0 0 ${n + margin * 2} ${n + margin * 2}`} shapeRendering="crispEdges" className="bg-white">
+    <svg role="img" aria-label={label} width={size} height={size} viewBox={`0 0 ${n + margin * 2} ${n + margin * 2}`} shapeRendering="crispEdges" className="bg-surface">
       <rect width="100%" height="100%" fill="#fff" />
       <path d={d} fill="#111" />
     </svg>

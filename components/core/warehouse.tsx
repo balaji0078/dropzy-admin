@@ -40,8 +40,8 @@ export function useWarehouseSelection() {
 export function WarehousePicker({ sel }: { sel: ReturnType<typeof useWarehouseSelection> }) {
   if (sel.warehouses.length <= 1) {
     return sel.warehouse ? (
-      <p className="text-[13px] text-gray-700">Warehouse: <strong>{sel.warehouse.name}</strong>{sel.warehouse.address ? ` · ${sel.warehouse.address}` : ""}</p>
-    ) : sel.loading ? <p className="text-[13px] text-gray-500">Loading warehouses…</p> : <p className="text-[13px] text-red-700">No warehouse is assigned to your account.</p>;
+      <p className="text-[13px] text-ink">Warehouse: <strong>{sel.warehouse.name}</strong>{sel.warehouse.address ? ` · ${sel.warehouse.address}` : ""}</p>
+    ) : sel.loading ? <p className="text-[13px] text-ink-soft">Loading warehouses…</p> : <p className="text-[13px] text-danger">No warehouse is assigned to your account.</p>;
   }
   return (
     <div className="w-72">
@@ -84,16 +84,16 @@ export function ScanInput({ onResolved, label = "Scan QR or enter DCN", autoFocu
   };
   return (
     <form onSubmit={submit} className="space-y-1" role="search" aria-label="Scan parcel">
-      <label htmlFor="scan" className="block text-[12px] font-semibold text-gray-600">{label}</label>
+      <label htmlFor="scan" className="block text-[12px] font-semibold text-ink-soft">{label}</label>
       <div className="flex gap-2">
         <div className="relative flex-1">
-          <ScanLine className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" aria-hidden />
+          <ScanLine className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-faint" aria-hidden />
           <input id="scan" ref={ref} value={value} onChange={(e) => setValue(e.target.value)} autoComplete="off" spellCheck={false}
             placeholder="dzq1.… or DCN-MAA-BLR-…" className={`${inputCls} pl-9 font-mono`} aria-invalid={!!error} aria-describedby={error ? "scan-error" : undefined} />
         </div>
         <button type="submit" disabled={busy || !value.trim()} className={btnPrimary}>{busy ? "Looking up…" : "Find"}</button>
       </div>
-      {error && <p id="scan-error" className="text-[12px] text-red-700" role="alert">{error}</p>}
+      {error && <p id="scan-error" className="text-[12px] text-danger" role="alert">{error}</p>}
     </form>
   );
 }

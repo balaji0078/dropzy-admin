@@ -17,7 +17,7 @@ interface FilterTabsProps {
 
 export default function FilterTabs({ tabs, activeTab, onChange, ariaLabel = "Filter" }: FilterTabsProps) {
   return (
-    <div className="inline-flex flex-wrap gap-1 p-1 rounded-lg bg-gray-100" role="tablist" aria-label={ariaLabel}>
+    <div className="inline-flex flex-wrap gap-1 p-1 rounded-xl bg-surface-alt border border-line" role="tablist" aria-label={ariaLabel}>
       {tabs.map((tab) => (
         <button
           key={tab.value}
@@ -25,17 +25,17 @@ export default function FilterTabs({ tabs, activeTab, onChange, ariaLabel = "Fil
           aria-selected={activeTab === tab.value}
           onClick={() => onChange(tab.value)}
           className={cn(
-            "px-3.5 py-1.5 rounded-md text-[13px] font-semibold transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-300",
+            "px-3.5 py-1.5 rounded-md text-[13px] font-semibold transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold/70",
             activeTab === tab.value
-              ? "bg-white text-gray-900 shadow-sm"
-              : "text-gray-500 hover:text-gray-700"
+              ? "bg-surface text-gold ring-1 ring-gold/40 shadow-[inset_0_-2px_0_#F5C451]"
+              : "text-ink-soft hover:text-ink hover:bg-surface-raised"
           )}
         >
           {tab.label}
           {tab.count !== undefined && (
             <span className={cn(
               "ml-1.5 px-1.5 py-0.5 rounded text-[10px] font-bold",
-              activeTab === tab.value ? "bg-red-50 text-red-600" : "bg-gray-200 text-gray-500"
+              activeTab === tab.value ? "bg-gold/15 text-gold" : "bg-line text-ink-soft"
             )}>
               {tab.count}
             </span>

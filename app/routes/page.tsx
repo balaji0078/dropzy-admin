@@ -64,7 +64,7 @@ function RouteForm({ route, stops, operators, onClose, onSaved }: { route: Route
         </div>
         <CheckboxField label="Active" checked={active} onChange={setActive} />
         <fieldset className="space-y-2">
-          <legend className="text-[12px] font-semibold text-gray-600">Stops (in travel order)</legend>
+          <legend className="text-[12px] font-semibold text-ink-soft">Stops (in travel order)</legend>
           <div className="overflow-x-auto">
             <table className="rb-table">
               <thead><tr><th scope="col">#</th><th scope="col">Stop</th><th scope="col">Offset (minutes)</th><th scope="col">Origin</th><th scope="col">Destination</th><th scope="col"><span className="sr-only">Order</span></th></tr></thead>
@@ -74,12 +74,12 @@ function RouteForm({ route, stops, operators, onClose, onSaved }: { route: Route
                     <td>{i + 1}</td>
                     <td><select aria-label={`Stop ${i + 1}`} value={r.stopId} onChange={(e) => update(i, { stopId: e.target.value })} className={inputCls}><option value="">Select…</option>{stops.map((s) => <option key={s.id} value={s.id}>{s.name} ({s.code})</option>)}</select></td>
                     <td><input aria-label={`Offset for stop ${i + 1}`} value={r.offsetMinutes} inputMode="numeric" onChange={(e) => update(i, { offsetMinutes: e.target.value.replace(/\D/g, "") })} className={`${inputCls} w-24`} /></td>
-                    <td><input type="checkbox" aria-label={`Stop ${i + 1} allows origin`} checked={r.allowsOrigin} onChange={(e) => update(i, { allowsOrigin: e.target.checked })} className="w-4 h-4 accent-[#D82C2C]" /></td>
-                    <td><input type="checkbox" aria-label={`Stop ${i + 1} allows destination`} checked={r.allowsDestination} onChange={(e) => update(i, { allowsDestination: e.target.checked })} className="w-4 h-4 accent-[#D82C2C]" /></td>
+                    <td><input type="checkbox" aria-label={`Stop ${i + 1} allows origin`} checked={r.allowsOrigin} onChange={(e) => update(i, { allowsOrigin: e.target.checked })} className="w-4 h-4 accent-primary" /></td>
+                    <td><input type="checkbox" aria-label={`Stop ${i + 1} allows destination`} checked={r.allowsDestination} onChange={(e) => update(i, { allowsDestination: e.target.checked })} className="w-4 h-4 accent-primary" /></td>
                     <td className="whitespace-nowrap">
-                      <button type="button" className="p-1 rounded hover:bg-gray-100 disabled:opacity-30" disabled={i === 0} onClick={() => move(i, -1)} aria-label={`Move stop ${i + 1} up`}><ArrowUp className="w-4 h-4" /></button>
-                      <button type="button" className="p-1 rounded hover:bg-gray-100 disabled:opacity-30" disabled={i === rows.length - 1} onClick={() => move(i, 1)} aria-label={`Move stop ${i + 1} down`}><ArrowDown className="w-4 h-4" /></button>
-                      <button type="button" className="p-1 rounded hover:bg-red-50 text-red-600" onClick={() => setRows((x) => x.filter((_, j) => j !== i))} aria-label={`Remove stop ${i + 1}`}><Trash2 className="w-4 h-4" /></button>
+                      <button type="button" className="p-1 rounded hover:bg-surface-raised disabled:opacity-30" disabled={i === 0} onClick={() => move(i, -1)} aria-label={`Move stop ${i + 1} up`}><ArrowUp className="w-4 h-4" /></button>
+                      <button type="button" className="p-1 rounded hover:bg-surface-raised disabled:opacity-30" disabled={i === rows.length - 1} onClick={() => move(i, 1)} aria-label={`Move stop ${i + 1} down`}><ArrowDown className="w-4 h-4" /></button>
+                      <button type="button" className="p-1 rounded hover:bg-danger/10 text-danger" onClick={() => setRows((x) => x.filter((_, j) => j !== i))} aria-label={`Remove stop ${i + 1}`}><Trash2 className="w-4 h-4" /></button>
                     </td>
                   </tr>
                 ))}
@@ -87,7 +87,7 @@ function RouteForm({ route, stops, operators, onClose, onSaved }: { route: Route
             </table>
           </div>
           <button type="button" className={btnOutline} onClick={() => setRows((r) => [...r, { stopId: "", offsetMinutes: r.length ? r[r.length - 1].offsetMinutes : "0", allowsOrigin: r.length === 0, allowsDestination: r.length > 0 }])}><Plus className="w-4 h-4" aria-hidden />Add stop</button>
-          {stopErrors && <p className="text-[12px] text-red-700" role="alert">{stopErrors}</p>}
+          {stopErrors && <p className="text-[12px] text-danger" role="alert">{stopErrors}</p>}
         </fieldset>
         <RadioGroup<Gate> legend="Load gate (payment must be verified before loading)" value={gate} onChange={setGate} options={[
           { value: "inherit", label: "Inherit tariff policy", hint: route ? `Currently effective: ${route.effectiveLoadGateEnabled ? "on" : "off"}` : undefined },
@@ -113,12 +113,12 @@ function RoutesBody() {
       {!canWrite && <Notice tone="info">Read-only: only an admin can change routes.</Notice>}
       <ErrorBanner error={q.error} onRetry={q.reload} />
       <DataTable caption="Routes" rowKey={(r) => r.id} data={q.data || []} loading={q.loading && !q.data} emptyMessage="No routes" columns={[
-        { key: "name", label: "Route", render: (r: Route) => <div><p className="font-medium">{r.name}</p><p className="text-xs text-gray-500 font-mono">{r.code}</p></div> },
+        { key: "name", label: "Route", render: (r: Route) => <div><p className="font-medium">{r.name}</p><p className="text-xs text-ink-soft font-mono">{r.code}</p></div> },
         { key: "op", label: "Operator", render: (r: Route) => r.operatorName || "—" },
         { key: "stops", label: "Stops", render: (r: Route) => <span className="text-[12px]">{(r.stops || []).slice().sort((a, b) => (a.sequence || 0) - (b.sequence || 0)).map((s) => `${s.stop?.name || "?"} (+${s.offsetMinutes ?? 0} min)`).join(" → ") || "—"}</span> },
         { key: "gate", label: "Load gate", render: (r: Route) => <span className="text-[12px]">{gateOf(r.loadGateEnabled) === "inherit" ? "Inherit" : gateOf(r.loadGateEnabled) === "on" ? "On" : "Off"} · effective <strong>{r.effectiveLoadGateEnabled ? "on" : "off"}</strong></span> },
         { key: "active", label: "Status", render: (r: Route) => <StatusBadge status={r.active === false ? "DISABLED" : "ACTIVE"} kind="generic" label={r.active === false ? "Inactive" : "Active"} /> },
-        { key: "ops", label: "Operations", render: (r: Route) => (canWrite ? <button className={rowAction("indigo")} onClick={() => setEditing(r)}>Edit</button> : <span className="text-gray-400">—</span>) },
+        { key: "ops", label: "Operations", render: (r: Route) => (canWrite ? <button className={rowAction("indigo")} onClick={() => setEditing(r)}>Edit</button> : <span className="text-ink-faint">—</span>) },
       ]} />
       {editing && <RouteForm route={editing === "new" ? null : editing} stops={stops.data || []} operators={ops.data || []} onClose={() => setEditing(null)} onSaved={() => { setEditing(null); q.reload(); }} />}
     </>

@@ -100,11 +100,11 @@ function LegacyNotificationsPage() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div>
-            <h2 className="text-[16px] font-bold text-gray-900">Notifications</h2>
-            <p className="text-[13px] text-gray-500">{unreadCount} unread notifications</p>
+            <h2 className="text-[16px] font-bold text-ink">Notifications</h2>
+            <p className="text-[13px] text-ink-soft">{unreadCount} unread notifications</p>
           </div>
           {unreadCount > 0 && (
-            <span className="px-2.5 py-1 bg-red-100 text-red-700 rounded-full text-xs font-bold">
+            <span className="px-2.5 py-1 bg-gold/15 text-gold border border-gold/40 rounded-full text-xs font-bold">
               {unreadCount}
             </span>
           )}
@@ -130,10 +130,10 @@ function LegacyNotificationsPage() {
       {/* Compose Panel */}
       {showCompose && (
         <div className="rb-card p-6 space-y-4">
-          <h3 className="font-semibold text-gray-900">Send Notification</h3>
+          <h3 className="font-semibold text-ink">Send Notification</h3>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+              <label className="block text-sm font-medium text-ink mb-1">Title</label>
               <input
                 type="text"
                 value={composeForm.title}
@@ -143,7 +143,7 @@ function LegacyNotificationsPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Recipients</label>
+              <label className="block text-sm font-medium text-ink mb-1">Recipients</label>
               <select
                 value={composeForm.recipients}
                 onChange={(e) => setComposeForm({ ...composeForm, recipients: e.target.value })}
@@ -156,7 +156,7 @@ function LegacyNotificationsPage() {
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Message</label>
+            <label className="block text-sm font-medium text-ink mb-1">Message</label>
             <textarea
               value={composeForm.message}
               onChange={(e) => setComposeForm({ ...composeForm, message: e.target.value })}
@@ -166,7 +166,7 @@ function LegacyNotificationsPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Channel</label>
+            <label className="block text-sm font-medium text-ink mb-2">Channel</label>
             <div className="flex gap-3">
               {[
                 { value: "push", label: "Push", icon: Smartphone },
@@ -178,8 +178,8 @@ function LegacyNotificationsPage() {
                   onClick={() => setComposeForm({ ...composeForm, channel: ch.value })}
                   className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium border transition-colors ${
                     composeForm.channel === ch.value
-                      ? "rb-card border-[#D82C2C] bg-[#D82C2C]/5 text-[#D82C2C]"
-                      : "rb-btn rb-btn-outline border-gray-200 text-gray-600"
+                      ? "rb-card border-gold/60 bg-gold/10 text-gold"
+                      : "rb-btn rb-btn-outline border-line text-ink-soft"
                   }`}
                 >
                   <ch.icon className="w-4 h-4" /> {ch.label}
@@ -197,11 +197,11 @@ function LegacyNotificationsPage() {
       <div className="rb-card-flat" style={{ borderRadius: "var(--radius-lg)" }}>
         {loading ? (
           <div className="p-12 text-center">
-            <div className="animate-spin w-6 h-6 border-4 border-[#D82C2C] border-t-transparent rounded-full mx-auto" />
+            <div className="animate-spin w-6 h-6 border-4 border-primary border-t-transparent rounded-full mx-auto" />
           </div>
         ) : filtered.length === 0 ? (
-          <div className="p-12 text-center text-gray-400">
-            <Bell className="w-10 h-10 mx-auto mb-3 text-gray-300" />
+          <div className="p-12 text-center text-ink-faint">
+            <Bell className="w-10 h-10 mx-auto mb-3 text-ink-faint" />
             <p className="font-medium">No notifications yet</p>
             <p className="text-sm mt-1">
               Notifications will appear here when order/payment events are triggered.
@@ -214,28 +214,28 @@ function LegacyNotificationsPage() {
             return (
               <div
                 key={n.id}
-                className={`flex items-start gap-4 p-4 hover:bg-gray-50 transition-colors ${
-                  !n.is_read ? "bg-blue-50/50" : ""
+                className={`flex items-start gap-4 p-4 hover:bg-surface-alt transition-colors ${
+                  !n.is_read ? "bg-info/5" : ""
                 }`}
               >
                 <div
                   className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
-                    !n.is_read ? "bg-[#D82C2C]/10 text-[#D82C2C]" : "bg-gray-100 text-gray-500"
+                    !n.is_read ? "bg-primary/15 text-primary-light" : "bg-surface-alt text-ink-soft"
                   }`}
                 >
                   <Icon className="w-5 h-5" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className={`text-sm ${!n.is_read ? "font-semibold text-gray-900" : "text-gray-700"}`}>
+                  <p className={`text-sm ${!n.is_read ? "font-semibold text-ink" : "text-ink"}`}>
                     {n.title}
                   </p>
-                  <p className="text-sm text-gray-500 mt-0.5">{n.message}</p>
-                  <p className="text-xs text-gray-400 mt-1">{formatDateTime(n.created_at)}</p>
+                  <p className="text-sm text-ink-soft mt-0.5">{n.message}</p>
+                  <p className="text-xs text-ink-faint mt-1">{formatDateTime(n.created_at)}</p>
                 </div>
                 {!n.is_read && (
                   <button
                     onClick={() => handleMarkRead(n.id)}
-                    className="text-xs text-[#D82C2C] hover:text-[#B71C1C] font-medium whitespace-nowrap"
+                    className="text-xs text-primary-light hover:text-gold font-medium whitespace-nowrap"
                   >
                     Mark read
                   </button>

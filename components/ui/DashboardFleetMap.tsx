@@ -10,10 +10,10 @@ interface DashboardFleetMapProps {
 }
 
 const statusColors: Record<string, string> = {
-  on_route: "#22c55e",
-  idle: "#6b7280",
-  delayed: "#ef4444",
-  maintenance: "#f97316",
+  on_route: "#34D399",
+  idle: "#8F89A3",
+  delayed: "#F87171",
+  maintenance: "#FB923C",
 };
 
 const statusLabels: Record<string, string> = {
@@ -24,7 +24,7 @@ const statusLabels: Record<string, string> = {
 };
 
 function createBusIcon(status: string, isSelected: boolean): L.DivIcon {
-  const color = statusColors[status] || "#6b7280";
+  const color = statusColors[status] || "#8F89A3";
   const size = isSelected ? 36 : 26;
   const borderWidth = isSelected ? 3 : 2;
   const pulseSize = isSelected ? 48 : 38;
@@ -170,13 +170,14 @@ export default function DashboardFleetMap({ onBusSelect }: DashboardFleetMapProp
   }, [buses, selectedBus, onBusSelect]);
 
   const createPopupContent = (bus: BusLiveData): string => {
-    const statusColor = statusColors[bus.status] || "#6b7280";
+    const statusColor = statusColors[bus.status] || "#8F89A3";
     return `
       <div style="font-family: system-ui; min-width: 220px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-          <strong style="font-size: 14px;">${bus.busNumber}</strong>
+          <strong style="font-size: 14px; color: #F5C451;">${bus.busNumber}</strong>
           <span style="
-            background: ${statusColor}20;
+            background: ${statusColor}22;
+            border: 1px solid ${statusColor}66;
             color: ${statusColor};
             padding: 2px 8px;
             border-radius: 12px;
@@ -184,7 +185,7 @@ export default function DashboardFleetMap({ onBusSelect }: DashboardFleetMapProp
             font-weight: 600;
           ">${statusLabels[bus.status]}</span>
         </div>
-        <div style="font-size: 12px; color: #6b7280; line-height: 1.8;">
+        <div style="font-size: 12px; color: #9E99AC; line-height: 1.8;">
           <div><strong>Route:</strong> ${bus.currentRoute}</div>
           <div><strong>Driver:</strong> ${bus.driverName}</div>
           <div><strong>Speed:</strong> ${bus.speed.toFixed(0)} km/h</div>
@@ -201,44 +202,44 @@ export default function DashboardFleetMap({ onBusSelect }: DashboardFleetMapProp
       <div ref={mapContainerRef} className="w-full h-[400px] rounded-lg overflow-hidden" />
 
       {/* Live stats overlay */}
-      <div className="absolute top-3 right-3 z-[1000] bg-white/95 backdrop-blur-sm rounded-lg border border-gray-200 shadow-lg p-3 space-y-2">
+      <div className="absolute top-3 right-3 z-[1000] bg-surface/95 backdrop-blur-sm rounded-lg border border-line shadow-lg p-3 space-y-2">
         <div className="flex items-center gap-2 mb-1">
           <span className="relative flex h-2.5 w-2.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-success"></span>
           </span>
-          <span className="text-xs font-semibold text-gray-800">Live Tracking</span>
+          <span className="text-xs font-semibold text-ink">Live Tracking</span>
         </div>
         <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
           <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-green-500" />
-            <span className="text-gray-600">On Route: <strong className="text-gray-900">{stats.onRoute}</strong></span>
+            <span className="w-2 h-2 rounded-full bg-success" />
+            <span className="text-ink-soft">On Route: <strong className="text-ink">{stats.onRoute}</strong></span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-gray-500" />
-            <span className="text-gray-600">Idle: <strong className="text-gray-900">{stats.idle}</strong></span>
+            <span className="w-2 h-2 rounded-full bg-ink-faint" />
+            <span className="text-ink-soft">Idle: <strong className="text-ink">{stats.idle}</strong></span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-red-500" />
-            <span className="text-gray-600">Delayed: <strong className="text-gray-900">{stats.delayed}</strong></span>
+            <span className="w-2 h-2 rounded-full bg-danger" />
+            <span className="text-ink-soft">Delayed: <strong className="text-ink">{stats.delayed}</strong></span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-orange-500" />
-            <span className="text-gray-600">Maint: <strong className="text-gray-900">{stats.maintenance}</strong></span>
+            <span className="w-2 h-2 rounded-full bg-orange-400" />
+            <span className="text-ink-soft">Maint: <strong className="text-ink">{stats.maintenance}</strong></span>
           </div>
         </div>
-        <div className="border-t border-gray-100 pt-1.5 text-xs text-gray-500">
+        <div className="border-t border-line pt-1.5 text-xs text-ink-soft">
           {stats.totalParcels} parcels | Avg {stats.avgSpeed.toFixed(0)} km/h
         </div>
       </div>
 
       {/* Legend */}
-      <div className="absolute bottom-3 left-3 z-[1000] bg-white/95 backdrop-blur-sm rounded-lg border border-gray-200 shadow-lg px-3 py-2">
+      <div className="absolute bottom-3 left-3 z-[1000] bg-surface/95 backdrop-blur-sm rounded-lg border border-line shadow-lg px-3 py-2">
         <div className="flex items-center gap-4 text-xs">
           {Object.entries(statusLabels).map(([key, label]) => (
             <div key={key} className="flex items-center gap-1.5">
               <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: statusColors[key] }} />
-              <span className="text-gray-600">{label}</span>
+              <span className="text-ink-soft">{label}</span>
             </div>
           ))}
         </div>

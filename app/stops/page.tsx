@@ -60,11 +60,11 @@ function StopsBody() {
       <ErrorBanner error={q.error} onRetry={q.reload} />
       <DataTable caption="Stops" rowKey={(s) => s.id} data={q.data || []} loading={q.loading && !q.data} emptyMessage="No stops" columns={[
         { key: "code", label: "Code", render: (s: Stop) => <span className="font-mono text-[12px]">{s.code}</span> },
-        { key: "name", label: "Stop", render: (s: Stop) => <div><p className="font-medium">{s.name}</p><p className="text-xs text-gray-500">{s.address || ""}</p></div> },
+        { key: "name", label: "Stop", render: (s: Stop) => <div><p className="font-medium">{s.name}</p><p className="text-xs text-ink-soft">{s.address || ""}</p></div> },
         { key: "city", label: "City", render: (s: Stop) => `${s.cityName} (${s.cityCode})` },
         { key: "geo", label: "Location", render: (s: Stop) => <span className="text-[12px] font-mono">{s.latitude && s.longitude ? `${s.latitude}, ${s.longitude}` : "—"}</span> },
         { key: "active", label: "Status", render: (s: Stop) => <StatusBadge status={s.active === false ? "DISABLED" : "ACTIVE"} kind="generic" label={s.active === false ? "Inactive" : "Active"} /> },
-        { key: "ops", label: "Operations", render: (s: Stop) => (canWrite ? <button className={rowAction("indigo")} onClick={() => setEditing(s)}>Edit</button> : <span className="text-gray-400">—</span>) },
+        { key: "ops", label: "Operations", render: (s: Stop) => (canWrite ? <button className={rowAction("indigo")} onClick={() => setEditing(s)}>Edit</button> : <span className="text-ink-faint">—</span>) },
       ]} />
       {editing && <StopForm stop={editing === "new" ? null : editing} onClose={() => setEditing(null)} onSaved={() => { setEditing(null); q.reload(); }} />}
     </>

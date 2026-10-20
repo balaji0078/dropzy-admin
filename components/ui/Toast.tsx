@@ -28,18 +28,18 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       <div className="fixed bottom-5 right-5 z-[110] flex flex-col gap-2 max-w-md" aria-live="polite">
         {toasts.map((t) => (
           <div key={t.id} role={t.kind === "error" ? "alert" : "status"}
-            className={`flex items-start gap-2 rounded-lg px-4 py-3 text-sm font-medium text-white shadow-lg ${t.kind === "success" ? "bg-emerald-600" : "bg-red-600"}`}>
+            className={`flex items-start gap-2 rounded-xl px-4 py-3 text-sm font-medium text-ink bg-surface-alt border shadow-rb-lg ${t.kind === "success" ? "border-success/45 [&>span:first-child]:text-success" : "border-danger/45 [&>span:first-child]:text-danger"}`}>
             <span className="mt-0.5">{t.kind === "success" ? <CheckCircle2 size={16} aria-hidden /> : <AlertCircle size={16} aria-hidden />}</span>
             <div className="flex-1">
               <span>{t.msg}</span>
               {t.detail && (
                 <div className="mt-1">
-                  <button onClick={() => toggle(t.id)} className="text-[11px] underline opacity-90 hover:opacity-100">{t.open ? "Hide details" : "Details"}</button>
-                  {t.open && <p className="mt-1 text-[11px] font-mono select-all">{t.detail}</p>}
+                  <button onClick={() => toggle(t.id)} className="text-[11px] underline text-ink-soft hover:text-gold">{t.open ? "Hide details" : "Details"}</button>
+                  {t.open && <p className="mt-1 text-[11px] font-mono select-all text-ink-soft">{t.detail}</p>}
                 </div>
               )}
             </div>
-            <button onClick={() => dismiss(t.id)} className="ml-1 opacity-80 hover:opacity-100" aria-label="Dismiss notification"><X size={14} /></button>
+            <button onClick={() => dismiss(t.id)} className="ml-1 text-ink-faint hover:text-gold" aria-label="Dismiss notification"><X size={14} /></button>
           </div>
         ))}
       </div>

@@ -35,14 +35,14 @@ function LedgerBody() {
         <LastSynced at={bal.syncedAt} onRefresh={bal.reload} />
       </>}>
         {balanced !== undefined && (
-          <p className={`mb-3 inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-[13px] font-semibold ${balanced ? "bg-green-50 text-green-800" : "bg-red-50 text-red-800"}`} role="status">
+          <p className={`mb-3 inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-[13px] font-semibold ${balanced ? "bg-success/10 text-success" : "bg-danger/10 text-danger"}`} role="status">
             {balanced ? <CheckCircle2 className="w-4 h-4" aria-hidden /> : <AlertTriangle className="w-4 h-4" aria-hidden />}
             {balanced ? "Ledger balanced (debits = credits)" : "Ledger NOT balanced — investigate immediately"}
-            <span className="font-normal text-gray-600">as of {formatIST(bal.data?.asOf)}</span>
+            <span className="font-normal text-ink-soft">as of {formatIST(bal.data?.asOf)}</span>
           </p>
         )}
         <DataTable caption="Account balances" rowKey={(a) => a.accountCode || ""} data={bal.data?.accounts || []} loading={bal.loading && !bal.data} emptyMessage="No accounts" columns={[
-          { key: "code", label: "Account", render: (a: LedgerBalance) => <div><p className="font-mono text-[12px]">{a.accountCode}</p><p className="text-xs text-gray-500">{a.accountName}</p></div> },
+          { key: "code", label: "Account", render: (a: LedgerBalance) => <div><p className="font-mono text-[12px]">{a.accountCode}</p><p className="text-xs text-ink-soft">{a.accountName}</p></div> },
           { key: "type", label: "Type", render: (a: LedgerBalance) => a.accountType || "—" },
           { key: "debit", label: "Debits", render: (a: LedgerBalance) => <span className="tabular-nums">{formatPaise(a.debitPaise)}</span> },
           { key: "credit", label: "Credits", render: (a: LedgerBalance) => <span className="tabular-nums">{formatPaise(a.creditPaise)}</span> },
@@ -57,7 +57,7 @@ function LedgerBody() {
           <div className="w-40"><TextField label="Account code" value={account} onChange={(v) => { setAccount(v); setPage(1); }} /></div>
           <div className="w-64"><TextField label="Shipment ID" value={shipmentId} onChange={(v) => { setShipmentId(v); setPage(1); }} /></div>
         </div>
-        {tx.loading && !tx.data ? <p className="text-[13px] text-gray-500">Loading…</p> : <LedgerTab rows={tx.data?.data || []} />}
+        {tx.loading && !tx.data ? <p className="text-[13px] text-ink-soft">Loading…</p> : <LedgerTab rows={tx.data?.data || []} />}
         {(tx.data?.meta?.totalPages || 1) > 1 && (
           <div className="flex items-center justify-end gap-2 mt-3 text-[12px]">
             <button className="px-2 py-1 rounded border disabled:opacity-40" disabled={page <= 1} onClick={() => setPage(page - 1)}>Previous</button>

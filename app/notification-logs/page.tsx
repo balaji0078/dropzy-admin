@@ -126,49 +126,49 @@ function LegacyNotificationLogsPage() {
           title="Total Sent"
           value={totalSent.toLocaleString()}
           icon={MessageCircle}
-          iconBg="bg-blue-50"
-          iconColor="text-blue-600"
+          iconBg="bg-info/10"
+          iconColor="text-info"
         />
         <StatsCard
           title="SMS Sent"
           value={smsSent.toLocaleString()}
           icon={Phone}
-          iconBg="bg-cyan-50"
-          iconColor="text-cyan-600"
+          iconBg="bg-cyan-400/10"
+          iconColor="text-cyan-400"
         />
         <StatsCard
           title="WhatsApp Sent"
           value={whatsappSent.toLocaleString()}
           icon={MessageSquare}
-          iconBg="bg-green-50"
-          iconColor="text-green-600"
+          iconBg="bg-success/10"
+          iconColor="text-success"
         />
         <StatsCard
           title="Failed"
           value={failedCount}
           icon={AlertCircle}
-          iconBg="bg-red-50"
-          iconColor="text-red-600"
+          iconBg="bg-danger/10"
+          iconColor="text-danger"
         />
         <StatsCard
           title="Delivery Rate"
           value={`${deliveryRate}%`}
           icon={CheckCircle2}
-          iconBg="bg-emerald-50"
-          iconColor="text-emerald-600"
+          iconBg="bg-success/10"
+          iconColor="text-success"
         />
       </div>
 
       {/* Filter and Search */}
       <div className="rb-card p-6 space-y-4">
         <div className="flex items-center gap-2 mb-4">
-          <Search className="w-5 h-5 text-gray-400" />
+          <Search className="w-5 h-5 text-ink-faint" />
           <input
             type="text"
             placeholder="Search by name, phone, parcel ID, or template..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 outline-none text-sm text-gray-900 placeholder-gray-500"
+            className="flex-1 outline-none text-sm text-ink placeholder-ink-faint"
           />
         </div>
 
@@ -212,66 +212,66 @@ function LegacyNotificationLogsPage() {
       <div className="rb-card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead style={{ borderBottom: "1px solid rgba(0,0,0,0.06)" }}>
+            <thead style={{ borderBottom: "1px solid var(--dz-line)" }}>
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-3 text-left text-xs font-medium text-ink-soft uppercase">
                   Timestamp
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-3 text-left text-xs font-medium text-ink-soft uppercase">
                   Channel
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-3 text-left text-xs font-medium text-ink-soft uppercase">
                   Recipient
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-3 text-left text-xs font-medium text-ink-soft uppercase">
                   Template
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-3 text-left text-xs font-medium text-ink-soft uppercase">
                   Status
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-3 text-left text-xs font-medium text-ink-soft uppercase">
                   Parcel ID
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-3 text-left text-xs font-medium text-ink-soft uppercase">
                   Action
                 </th>
               </tr>
             </thead>
-            <tbody style={{ borderTop: "1px solid rgba(0,0,0,0.06)" }}>
+            <tbody style={{ borderTop: "1px solid var(--dz-line)" }}>
               {filteredNotifications.length > 0 ? (
                 filteredNotifications.map((notif) => (
-                  <tr key={notif.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4 text-sm text-gray-600 whitespace-nowrap">
+                  <tr key={notif.id} className="hover:bg-surface-alt transition-colors">
+                    <td className="px-6 py-4 text-sm text-ink-soft whitespace-nowrap">
                       {formatDateTime(notif.timestamp)}
                     </td>
                     <td className="px-6 py-4 text-sm">
                       <div className="flex items-center gap-2">
                         {notif.channel === "whatsapp" ? (
                           <>
-                            <MessageSquare className="w-4 h-4 text-green-600" />
-                            <span className="text-green-700 font-medium">WhatsApp</span>
+                            <MessageSquare className="w-4 h-4 text-success" />
+                            <span className="text-success font-medium">WhatsApp</span>
                           </>
                         ) : (
                           <>
-                            <Phone className="w-4 h-4 text-blue-600" />
-                            <span className="text-blue-700 font-medium">SMS</span>
+                            <Phone className="w-4 h-4 text-info" />
+                            <span className="text-info font-medium">SMS</span>
                           </>
                         )}
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-900">
+                    <td className="px-6 py-4 text-sm text-ink">
                       <div>
                         <p className="font-medium">{notif.recipient_name}</p>
-                        <p className="text-xs text-gray-500">{notif.recipient_phone}</p>
+                        <p className="text-xs text-ink-soft">{notif.recipient_phone}</p>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">
+                    <td className="px-6 py-4 text-sm text-ink-soft">
                       {notif.template}
                     </td>
                     <td className="px-6 py-4">
                       <StatusBadge status={notif.status} />
                     </td>
-                    <td className="px-6 py-4 text-sm font-mono text-gray-600">
+                    <td className="px-6 py-4 text-sm font-mono text-ink-soft">
                       {notif.parcel_id}
                     </td>
                     <td className="px-6 py-4">
@@ -290,7 +290,7 @@ function LegacyNotificationLogsPage() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={7} className="px-6 py-8 text-center text-gray-500">
+                  <td colSpan={7} className="px-6 py-8 text-center text-ink-soft">
                     No notifications found
                   </td>
                 </tr>
@@ -310,22 +310,22 @@ function LegacyNotificationLogsPage() {
         {selectedNotification && (
           <div className="space-y-6">
             {/* Header Info */}
-            <div className="flex items-start justify-between pb-4" style={{ borderBottom: "1px solid rgba(0,0,0,0.06)" }}>
+            <div className="flex items-start justify-between pb-4" style={{ borderBottom: "1px solid var(--dz-line)" }}>
               <div>
                 <div className="flex items-center gap-2 mb-2">
                   {selectedNotification.channel === "whatsapp" ? (
                     <>
-                      <MessageSquare className="w-5 h-5 text-green-600" />
-                      <p className="text-sm font-semibold text-gray-900">WhatsApp Message</p>
+                      <MessageSquare className="w-5 h-5 text-success" />
+                      <p className="text-sm font-semibold text-ink">WhatsApp Message</p>
                     </>
                   ) : (
                     <>
-                      <Phone className="w-5 h-5 text-blue-600" />
-                      <p className="text-sm font-semibold text-gray-900">SMS Message</p>
+                      <Phone className="w-5 h-5 text-info" />
+                      <p className="text-sm font-semibold text-ink">SMS Message</p>
                     </>
                   )}
                 </div>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-ink-soft">
                   {formatDateTime(selectedNotification.timestamp)}
                 </p>
               </div>
@@ -334,19 +334,19 @@ function LegacyNotificationLogsPage() {
 
             {/* Recipient Info */}
             <div>
-              <h3 className="text-xs font-semibold text-gray-500 uppercase mb-3">
+              <h3 className="text-xs font-semibold text-ink-soft uppercase mb-3">
                 Recipient
               </h3>
               <div className="space-y-2">
                 <div className="flex justify-between">
-                  <span className="text-sm text-gray-600">Name</span>
-                  <span className="text-sm font-medium text-gray-900">
+                  <span className="text-sm text-ink-soft">Name</span>
+                  <span className="text-sm font-medium text-ink">
                     {selectedNotification.recipient_name}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-sm text-gray-600">Phone</span>
-                  <span className="text-sm font-medium text-gray-900">
+                  <span className="text-sm text-ink-soft">Phone</span>
+                  <span className="text-sm font-medium text-ink">
                     {selectedNotification.recipient_phone}
                   </span>
                 </div>
@@ -355,19 +355,19 @@ function LegacyNotificationLogsPage() {
 
             {/* Parcel & Template */}
             <div>
-              <h3 className="text-xs font-semibold text-gray-500 uppercase mb-3">
+              <h3 className="text-xs font-semibold text-ink-soft uppercase mb-3">
                 Message Details
               </h3>
               <div className="space-y-2">
                 <div className="flex justify-between">
-                  <span className="text-sm text-gray-600">Template</span>
-                  <span className="text-sm font-medium text-gray-900">
+                  <span className="text-sm text-ink-soft">Template</span>
+                  <span className="text-sm font-medium text-ink">
                     {selectedNotification.template}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-sm text-gray-600">Parcel ID</span>
-                  <span className="text-sm font-mono font-medium text-gray-900">
+                  <span className="text-sm text-ink-soft">Parcel ID</span>
+                  <span className="text-sm font-mono font-medium text-ink">
                     {selectedNotification.parcel_id}
                   </span>
                 </div>
@@ -377,11 +377,11 @@ function LegacyNotificationLogsPage() {
             {/* Message Content */}
             {selectedNotification.message && (
               <div>
-                <h3 className="text-xs font-semibold text-gray-500 uppercase mb-3">
+                <h3 className="text-xs font-semibold text-ink-soft uppercase mb-3">
                   Message Content
                 </h3>
                 <div className="p-4 rb-card-flat rounded-lg">
-                  <p className="text-sm text-gray-900 leading-relaxed">
+                  <p className="text-sm text-ink leading-relaxed">
                     {selectedNotification.message}
                   </p>
                 </div>
@@ -390,18 +390,18 @@ function LegacyNotificationLogsPage() {
 
             {/* Delivery Status */}
             <div>
-              <h3 className="text-xs font-semibold text-gray-500 uppercase mb-3">
+              <h3 className="text-xs font-semibold text-ink-soft uppercase mb-3">
                 Delivery Status
               </h3>
               <div className="space-y-2">
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
-                  <span className="text-sm text-gray-600">Status</span>
+                <div className="flex items-center justify-between p-3 bg-surface-alt rounded-lg border border-line">
+                  <span className="text-sm text-ink-soft">Status</span>
                   <StatusBadge status={selectedNotification.status} />
                 </div>
                 {selectedNotification.read_receipt && (
-                  <div className="flex items-center justify-between p-3 rb-card-flat rounded-lg border-[#34C759]/20">
-                    <span className="text-sm text-[#34C759] font-medium">Read Receipt</span>
-                    <p className="text-xs text-[#34C759]">
+                  <div className="flex items-center justify-between p-3 rb-card-flat rounded-lg border-success/20">
+                    <span className="text-sm text-success font-medium">Read Receipt</span>
+                    <p className="text-xs text-success">
                       {formatDateTime(selectedNotification.read_receipt)}
                     </p>
                   </div>

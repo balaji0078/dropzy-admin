@@ -38,16 +38,16 @@ function InboxBody() {
         </div>
       </div>
       <ErrorBanner error={q.error} onRetry={q.reload} />
-      <ul className="rb-card-flat divide-y divide-gray-100" aria-label="Notifications">
-        {q.loading && !q.data && <li className="p-6 text-center text-[13px] text-gray-500">Loading…</li>}
-        {q.data && items.length === 0 && <li className="p-6 text-center text-[13px] text-gray-500">No notifications</li>}
+      <ul className="rb-card-flat divide-y divide-line" aria-label="Notifications">
+        {q.loading && !q.data && <li className="p-6 text-center text-[13px] text-ink-soft">Loading…</li>}
+        {q.data && items.length === 0 && <li className="p-6 text-center text-[13px] text-ink-soft">No notifications</li>}
         {items.map((n) => (
           <li key={n.id}>
-            <button onClick={() => open(n)} className={`w-full text-left px-4 py-3 flex gap-3 hover:bg-red-50 focus:outline-none focus-visible:bg-red-50 ${n.readAt ? "" : "bg-blue-50/40"}`}>
-              <Circle className={`w-2.5 h-2.5 mt-1.5 flex-shrink-0 ${n.readAt ? "text-transparent" : "text-[#D82C2C] fill-[#D82C2C]"}`} aria-hidden />
+            <button onClick={() => open(n)} className={`w-full text-left px-4 py-3 flex gap-3 hover:bg-surface-alt focus:outline-none focus-visible:bg-surface-alt focus-visible:shadow-[inset_3px_0_0_#F5C451] ${n.readAt ? "" : "bg-gold/5 shadow-[inset_3px_0_0_#F5C451]"}`}>
+              <Circle className={`w-2.5 h-2.5 mt-1.5 flex-shrink-0 ${n.readAt ? "text-transparent" : "text-primary-light fill-gold"}`} aria-hidden />
               <span className="flex-1">
-                <span className="flex justify-between gap-3"><span className={`text-[13px] ${n.readAt ? "text-gray-800" : "font-semibold text-gray-900"}`}>{n.title}</span><span className="text-[11px] text-gray-500 whitespace-nowrap">{formatIST(n.createdAt)}</span></span>
-                <span className="block text-[12px] text-gray-600 mt-0.5">{n.body}</span>
+                <span className="flex justify-between gap-3"><span className={`text-[13px] ${n.readAt ? "text-ink" : "font-semibold text-ink"}`}>{n.title}</span><span className="text-[11px] text-ink-soft whitespace-nowrap">{formatIST(n.createdAt)}</span></span>
+                <span className="block text-[12px] text-ink-soft mt-0.5">{n.body}</span>
                 <span className="sr-only">{n.readAt ? "Read" : "Unread"}</span>
               </span>
             </button>

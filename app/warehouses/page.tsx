@@ -64,13 +64,13 @@ function WarehousesBody() {
       {!canWrite && <Notice tone="info">Read-only: only an admin can change warehouses.</Notice>}
       <ErrorBanner error={q.error} onRetry={q.reload} />
       <DataTable caption="Warehouses" rowKey={(w) => w.id} data={q.data || []} loading={q.loading && !q.data} emptyMessage="No warehouses" columns={[
-        { key: "name", label: "Warehouse", render: (w: Warehouse) => <div><p className="font-medium">{w.name}</p><p className="text-xs text-gray-500 font-mono">{w.code} · {w.cityCode}</p></div> },
+        { key: "name", label: "Warehouse", render: (w: Warehouse) => <div><p className="font-medium">{w.name}</p><p className="text-xs text-ink-soft font-mono">{w.code} · {w.cityCode}</p></div> },
         { key: "address", label: "Address", render: (w: Warehouse) => <span className="text-[12px]">{w.address}</span> },
         { key: "hours", label: "Opening hours", render: (w: Warehouse) => w.openingHours || "—" },
         { key: "stop", label: "Stop", render: (w: Warehouse) => stopName(w.stopId) },
         { key: "phone", label: "Phone", render: (w: Warehouse) => w.phone || "—" },
         { key: "active", label: "Status", render: (w: Warehouse) => <StatusBadge status={w.active === false ? "DISABLED" : "ACTIVE"} kind="generic" label={w.active === false ? "Inactive" : "Active"} /> },
-        { key: "ops", label: "Operations", render: (w: Warehouse) => (canWrite ? <button className={rowAction("indigo")} onClick={() => setEditing(w)}>Edit</button> : <span className="text-gray-400">—</span>) },
+        { key: "ops", label: "Operations", render: (w: Warehouse) => (canWrite ? <button className={rowAction("indigo")} onClick={() => setEditing(w)}>Edit</button> : <span className="text-ink-faint">—</span>) },
       ]} />
       {editing && <WarehouseForm wh={editing === "new" ? null : editing} stops={stops.data || []} onClose={() => setEditing(null)} onSaved={() => { setEditing(null); q.reload(); }} />}
     </>

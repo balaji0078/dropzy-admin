@@ -39,23 +39,23 @@ function WeightExceptionsBody() {
 
   const columns = [
     { key: "dcn", label: "DCN", render: (r: WeightExceptionRow) => (
-      <Link href={`/shipments/${r.shipmentId}`} onClick={(e) => e.stopPropagation()} className="font-mono text-xs text-blue-700 hover:underline">{r.dcn || shortId(r.shipmentId)}</Link>) },
-    { key: "route", label: "Route", render: (r: WeightExceptionRow) => <span className="text-gray-900">{r.routeName || "—"}</span> },
+      <Link href={`/shipments/${r.shipmentId}`} onClick={(e) => e.stopPropagation()} className="font-mono text-xs text-primary-light hover:text-gold hover:underline">{r.dcn || shortId(r.shipmentId)}</Link>) },
+    { key: "route", label: "Route", render: (r: WeightExceptionRow) => <span className="text-ink">{r.routeName || "—"}</span> },
     { key: "operator", label: "Operator", render: (r: WeightExceptionRow) => r.operatorName || "—" },
     { key: "declared", label: "Declared", render: (r: WeightExceptionRow) => <span className="tabular-nums">{formatKg(r.declaredWeightGrams)}</span> },
     { key: "actual", label: "Actual", render: (r: WeightExceptionRow) => (
-      <span className="tabular-nums"><span className="font-semibold text-gray-900">{formatKg(r.actualWeightGrams)}</span>
-        <span className={`block text-[11px] ${(r.rawDifferenceGrams || 0) > 0 ? "text-red-700" : "text-gray-500"}`}>{formatSignedKg(r.rawDifferenceGrams)}</span></span>) },
+      <span className="tabular-nums"><span className="font-semibold text-ink">{formatKg(r.actualWeightGrams)}</span>
+        <span className={`block text-[11px] ${(r.rawDifferenceGrams || 0) > 0 ? "text-danger" : "text-ink-soft"}`}>{formatSignedKg(r.rawDifferenceGrams)}</span></span>) },
     { key: "due", label: "Amount due", render: (r: WeightExceptionRow) => <span className="tabular-nums font-semibold">{formatPaise(r.amountDuePaise)}</span> },
     { key: "deadline", label: "Deadline", render: (r: WeightExceptionRow) => <Deadline at={r.cutoffAt} /> },
     { key: "label", label: "Label", render: (r: WeightExceptionRow) => (
       <div className="flex flex-col gap-1 items-start">
         {r.driverLabel ? <StatusBadge status={r.driverLabel} kind="driverLabel" /> : "—"}
-        {r.reviewReasonCode && <span className="text-[11px] text-purple-700">Review: {humanize(r.reviewReasonCode)}</span>}
-        {r.quoteVersion ? <span className="text-[11px] text-gray-500">Quote v{r.quoteVersion} · {humanize(r.quoteStatus)}</span> : null}
+        {r.reviewReasonCode && <span className="text-[11px] text-purple-400">Review: {humanize(r.reviewReasonCode)}</span>}
+        {r.quoteVersion ? <span className="text-[11px] text-ink-soft">Quote v{r.quoteVersion} · {humanize(r.quoteStatus)}</span> : null}
       </div>) },
     { key: "by", label: "Measured by", render: (r: WeightExceptionRow) => (
-      <span className="text-[11px]"><span className="font-mono" title={r.measuredBy}>{shortId(r.measuredBy)}</span>{r.measurementCount && r.measurementCount > 1 ? <span className="block text-gray-500">{r.measurementCount} measurements</span> : null}</span>) },
+      <span className="text-[11px]"><span className="font-mono" title={r.measuredBy}>{shortId(r.measuredBy)}</span>{r.measurementCount && r.measurementCount > 1 ? <span className="block text-ink-soft">{r.measurementCount} measurements</span> : null}</span>) },
   ];
 
   return (

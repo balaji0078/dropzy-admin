@@ -17,9 +17,9 @@ function CapacityBar({ used, total, label }: { used?: number; total?: number; la
   const pct = total ? Math.min(100, Math.round(((used || 0) / total) * 100)) : 0;
   return (
     <div className="w-40">
-      <div className="flex justify-between text-[11px] text-gray-600"><span>{label}</span><span>{pct}%</span></div>
-      <div className="mt-1 h-2 w-full rounded-full bg-gray-100" role="progressbar" aria-label={`${label} used`} aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100}>
-        <div className="h-2 rounded-full" style={{ width: `${pct}%`, background: pct >= 90 ? "#DC2626" : "#D82C2C" }} />
+      <div className="flex justify-between text-[11px] text-ink-soft"><span>{label}</span><span>{pct}%</span></div>
+      <div className="mt-1 h-2 w-full rounded-full bg-surface-alt" role="progressbar" aria-label={`${label} used`} aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100}>
+        <div className="h-2 rounded-full" style={{ width: `${pct}%`, background: pct >= 90 ? "var(--dz-gold)" : "var(--dz-primary)" }} />
       </div>
     </div>
   );
@@ -85,10 +85,10 @@ function TripsBody() {
   };
 
   const columns = [
-    { key: "dep", label: "Departure", render: (t: Trip) => <div><p className="font-medium">{formatIST(t.departureAt)}</p><p className="text-[11px] text-gray-500">Arrives {formatIST(t.arrivalAt)} · booking closes {formatIST(t.bookingClosesAt)}</p></div> },
+    { key: "dep", label: "Departure", render: (t: Trip) => <div><p className="font-medium">{formatIST(t.departureAt)}</p><p className="text-[11px] text-ink-soft">Arrives {formatIST(t.arrivalAt)} · booking closes {formatIST(t.bookingClosesAt)}</p></div> },
     { key: "route", label: "Route", render: (t: Trip) => t.routeName || "—" },
     { key: "vehicle", label: "Vehicle", render: (t: Trip) => <span className="font-mono text-[12px]">{t.vehicleReg || "—"}</span> },
-    { key: "status", label: "Status", render: (t: Trip) => <span className="flex flex-col gap-1">{t.status && <StatusBadge status={t.status} kind="generic" />}{t.delayMinutes ? <span className="text-[11px] text-amber-700 font-semibold">Delayed {t.delayMinutes} min</span> : null}</span> },
+    { key: "status", label: "Status", render: (t: Trip) => <span className="flex flex-col gap-1">{t.status && <StatusBadge status={t.status} kind="generic" />}{t.delayMinutes ? <span className="text-[11px] text-warning font-semibold">Delayed {t.delayMinutes} min</span> : null}</span> },
     { key: "cap", label: "Capacity", render: (t: Trip) => (
       <div className="space-y-1">
         <CapacityBar label={`${formatKg(t.reservedGrams)} / ${formatKg(t.capacityGrams)}`} used={t.reservedGrams} total={t.capacityGrams} />
@@ -96,10 +96,10 @@ function TripsBody() {
       </div>) },
     { key: "crew", label: "Assigned crew", render: (t: Trip) => (
       <div className="flex flex-col gap-1">
-        {(t.assignments || []).length === 0 && <span className="text-gray-400 text-[12px]">None</span>}
+        {(t.assignments || []).length === 0 && <span className="text-ink-faint text-[12px]">None</span>}
         {(t.assignments || []).map((a) => (
-          <span key={a.userId} className="inline-flex items-center gap-1 text-[12px]">{a.userName || a.userId} <span className="text-gray-500">({humanize(a.assignmentRole)})</span>
-            {canWrite && <button className="p-0.5 rounded hover:bg-red-50 text-red-600" aria-label={`Unassign ${a.userName || a.userId}`} onClick={() => setDlg({ kind: "unassign", trip: t, userId: a.userId, name: a.userName || a.userId })}><X className="w-3 h-3" /></button>}
+          <span key={a.userId} className="inline-flex items-center gap-1 text-[12px]">{a.userName || a.userId} <span className="text-ink-soft">({humanize(a.assignmentRole)})</span>
+            {canWrite && <button className="p-0.5 rounded hover:bg-danger/10 text-danger" aria-label={`Unassign ${a.userName || a.userId}`} onClick={() => setDlg({ kind: "unassign", trip: t, userId: a.userId, name: a.userName || a.userId })}><X className="w-3 h-3" /></button>}
           </span>
         ))}
       </div>) },
@@ -109,7 +109,7 @@ function TripsBody() {
         <button className={rowAction("gray")} onClick={() => { setCapKg(t.capacityGrams !== undefined ? String(t.capacityGrams / 1000) : ""); setCapParcels(String(t.capacityParcels ?? "")); setVehicle(t.vehicleReg || ""); setDlg({ kind: "edit", trip: t }); }}>Edit</button>
         <button className={rowAction("amber")} onClick={() => { setDelay(String(t.delayMinutes || "")); setDlg({ kind: "delay", trip: t }); }}>Report delay</button>
         <button className={rowAction("red")} onClick={() => setDlg({ kind: "cancel", trip: t })}>Cancel trip</button>
-      </div>) : <span className="text-gray-400">—</span>) },
+      </div>) : <span className="text-ink-faint">—</span>) },
   ];
 
   const editGrams = capKg ? parseWeightToGrams(capKg, "kg") : null;

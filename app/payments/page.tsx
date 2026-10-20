@@ -17,12 +17,12 @@ import { useToast } from "@/components/ui/Toast";
 
 // redBus color palette
 const RB_COLORS = {
-  blue: "#D82C2C",
-  green: "#34C759",
-  red: "#FF3B30",
-  orange: "#FF9500",
-  indigo: "#D82C2C",
-  lightGreen: "#30D158",
+  blue: "#A78BFA",
+  green: "#34D399",
+  red: "#F87171",
+  orange: "#FBBF24",
+  indigo: "#8B5CF6",
+  lightGreen: "#34D399",
 };
 
 const statusTabs = [
@@ -163,27 +163,27 @@ function LegacyPaymentsPage() {
           value={formatCurrency(54200)}
           change={8.7}
           icon={DollarSign}
-          iconBg="bg-green-50"
-          iconColor="text-green-600"
-          gradient={`linear-gradient(135deg, ${RB_COLORS.green}, ${RB_COLORS.lightGreen})`}
+          iconBg="bg-success/10"
+          iconColor="text-success"
+          gradient={`linear-gradient(135deg, ${RB_COLORS.green}, #059669)`}
         />
         <StatsCard
           title="Weekly Revenue"
           value={formatCurrency(386800)}
           change={12.3}
           icon={TrendingUp}
-          iconBg="bg-blue-50"
-          iconColor="text-blue-600"
-          gradient={`linear-gradient(135deg, #D82C2C, #D82C2C)`}
+          iconBg="bg-info/10"
+          iconColor="text-info"
+          gradient={`linear-gradient(135deg, #7C3AED, #4C1D95)`}
         />
         <StatsCard
           title="Monthly Revenue"
           value={formatCurrency(1542000)}
           change={5.1}
           icon={CreditCard}
-          iconBg="bg-purple-50"
-          iconColor="text-purple-600"
-          gradient={`linear-gradient(135deg, #D82C2C, #7C3AED)`}
+          iconBg="bg-purple-400/10"
+          iconColor="text-purple-400"
+          gradient={`linear-gradient(135deg, #F5C451, #D4A53A)`}
         />
       </div>
 
@@ -191,18 +191,14 @@ function LegacyPaymentsPage() {
         <FilterTabs tabs={statusTabs} activeTab={statusFilter} onChange={setStatusFilter} />
         <div className="relative">
           <Search
-            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4"
-            style={{ color: "#D82C2C" }}
+            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-faint"
           />
           <input
             type="text"
             placeholder="Search transaction, customer..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="rb-input pl-10 pr-4 py-2.5 w-64 rounded-xl text-[13px] focus:outline-none focus:ring-2 transition-all"
-            style={{
-              border: "1px solid rgba(0, 0, 0, 0.06)",
-            }}
+            className="rb-input pl-10 pr-4 py-2.5 w-64 rounded-xl text-[13px] focus:outline-none transition-all"
           />
         </div>
       </div>
@@ -215,26 +211,26 @@ function LegacyPaymentsPage() {
           <div className="space-y-5">
             <div className="grid grid-cols-2 gap-4">
               <div className="rb-card-flat p-3 rounded-xl">
-                <p className="text-[13px] text-gray-500 uppercase text-[11px] tracking-wide">Transaction ID</p>
+                <p className="text-[13px] text-ink-soft uppercase text-[11px] tracking-wide">Transaction ID</p>
                 <p className="text-[13px] font-mono font-medium mt-1.5">{selected.transaction_id}</p>
               </div>
               <div className="rb-card-flat p-3 rounded-xl">
-                <p className="text-[13px] text-gray-500 uppercase text-[11px] tracking-wide">Status</p>
+                <p className="text-[13px] text-ink-soft uppercase text-[11px] tracking-wide">Status</p>
                 <div className="mt-1.5"><StatusBadge status={selected.status} /></div>
               </div>
               <div className="rb-card-flat p-3 rounded-xl">
-                <p className="text-[13px] text-gray-500 uppercase text-[11px] tracking-wide">Amount</p>
+                <p className="text-[13px] text-ink-soft uppercase text-[11px] tracking-wide">Amount</p>
                 <p className="text-[13px] font-semibold mt-1.5" style={{ color: RB_COLORS.green }}>
                   {formatCurrency(selected.amount)}
                 </p>
               </div>
               <div className="rb-card-flat p-3 rounded-xl">
-                <p className="text-[13px] text-gray-500 uppercase text-[11px] tracking-wide">Method</p>
+                <p className="text-[13px] text-ink-soft uppercase text-[11px] tracking-wide">Method</p>
                 <p className="text-[13px] capitalize font-medium mt-1.5">{selected.method}</p>
               </div>
             </div>
             {selected.status === "completed" && (
-              <div className="pt-4 border-t border-gray-200">
+              <div className="pt-4 border-t border-line">
                 <button
                   onClick={() => { setRefundAmount(String(selected.amount)); setRefundModal(true); }}
                   className="flex items-center gap-2 px-4 py-2.5 text-[13px] font-medium rounded-xl transition-all"
@@ -261,10 +257,7 @@ function LegacyPaymentsPage() {
               type="number"
               value={refundAmount}
               onChange={(e) => setRefundAmount(e.target.value)}
-              className="rb-input w-full px-4 py-2.5 rounded-xl text-[13px] focus:outline-none focus:ring-2 transition-all"
-              style={{
-                border: "1px solid rgba(0, 0, 0, 0.06)",
-              }}
+              className="rb-input w-full px-4 py-2.5 rounded-xl text-[13px] focus:outline-none transition-all"
             />
           </div>
           <div>
@@ -273,20 +266,13 @@ function LegacyPaymentsPage() {
               value={refundReason}
               onChange={(e) => setRefundReason(e.target.value)}
               rows={3}
-              className="rb-input w-full px-4 py-2.5 rounded-xl text-[13px] focus:outline-none focus:ring-2 transition-all"
-              style={{
-                border: "1px solid rgba(0, 0, 0, 0.06)",
-              }}
+              className="rb-input w-full px-4 py-2.5 rounded-xl text-[13px] focus:outline-none transition-all"
               placeholder="Customer requested cancellation..."
             />
           </div>
           <button
             onClick={handleRefund}
             className="rb-btn rb-btn-primary w-full py-2.5 rounded-xl text-[13px] font-semibold transition-all"
-            style={{
-              backgroundColor: RB_COLORS.red,
-              color: "white",
-            }}
           >
             Confirm Refund
           </button>

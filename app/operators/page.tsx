@@ -59,44 +59,44 @@ function LegacyOperatorsPage() {
 
   const columns = [
     { key: "name", label: "Operator", render: (o: any) => (
-      <div><p className="font-medium text-gray-900">{o.name}</p><p className="text-xs text-gray-400">{o.city} · {o.gst_number}</p></div>) },
-    { key: "fleet", label: "Fleet / Routes", render: (o: any) => <span className="text-gray-700">{o.buses} buses · {o.routes} routes</span> },
+      <div><p className="font-medium text-ink">{o.name}</p><p className="text-xs text-ink-faint">{o.city} · {o.gst_number}</p></div>) },
+    { key: "fleet", label: "Fleet / Routes", render: (o: any) => <span className="text-ink">{o.buses} buses · {o.routes} routes</span> },
     { key: "rating", label: "Rating", render: (o: any) => o.rating ? (
-      <span className="inline-flex items-center gap-1 text-gray-700"><Star className="w-3.5 h-3.5 text-amber-500" />{o.rating}</span>) : <span className="text-gray-400">—</span> },
+      <span className="inline-flex items-center gap-1 text-ink"><Star className="w-3.5 h-3.5 text-warning" />{o.rating}</span>) : <span className="text-ink-faint">—</span> },
     { key: "status", label: "Status", render: (o: any) => <StatusBadge status={o.status} /> },
     { key: "actions", label: "Operations", render: (o: any) => (
       <div className="flex items-center gap-2">
         {(o.status === "pending" || o.status === "kyc_review") && (
           <button onClick={() => setStatus(o.id, "approved", "approved — marketplace live")}
-            className="inline-flex items-center gap-1 text-[12px] font-semibold text-green-600 hover:bg-green-50 px-2 py-1 rounded-md"><Check className="w-3.5 h-3.5" />Approve</button>)}
+            className="inline-flex items-center gap-1 text-[12px] font-semibold text-success hover:bg-success/10 px-2 py-1 rounded-md"><Check className="w-3.5 h-3.5" />Approve</button>)}
         {o.status === "approved" && (
           <button onClick={() => setStatus(o.id, "suspended", "suspended")}
-            className="inline-flex items-center gap-1 text-[12px] font-semibold text-red-600 hover:bg-red-50 px-2 py-1 rounded-md"><Ban className="w-3.5 h-3.5" />Suspend</button>)}
+            className="inline-flex items-center gap-1 text-[12px] font-semibold text-danger hover:bg-danger/10 px-2 py-1 rounded-md"><Ban className="w-3.5 h-3.5" />Suspend</button>)}
         {o.status === "suspended" && (
           <button onClick={() => setStatus(o.id, "approved", "re-approved")}
-            className="inline-flex items-center gap-1 text-[12px] font-semibold text-green-600 hover:bg-green-50 px-2 py-1 rounded-md"><Check className="w-3.5 h-3.5" />Re-approve</button>)}
+            className="inline-flex items-center gap-1 text-[12px] font-semibold text-success hover:bg-success/10 px-2 py-1 rounded-md"><Check className="w-3.5 h-3.5" />Re-approve</button>)}
       </div>) },
   ];
 
   const field = (label: string, key: string, type = "text", placeholder = "") => (
     <div>
-      <label className="block text-[12px] font-semibold text-gray-600 mb-1">{label}</label>
+      <label className="block text-[12px] font-semibold text-ink-soft mb-1">{label}</label>
       <input type={type} value={(form as any)[key]} onChange={(e) => set(key, e.target.value)} placeholder={placeholder}
-        className="w-full px-3 py-2 rounded-lg border border-gray-200 text-[13px] focus:outline-none focus:border-[#D82C2C]" />
+        className="w-full px-3 py-2 rounded-lg border border-line text-[13px] focus:outline-none focus:border-gold" />
     </div>
   );
 
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between">
-        <div><h1 className="text-[22px] font-bold text-gray-900">Operators</h1>
-          <p className="text-[13px] text-gray-500">Onboarding, KYC & marketplace status (PRD Ch.21)</p></div>
-        <button onClick={() => setShowCreate(true)} className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-white text-[13px] font-semibold" style={{ background: "#D82C2C" }}><Plus className="w-4 h-4" /> Onboard Operator</button>
+        <div><h1 className="text-[22px] font-bold text-ink">Operators</h1>
+          <p className="text-[13px] text-ink-soft">Onboarding, KYC & marketplace status (PRD Ch.21)</p></div>
+        <button onClick={() => setShowCreate(true)} className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-white text-[13px] font-semibold" style={{ background: "var(--dz-primary-deep)" }}><Plus className="w-4 h-4" /> Onboard Operator</button>
       </div>
       <div className="flex items-center justify-between gap-4">
         <FilterTabs tabs={statusTabs} activeTab={statusFilter} onChange={setStatusFilter} />
-        <div className="relative"><Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-          <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search operators…" className="pl-9 pr-3 py-2 rounded-lg border border-gray-200 text-[13px] focus:outline-none focus:border-[#D82C2C]" /></div>
+        <div className="relative"><Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-ink-faint" />
+          <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search operators…" className="pl-9 pr-3 py-2 rounded-lg border border-line text-[13px] focus:outline-none focus:border-gold" /></div>
       </div>
       <DataTable columns={columns} data={filtered} loading={loading} emptyMessage="No operators found" />
 
@@ -111,8 +111,8 @@ function LegacyOperatorsPage() {
           {field("Routes", "routes", "number", "0")}
         </div>
         <div className="flex items-center justify-end gap-3 mt-6">
-          <button onClick={() => setShowCreate(false)} className="px-4 py-2 rounded-lg border border-gray-200 text-[13px] font-semibold text-gray-700 hover:bg-gray-50">Cancel</button>
-          <button onClick={onboard} className="px-4 py-2 rounded-lg text-white text-[13px] font-semibold" style={{ background: "#D82C2C" }}>Onboard Operator</button>
+          <button onClick={() => setShowCreate(false)} className="px-4 py-2 rounded-lg border border-line text-[13px] font-semibold text-ink hover:bg-surface-alt">Cancel</button>
+          <button onClick={onboard} className="px-4 py-2 rounded-lg text-white text-[13px] font-semibold" style={{ background: "var(--dz-primary-deep)" }}>Onboard Operator</button>
         </div>
       </Modal>
     </div>

@@ -52,7 +52,7 @@ function InventoryBody() {
   };
 
   const columns = [
-    { key: "dcn", label: "DCN", render: (i: InventoryItem) => (canDetail ? <Link href={`/shipments/${i.shipmentId}`} className="font-mono text-xs text-blue-700 hover:underline">{i.dcn}</Link> : <span className="font-mono text-xs">{i.dcn}</span>) },
+    { key: "dcn", label: "DCN", render: (i: InventoryItem) => (canDetail ? <Link href={`/shipments/${i.shipmentId}`} className="font-mono text-xs text-primary-light hover:text-gold hover:underline">{i.dcn}</Link> : <span className="font-mono text-xs">{i.dcn}</span>) },
     { key: "state", label: "State", render: (i: InventoryItem) => (i.shipmentState ? <StatusBadge status={i.shipmentState} kind="shipmentState" /> : "—") },
     { key: "hold", label: "Hold reason", render: (i: InventoryItem) => (
       <div className="flex flex-col gap-1 items-start"><span className="text-[12px]">{humanize(i.holdReason)}</span>
@@ -62,14 +62,14 @@ function InventoryBody() {
     { key: "received", label: "Received", render: (i: InventoryItem) => <span className="text-[12px]">{formatIST(i.receivedAt)}</span> },
     { key: "age", label: "Age", render: (i: InventoryItem) => (
       i.overMaxHold
-        ? <span className="inline-flex items-center gap-1 font-semibold text-red-700"><AlertTriangle className="w-3.5 h-3.5" aria-hidden />{formatAgeHours(i.ageHours)} · over max hold</span>
+        ? <span className="inline-flex items-center gap-1 font-semibold text-danger"><AlertTriangle className="w-3.5 h-3.5" aria-hidden />{formatAgeHours(i.ageHours)} · over max hold</span>
         : <span>{formatAgeHours(i.ageHours)}</span>) },
     { key: "cond", label: "Condition", render: (i: InventoryItem) => humanize(i.condition) },
     { key: "ops", label: "Operations", render: (i: InventoryItem) => (
       <div className="flex items-center gap-1">
         {canRelocate && i.status === "ACTIVE" && <button className={rowAction("indigo")} onClick={() => { setRelocating(i); setToBin(""); }}>Relocate</button>}
         {canRelease && i.status === "ACTIVE" && <Link className={rowAction("green")} href={`/warehouse/release/${i.shipmentId}`}>{i.shipmentState === "RETURN_IN_PROGRESS" ? "Return" : "Release"}</Link>}
-        {i.status !== "ACTIVE" && <span className="text-[12px] text-gray-500">{i.collectorName ? `To ${i.collectorName}` : "—"} {formatIST(i.releasedAt)}</span>}
+        {i.status !== "ACTIVE" && <span className="text-[12px] text-ink-soft">{i.collectorName ? `To ${i.collectorName}` : "—"} {formatIST(i.releasedAt)}</span>}
       </div>) },
   ];
 
@@ -86,7 +86,7 @@ function InventoryBody() {
       </div>
       <ErrorBanner error={q.error} onRetry={q.reload} />
       <DataTable caption="Warehouse inventory (oldest first)" rowKey={(i) => i.id || i.shipmentId} columns={columns} data={q.data?.data || []} loading={(q.loading && !q.data) || sel.loading}
-        rowClassName={(i) => (i.overMaxHold ? "bg-red-50" : undefined)} emptyMessage="No parcels in this view"
+        rowClassName={(i) => (i.overMaxHold ? "dz-row-highlight" : undefined)} emptyMessage="No parcels in this view"
         page={q.data?.meta?.page || page} totalPages={q.data?.meta?.totalPages || 1} onPageChange={setPage} />
       <ReasonDialog open={!!relocating} title="Relocate parcel" busy={busy} onClose={() => setRelocating(null)} confirmLabel="Move parcel" requireReason={false}
         canConfirm={!!toBin.trim()} summary={<>Move <strong>{relocating?.dcn}</strong> from bin <strong>{relocating?.binCode}</strong>. The move is audited; the parcel state does not change.</>}

@@ -79,21 +79,21 @@ function TicketDrawer({ ticketId, onClose, onChanged }: { ticketId: string; onCl
   return (
     <Modal open onClose={onClose} title={t ? `${t.ticketNumber} · ${t.subject}` : "Ticket"} size="xl">
       <ErrorBanner error={q.error} onRetry={q.reload} />
-      {!t ? <p className="text-[13px] text-gray-500">Loading…</p> : (
+      {!t ? <p className="text-[13px] text-ink-soft">Loading…</p> : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <div className="lg:col-span-2 space-y-3">
             <ol className="space-y-2 max-h-[45vh] overflow-y-auto pr-1" aria-label="Ticket thread">
-              {(t.messages || []).length === 0 && <li className="text-[13px] text-gray-500">No messages yet.</li>}
+              {(t.messages || []).length === 0 && <li className="text-[13px] text-ink-soft">No messages yet.</li>}
               {(t.messages || []).map((m) => (
-                <li key={m.id} className={`rounded-lg border p-3 text-[13px] ${m.visibility === "INTERNAL" ? "bg-amber-50 border-amber-200" : m.authorRole === "customer" ? "bg-white border-gray-200" : "bg-blue-50 border-blue-100"}`}>
-                  <div className="flex items-center justify-between gap-2 text-[11px] text-gray-500 mb-1">
+                <li key={m.id} className={`rounded-lg border p-3 text-[13px] ${m.visibility === "INTERNAL" ? "bg-warning/10 border-warning/35" : m.authorRole === "customer" ? "bg-surface border-line" : "bg-info/10 border-info/25"}`}>
+                  <div className="flex items-center justify-between gap-2 text-[11px] text-ink-soft mb-1">
                     <span className="inline-flex items-center gap-1 font-semibold">
                       {m.visibility === "INTERNAL" ? <><Lock className="w-3 h-3" aria-hidden />Internal note</> : <><MessageSquare className="w-3 h-3" aria-hidden />{m.authorRole === "customer" ? "Customer" : "Reply to customer"}</>}
                       {" · "}{m.authorName || humanize(m.authorRole)}
                     </span>
                     <span>{formatIST(m.createdAt)}</span>
                   </div>
-                  <p className="whitespace-pre-wrap text-gray-900">{m.body}</p>
+                  <p className="whitespace-pre-wrap text-ink">{m.body}</p>
                 </li>
               ))}
             </ol>
@@ -109,10 +109,10 @@ function TicketDrawer({ ticketId, onClose, onChanged }: { ticketId: string; onCl
           </div>
           <div className="space-y-3 text-[13px]">
             <div className="flex flex-wrap gap-1">{t.status && <StatusBadge status={t.status} kind="generic" />}{t.priority && <StatusBadge status={t.priority} kind="generic" />}{t.category && <StatusBadge status={t.category} kind="generic" label={humanize(t.category)} />}</div>
-            <p><span className="text-gray-500">SLA due:</span> {t.slaBreached ? <span className="inline-flex items-center gap-1 font-semibold text-red-700"><AlertTriangle className="w-3.5 h-3.5" aria-hidden />Breached</span> : null} <Deadline at={t.slaDueAt} compact /></p>
-            <p><span className="text-gray-500">Owner:</span> {t.ownerId ? (t.ownerId === me?.id ? "Me" : shortId(t.ownerId)) : "Unassigned"}</p>
-            {t.shipmentId && <p><span className="text-gray-500">Shipment:</span> <Link className="font-mono text-blue-700 hover:underline" href={`/shipments/${t.shipmentId}`}>{t.dcn || shortId(t.shipmentId)}</Link></p>}
-            {t.disputeId && <p><span className="text-gray-500">Dispute:</span> <Link className="text-blue-700 hover:underline" href={`/disputes/${t.disputeId}`}>Open dispute</Link></p>}
+            <p><span className="text-ink-soft">SLA due:</span> {t.slaBreached ? <span className="inline-flex items-center gap-1 font-semibold text-danger"><AlertTriangle className="w-3.5 h-3.5" aria-hidden />Breached</span> : null} <Deadline at={t.slaDueAt} compact /></p>
+            <p><span className="text-ink-soft">Owner:</span> {t.ownerId ? (t.ownerId === me?.id ? "Me" : shortId(t.ownerId)) : "Unassigned"}</p>
+            {t.shipmentId && <p><span className="text-ink-soft">Shipment:</span> <Link className="font-mono text-primary-light hover:text-gold hover:underline" href={`/shipments/${t.shipmentId}`}>{t.dcn || shortId(t.shipmentId)}</Link></p>}
+            {t.disputeId && <p><span className="text-ink-soft">Dispute:</span> <Link className="text-primary-light hover:text-gold hover:underline" href={`/disputes/${t.disputeId}`}>Open dispute</Link></p>}
             {canWrite && (
               <>
                 {t.ownerId !== me?.id && <button className={btnOutline} onClick={assignToMe} disabled={busy}>Assign to me</button>}
@@ -205,20 +205,20 @@ function SupportBody() {
       </div>
       <ErrorBanner error={q.error} onRetry={q.reload} />
       <DataTable caption="Support tickets" rowKey={(t) => t.id} data={q.data?.data || []} loading={q.loading && !q.data} emptyMessage="No tickets"
-        onRowClick={(t) => setOpenId(t.id)} rowClassName={(t) => (t.slaBreached ? "bg-red-50" : undefined)}
+        onRowClick={(t) => setOpenId(t.id)} rowClassName={(t) => (t.slaBreached ? "dz-row-highlight" : undefined)}
         page={q.data?.meta?.page || page} totalPages={q.data?.meta?.totalPages || 1} onPageChange={setPage}
         columns={[
           { key: "no", label: "Ticket", render: (t: Ticket) => <span className="font-mono text-xs">{t.ticketNumber || shortId(t.id)}</span> },
-          { key: "subject", label: "Subject", render: (t: Ticket) => <span className="text-gray-900">{t.subject}</span> },
+          { key: "subject", label: "Subject", render: (t: Ticket) => <span className="text-ink">{t.subject}</span> },
           { key: "category", label: "Category", render: (t: Ticket) => humanize(t.category) },
           { key: "priority", label: "Priority", render: (t: Ticket) => (t.priority ? <StatusBadge status={t.priority} kind="generic" /> : "—") },
           { key: "status", label: "Status", render: (t: Ticket) => (t.status ? <StatusBadge status={t.status} kind="generic" /> : "—") },
           { key: "dcn", label: "DCN", render: (t: Ticket) => <span className="font-mono text-[11px]">{t.dcn || "—"}</span> },
-          { key: "owner", label: "Owner", render: (t: Ticket) => (t.ownerId ? (t.ownerId === me?.id ? "Me" : <span className="font-mono text-[11px]">{shortId(t.ownerId)}</span>) : <span className="text-gray-400">Unassigned</span>) },
+          { key: "owner", label: "Owner", render: (t: Ticket) => (t.ownerId ? (t.ownerId === me?.id ? "Me" : <span className="font-mono text-[11px]">{shortId(t.ownerId)}</span>) : <span className="text-ink-faint">Unassigned</span>) },
           { key: "sla", label: "SLA due", render: (t: Ticket) => (
-            <span className="flex flex-col">{t.slaBreached && <span className="inline-flex items-center gap-1 text-[11px] font-bold text-red-700"><AlertTriangle className="w-3 h-3" aria-hidden />SLA breached</span>}<Deadline at={t.slaDueAt} /></span>) },
+            <span className="flex flex-col">{t.slaBreached && <span className="inline-flex items-center gap-1 text-[11px] font-bold text-danger"><AlertTriangle className="w-3 h-3" aria-hidden />SLA breached</span>}<Deadline at={t.slaDueAt} /></span>) },
           { key: "ops", label: "Operations", render: (t: Ticket) => (canWrite && t.ownerId !== me?.id && !["RESOLVED", "CLOSED"].includes(t.status || "") ? (
-            <button className={rowAction("indigo")} onClick={(e) => { e.stopPropagation(); assignToMe(t); }}>Assign to me</button>) : <span className="text-gray-400">—</span>) },
+            <button className={rowAction("indigo")} onClick={(e) => { e.stopPropagation(); assignToMe(t); }}>Assign to me</button>) : <span className="text-ink-faint">—</span>) },
         ]} />
       {!canWrite && <Notice tone="info">Read-only access.</Notice>}
       {openId && <TicketDrawer ticketId={openId} onClose={() => setOpenId(null)} onChanged={q.reload} />}

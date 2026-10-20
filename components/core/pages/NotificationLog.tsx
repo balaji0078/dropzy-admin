@@ -43,7 +43,7 @@ function LogBody() {
           // Recipients are masked by the server (+91******0001); full numbers are never shown here.
           { key: "to", label: "Recipient", render: (n: CoreNotification) => <span className="text-[12px]">{humanize(n.recipientKind)} <span className="font-mono">{n.recipientMasked || "—"}</span></span> },
           { key: "title", label: "Title", render: (n: CoreNotification) => <span className="text-[12px]" title={n.body}>{n.title}</span> },
-          { key: "shipment", label: "Shipment", render: (n: CoreNotification) => (n.shipmentId ? <Link className="font-mono text-[11px] text-blue-700 hover:underline" href={`/shipments/${n.shipmentId}`}>{shortId(n.shipmentId)}</Link> : "—") },
+          { key: "shipment", label: "Shipment", render: (n: CoreNotification) => (n.shipmentId ? <Link className="font-mono text-[11px] text-primary-light hover:text-gold hover:underline" href={`/shipments/${n.shipmentId}`}>{shortId(n.shipmentId)}</Link> : "—") },
           { key: "status", label: "Status", render: (n: CoreNotification) => (n.status ? <StatusBadge status={n.status} kind="generic" /> : "—") },
           { key: "retries", label: "Retries", render: (n: CoreNotification) => n.retryCount ?? 0 },
           { key: "ref", label: "Provider ref", render: (n: CoreNotification) => <span className="font-mono text-[11px]">{n.providerRef || "—"}</span> },

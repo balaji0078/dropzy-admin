@@ -75,12 +75,12 @@ function ShipmentsSearchBody() {
 
   const columns = [
     { key: "dcn", label: "DCN", render: (s: AdminShipmentRow) => (
-      <Link href={`/shipments/${s.id}`} onClick={(e) => e.stopPropagation()} className="font-mono text-xs text-blue-700 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-red-300 rounded">
+      <Link href={`/shipments/${s.id}`} onClick={(e) => e.stopPropagation()} className="font-mono text-xs text-primary-light hover:text-gold hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-gold/40 rounded">
         {s.dcn || "(not booked)"}
       </Link>) },
     { key: "state", label: "State", render: (s: AdminShipmentRow) => (s.state ? <StatusBadge status={s.state} kind="shipmentState" /> : "—") },
     { key: "route", label: "Route / operator", render: (s: AdminShipmentRow) => (
-      <div><p className="text-gray-900">{s.routeName || "—"}</p><p className="text-xs text-gray-500">{s.operatorName || ""}</p></div>) },
+      <div><p className="text-ink">{s.routeName || "—"}</p><p className="text-xs text-ink-soft">{s.operatorName || ""}</p></div>) },
     { key: "departure", label: "Departure", render: (s: AdminShipmentRow) => <span className="text-[12px]">{formatIST(s.plannedDepartureAt)}</span> },
     { key: "cutoff", label: "Cutoff", render: (s: AdminShipmentRow) => <Deadline at={s.cutoffAt} /> },
     { key: "weight", label: "Declared / actual", render: (s: AdminShipmentRow) => (
@@ -90,8 +90,8 @@ function ShipmentsSearchBody() {
     { key: "holds", label: "Holds", render: (s: AdminShipmentRow) => (
       <div className="flex flex-wrap gap-1">
         {(s.activeHoldTypes || []).map((h) => <StatusBadge key={h} status={h} kind="hold" />)}
-        {s.warehouseRequired && <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-red-700"><Warehouse className="w-3 h-3" aria-hidden />Warehouse</span>}
-        {!s.activeHoldTypes?.length && !s.warehouseRequired && <span className="text-gray-400">—</span>}
+        {s.warehouseRequired && <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-danger"><Warehouse className="w-3 h-3" aria-hidden />Warehouse</span>}
+        {!s.activeHoldTypes?.length && !s.warehouseRequired && <span className="text-ink-faint">—</span>}
       </div>) },
     { key: "phone", label: "Customer", render: (s: AdminShipmentRow) => <span className="text-[12px] font-mono">{s.customerPhoneMasked || "—"}</span> },
   ];
@@ -141,7 +141,7 @@ function ShipmentsSearchBody() {
         totalPages={meta?.totalPages || 1}
         onPageChange={(p) => search(f, p)}
       />
-      {meta && <p className="text-[12px] text-gray-500">{meta.total} shipment{meta.total === 1 ? "" : "s"}</p>}
+      {meta && <p className="text-[12px] text-ink-soft">{meta.total} shipment{meta.total === 1 ? "" : "s"}</p>}
     </>
   );
 }

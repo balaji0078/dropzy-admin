@@ -36,8 +36,8 @@ function LegacySupportPage() {
     return true;
   });
   const columns = [
-    { key: "id", label: "Ticket", render: (t: any) => <span className="font-mono text-xs text-gray-700">{t.id}</span> },
-    { key: "dcn", label: "DCN", render: (t: any) => <span className="font-mono text-xs text-gray-400">{t.dcn}</span> },
+    { key: "id", label: "Ticket", render: (t: any) => <span className="font-mono text-xs text-ink">{t.id}</span> },
+    { key: "dcn", label: "DCN", render: (t: any) => <span className="font-mono text-xs text-ink-faint">{t.dcn}</span> },
     { key: "category", label: "Category" },
     { key: "priority", label: "Priority", render: (t: any) => <StatusBadge status={t.priority} /> },
     { key: "assignee", label: "Assignee" },
@@ -45,19 +45,19 @@ function LegacySupportPage() {
     { key: "actions", label: "Operations", render: (t: any) => {
       const closed = ["resolved", "closed"].includes(t.status);
       return (<div className="flex items-center gap-2">
-        {t.status === "open" && <button onClick={() => assign(t)} className="text-[12px] font-semibold text-indigo-600 hover:bg-indigo-50 px-2 py-1 rounded-md">Assign to me</button>}
-        {!closed && <button onClick={() => resolve(t)} className="text-[12px] font-semibold text-green-600 hover:bg-green-50 px-2 py-1 rounded-md">Resolve</button>}
-        {closed && <span className="text-xs text-gray-400">—</span>}
+        {t.status === "open" && <button onClick={() => assign(t)} className="text-[12px] font-semibold text-info hover:bg-info/10 px-2 py-1 rounded-md">Assign to me</button>}
+        {!closed && <button onClick={() => resolve(t)} className="text-[12px] font-semibold text-success hover:bg-success/10 px-2 py-1 rounded-md">Resolve</button>}
+        {closed && <span className="text-xs text-ink-faint">—</span>}
       </div>); } },
   ];
   return (
     <div className="space-y-5">
-      <div><h1 className="text-[22px] font-bold text-gray-900">Support Center</h1>
-        <p className="text-[13px] text-gray-500">Assign, investigate & resolve tickets (PRD Ch.15.11)</p></div>
+      <div><h1 className="text-[22px] font-bold text-ink">Support Center</h1>
+        <p className="text-[13px] text-ink-soft">Assign, investigate & resolve tickets (PRD Ch.15.11)</p></div>
       <div className="flex items-center justify-between gap-4">
         <FilterTabs tabs={statusTabs} activeTab={statusFilter} onChange={setStatusFilter} />
-        <div className="relative"><Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-          <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search tickets…" className="pl-9 pr-3 py-2 rounded-lg border border-gray-200 text-[13px] focus:outline-none focus:border-[#D82C2C]" /></div>
+        <div className="relative"><Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-ink-faint" />
+          <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search tickets…" className="pl-9 pr-3 py-2 rounded-lg border border-line text-[13px] focus:outline-none focus:border-gold" /></div>
       </div>
       <DataTable columns={columns} data={filtered} loading={loading} emptyMessage="No tickets found" />
     </div>

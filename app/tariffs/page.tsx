@@ -181,17 +181,17 @@ function ConfigField({ def, value, onChange, error, readOnly }: { def: FieldDef;
   if (def.unit === "bool")
     return <CheckboxField label={def.label} checked={!!value} onChange={(v) => onChange(v, true)} disabled={readOnly} hint={error} />;
   if (def.unit === "fixed")
-    return <Field label={def.label}><p className="text-[13px] font-mono text-gray-700 py-2">{String(value ?? "—")}</p></Field>;
+    return <Field label={def.label}><p className="text-[13px] font-mono text-ink py-2">{String(value ?? "—")}</p></Field>;
   if (def.unit === "inputUnits" || def.unit === "categories") {
     const all = def.unit === "inputUnits" ? ["g", "kg"] : CATEGORIES;
     const cur: string[] = Array.isArray(value) ? value : [];
     return (
       <fieldset>
-        <legend className="text-[12px] font-semibold text-gray-600 mb-1">{def.label}</legend>
+        <legend className="text-[12px] font-semibold text-ink-soft mb-1">{def.label}</legend>
         <div className="flex flex-wrap gap-x-4 gap-y-1">
           {all.map((x) => <CheckboxField key={x} label={def.unit === "categories" ? humanize(x) : x} checked={cur.includes(x)} disabled={readOnly} onChange={(on) => onChange(on ? [...cur, x].filter((y, i, a) => a.indexOf(y) === i) : cur.filter((y) => y !== x), true)} />)}
         </div>
-        {error && <p className="text-[11px] text-red-600" role="alert">{error}</p>}
+        {error && <p className="text-[11px] text-danger" role="alert">{error}</p>}
       </fieldset>
     );
   }
@@ -313,15 +313,15 @@ function TariffsBody() {
     <>
       <ErrorBanner error={list.error} onRetry={list.reload} />
       <DataTable caption="Tariff versions (newest first)" rowKey={(t) => t.id} data={tariffs} loading={list.loading && !list.data} emptyMessage="No tariffs"
-        onRowClick={(t) => setSelectedId(t.id)} rowClassName={(t) => (t.effectiveNow ? "bg-green-50" : t.id === selectedId ? "bg-gray-50" : undefined)}
+        onRowClick={(t) => setSelectedId(t.id)} rowClassName={(t) => (t.effectiveNow ? "bg-success/[0.06]" : t.id === selectedId ? "dz-row-highlight" : undefined)}
         columns={[
           { key: "v", label: "Version", render: (t: Tariff) => <span className="font-semibold">{t.code} v{t.version}</span> },
-          { key: "status", label: "Status", render: (t: Tariff) => <span className="flex flex-wrap gap-1">{t.status && <StatusBadge status={t.status} kind="generic" />}{t.effectiveNow && <span className="inline-flex items-center gap-1 text-[11px] font-bold text-green-800"><CheckCircle2 className="w-3 h-3" aria-hidden />Effective now</span>}</span> },
+          { key: "status", label: "Status", render: (t: Tariff) => <span className="flex flex-wrap gap-1">{t.status && <StatusBadge status={t.status} kind="generic" />}{t.effectiveNow && <span className="inline-flex items-center gap-1 text-[11px] font-bold text-success"><CheckCircle2 className="w-3 h-3" aria-hidden />Effective now</span>}</span> },
           { key: "scope", label: "Scope", render: (t: Tariff) => (t.routeId ? "Route" : t.operatorId ? "Operator" : "Global") },
           { key: "from", label: "Effective from", render: (t: Tariff) => formatIST(t.effectiveFrom) },
           { key: "to", label: "Effective to", render: (t: Tariff) => formatIST(t.effectiveTo) },
           { key: "published", label: "Published", render: (t: Tariff) => formatIST(t.publishedAt) },
-          { key: "sel", label: "", render: (t: Tariff) => (t.id === selectedId ? <span className="text-[11px] font-semibold text-gray-500">Selected</span> : null) },
+          { key: "sel", label: "", render: (t: Tariff) => (t.id === selectedId ? <span className="text-[11px] font-semibold text-ink-soft">Selected</span> : null) },
         ]} />
 
       {selected && config && (
@@ -338,9 +338,9 @@ function TariffsBody() {
               )
             }>
               {readOnly && <Notice tone="info">{selected.status === "DRAFT" ? "Read-only: only an admin can edit tariffs." : "Published and retired versions are read-only. Create a new draft to change prices."}</Notice>}
-              {dirty && selected.status === "DRAFT" && <p className="mt-2 text-[12px] text-amber-700">Unsaved changes — save the draft before previewing or publishing.</p>}
+              {dirty && selected.status === "DRAFT" && <p className="mt-2 text-[12px] text-warning">Unsaved changes — save the draft before previewing or publishing.</p>}
               {serverErrors.length > 0 && <div className="mt-2"><Notice tone="danger" title="The server rejected this configuration">{serverErrors.map((f) => `${f.field}: ${f.message || f.rule}`).join("; ")}</Notice></div>}
-              <p className="mt-2 text-[12px] text-gray-500">Schema v{config.schemaVersion} · currency {config.currency}{selected.configHash ? ` · hash ${selected.configHash.slice(0, 12)}…` : ""}</p>
+              <p className="mt-2 text-[12px] text-ink-soft">Schema v{config.schemaVersion} · currency {config.currency}{selected.configHash ? ` · hash ${selected.configHash.slice(0, 12)}…` : ""}</p>
             </Card>
             {SECTIONS.map((sec) => (
               <Card key={sec.title} title={sec.title}>
@@ -362,7 +362,7 @@ function TariffsBody() {
 
           <div className="space-y-4">
             <Card title="Worked examples (PRICING.md §6)" actions={<button className={btnOutline} onClick={runExamples} disabled={dirty}><Play className="w-4 h-4" aria-hidden />Run preview</button>}>
-              <p className="text-[12px] text-gray-500 mb-2">Each example is calculated by the server with {selected.code} v{selected.version} (POST /admin/tariffs/{"{id}"}/preview). “Seed v1” shows the reference values of the seeded tariff.</p>
+              <p className="text-[12px] text-ink-soft mb-2">Each example is calculated by the server with {selected.code} v{selected.version} (POST /admin/tariffs/{"{id}"}/preview). “Seed v1” shows the reference values of the seeded tariff.</p>
               <table className="rb-table">
                 <thead><tr><th scope="col">Ex.</th><th scope="col">Declared → actual</th><th scope="col">Server result</th><th scope="col">Seed v1</th></tr></thead>
                 <tbody>
@@ -377,17 +377,17 @@ function TariffsBody() {
                         <td className="font-semibold">{ex.id}</td>
                         <td className="text-[12px] tabular-nums">{formatKg(ex.declared)} → {formatKg(ex.actual)}</td>
                         <td className="text-[12px]">
-                          {err ? <span className="text-red-700">{err}</span> : p ? (
+                          {err ? <span className="text-danger">{err}</span> : p ? (
                             <span className="flex flex-col gap-0.5">
                               {p.evaluation?.outcome && <StatusBadge status={p.evaluation.outcome} kind="generic" />}
                               <span className="tabular-nums">Surcharge {formatPaise(total)} · {p.evaluation?.extraUnits ?? 0} unit(s)</span>
-                              <span className="tabular-nums text-gray-500">Base fare {p.baseFare?.totalDisplay || formatPaise(p.baseFare?.totalPaise)}</span>
+                              <span className="tabular-nums text-ink-soft">Base fare {p.baseFare?.totalDisplay || formatPaise(p.baseFare?.totalPaise)}</span>
                             </span>
-                          ) : <span className="text-gray-400">Not run</span>}
+                          ) : <span className="text-ink-faint">Not run</span>}
                         </td>
                         <td className="text-[12px]">
                           <span className="tabular-nums">{formatPaise(ex.seed.total)}</span>
-                          {match !== null && (match ? <span className="flex items-center gap-1 text-green-700"><CheckCircle2 className="w-3 h-3" aria-hidden />matches</span> : <span className="flex items-center gap-1 text-amber-700"><XCircle className="w-3 h-3" aria-hidden />differs</span>)}
+                          {match !== null && (match ? <span className="flex items-center gap-1 text-success"><CheckCircle2 className="w-3 h-3" aria-hidden />matches</span> : <span className="flex items-center gap-1 text-warning"><XCircle className="w-3 h-3" aria-hidden />differs</span>)}
                         </td>
                       </tr>
                     );

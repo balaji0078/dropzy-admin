@@ -48,10 +48,10 @@ function PaymentsBody() {
           { key: "amount", label: "Amount", render: (p: PaymentIntent) => <span className="tabular-nums font-semibold">{formatPaise(p.amountPaise)}</span> },
           { key: "refunded", label: "Refunded", render: (p: PaymentIntent) => <span className="tabular-nums">{p.amountRefundedPaise ? formatPaise(p.amountRefundedPaise) : "—"}</span> },
           { key: "order", label: "Provider order", render: (p: PaymentIntent) => <span className="font-mono text-[11px]">{p.providerOrderId || "—"}</span> },
-          { key: "shipment", label: "Shipment", render: (p: PaymentIntent) => (p.shipmentId ? (canShipment ? <Link className="font-mono text-[11px] text-blue-700 hover:underline" href={`/shipments/${p.shipmentId}`}>{shortId(p.shipmentId)}</Link> : shortId(p.shipmentId)) : "—") },
+          { key: "shipment", label: "Shipment", render: (p: PaymentIntent) => (p.shipmentId ? (canShipment ? <Link className="font-mono text-[11px] text-primary-light hover:text-gold hover:underline" href={`/shipments/${p.shipmentId}`}>{shortId(p.shipmentId)}</Link> : shortId(p.shipmentId)) : "—") },
           { key: "created", label: "Created", render: (p: PaymentIntent) => <span className="text-[12px]">{formatIST(p.createdAt)}</span> },
           { key: "succeeded", label: "Succeeded", render: (p: PaymentIntent) => <span className="text-[12px]">{formatIST(p.succeededAt)}</span> },
-          { key: "flags", label: "Notes", render: (p: PaymentIntent) => <span className="text-[11px]">{p.isOrphan ? <strong className="text-red-700">Orphan</strong> : ""} {p.failureMessage || p.failureCode || ""}</span> },
+          { key: "flags", label: "Notes", render: (p: PaymentIntent) => <span className="text-[11px]">{p.isOrphan ? <strong className="text-danger">Orphan</strong> : ""} {p.failureMessage || p.failureCode || ""}</span> },
         ]} />
     </>
   );

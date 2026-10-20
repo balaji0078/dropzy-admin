@@ -19,61 +19,70 @@ interface StatusBadgeProps {
 
 export type BadgeKind = "shipmentState" | "hold" | "driverLabel" | "customerLabel" | "paymentStatus" | "reconItem" | "generic";
 
-// ─── legacy (lowercase) keys: unchanged ───
-const statusStyles: Record<string, { bg: string; text: string; dot: string }> = {
-  delivered: { bg: "bg-green-50", text: "text-green-700", dot: "bg-green-500" },
-  completed: { bg: "bg-green-50", text: "text-green-700", dot: "bg-green-500" },
-  in_transit: { bg: "bg-blue-50", text: "text-blue-700", dot: "bg-blue-500" },
-  on_route: { bg: "bg-blue-50", text: "text-blue-700", dot: "bg-blue-500" },
-  in_progress: { bg: "bg-blue-50", text: "text-blue-700", dot: "bg-blue-500" },
-  booked: { bg: "bg-indigo-50", text: "text-indigo-700", dot: "bg-indigo-500" },
-  accepted: { bg: "bg-cyan-50", text: "text-cyan-700", dot: "bg-cyan-500" },
-  pending: { bg: "bg-amber-50", text: "text-amber-700", dot: "bg-amber-500" },
-  arrived_at_office: { bg: "bg-orange-50", text: "text-orange-700", dot: "bg-orange-500" },
-  ready_for_pickup: { bg: "bg-pink-50", text: "text-pink-700", dot: "bg-pink-500" },
-  available: { bg: "bg-green-50", text: "text-green-700", dot: "bg-green-500" },
-  on_duty: { bg: "bg-blue-50", text: "text-blue-700", dot: "bg-blue-500" },
-  unavailable: { bg: "bg-gray-100", text: "text-gray-600", dot: "bg-gray-400" },
-  failed: { bg: "bg-red-50", text: "text-red-700", dot: "bg-red-500" },
-  cancelled: { bg: "bg-red-50", text: "text-red-600", dot: "bg-red-500" },
-  refunded: { bg: "bg-purple-50", text: "text-purple-700", dot: "bg-purple-500" },
-  delayed: { bg: "bg-red-50", text: "text-red-600", dot: "bg-red-500" },
-  maintenance: { bg: "bg-orange-50", text: "text-orange-700", dot: "bg-orange-500" },
-  idle: { bg: "bg-gray-100", text: "text-gray-600", dot: "bg-gray-400" },
-  active: { bg: "bg-green-50", text: "text-green-700", dot: "bg-green-500" },
+// ─── tones: dark-tinted chips (colour at ~12% fill, ~40% border, full-strength text) — customer app style ───
+type Tone = "green" | "blue" | "indigo" | "amber" | "orange" | "red" | "purple" | "gray" | "teal" | "cyan" | "pink" | "gold";
+const TONES: Record<Tone, string> = {
+  green: "bg-success/[0.12] text-success ring-success/40",
+  blue: "bg-sky-400/[0.12] text-sky-300 ring-sky-400/40",
+  indigo: "bg-info/[0.14] text-info ring-info/40",
+  amber: "bg-warning/[0.12] text-warning ring-warning/40",
+  orange: "bg-orange-400/[0.12] text-orange-400 ring-orange-400/40",
+  red: "bg-danger/[0.14] text-danger ring-danger/40",
+  purple: "bg-primary/[0.16] text-primary-light ring-primary/45",
+  gray: "bg-ink-soft/[0.10] text-ink-soft ring-ink-soft/35",
+  teal: "bg-teal-400/[0.12] text-teal-300 ring-teal-400/40",
+  cyan: "bg-cyan-400/[0.12] text-cyan-300 ring-cyan-400/40",
+  pink: "bg-pink-400/[0.12] text-pink-300 ring-pink-400/40",
+  gold: "bg-gold/[0.12] text-gold ring-gold/45",
+};
+
+// ─── legacy (lowercase) keys: same tones, dot + text ───
+const statusStyles: Record<string, Tone> = {
+  delivered: "green",
+  completed: "green",
+  in_transit: "blue",
+  on_route: "blue",
+  in_progress: "blue",
+  booked: "indigo",
+  accepted: "cyan",
+  pending: "amber",
+  arrived_at_office: "orange",
+  ready_for_pickup: "pink",
+  available: "green",
+  on_duty: "blue",
+  unavailable: "gray",
+  failed: "red",
+  cancelled: "red",
+  refunded: "purple",
+  delayed: "red",
+  maintenance: "orange",
+  idle: "gray",
+  active: "green",
   // marketplace (PRD) statuses
-  approved: { bg: "bg-green-50", text: "text-green-700", dot: "bg-green-500" },
-  paid: { bg: "bg-green-50", text: "text-green-700", dot: "bg-green-500" },
-  resolved: { bg: "bg-green-50", text: "text-green-700", dot: "bg-green-500" },
-  kyc_review: { bg: "bg-amber-50", text: "text-amber-700", dot: "bg-amber-500" },
-  reserved: { bg: "bg-amber-50", text: "text-amber-700", dot: "bg-amber-500" },
-  investigating: { bg: "bg-amber-50", text: "text-amber-700", dot: "bg-amber-500" },
-  warehouse_hold: { bg: "bg-orange-50", text: "text-orange-700", dot: "bg-orange-500" },
-  booking_confirmed: { bg: "bg-gray-100", text: "text-gray-600", dot: "bg-gray-400" },
-  generated: { bg: "bg-blue-50", text: "text-blue-700", dot: "bg-blue-500" },
-  allocated: { bg: "bg-blue-50", text: "text-blue-700", dot: "bg-blue-500" },
-  assigned: { bg: "bg-indigo-50", text: "text-indigo-700", dot: "bg-indigo-500" },
-  open: { bg: "bg-blue-50", text: "text-blue-700", dot: "bg-blue-500" },
-  blocked: { bg: "bg-red-50", text: "text-red-600", dot: "bg-red-500" },
-  suspended: { bg: "bg-red-50", text: "text-red-600", dot: "bg-red-500" },
-  high: { bg: "bg-red-50", text: "text-red-600", dot: "bg-red-500" },
-  medium: { bg: "bg-amber-50", text: "text-amber-700", dot: "bg-amber-500" },
-  low: { bg: "bg-gray-100", text: "text-gray-600", dot: "bg-gray-400" },
+  approved: "green",
+  paid: "green",
+  resolved: "green",
+  kyc_review: "amber",
+  reserved: "amber",
+  investigating: "amber",
+  warehouse_hold: "orange",
+  booking_confirmed: "gray",
+  generated: "blue",
+  allocated: "blue",
+  assigned: "indigo",
+  open: "blue",
+  blocked: "red",
+  suspended: "red",
+  high: "red",
+  medium: "amber",
+  low: "gray",
+};
+const DOT: Record<Tone, string> = {
+  green: "bg-success", blue: "bg-sky-400", indigo: "bg-info", amber: "bg-warning", orange: "bg-orange-400", red: "bg-danger",
+  purple: "bg-primary-light", gray: "bg-ink-faint", teal: "bg-teal-400", cyan: "bg-cyan-400", pink: "bg-pink-400", gold: "bg-gold",
 };
 
 // ─── core (PRD v2.0, uppercase) keys: text + icon, never colour only (CLIENT_CONTRACTS.md §1.10) ───
-type Tone = "green" | "blue" | "indigo" | "amber" | "orange" | "red" | "purple" | "gray" | "teal";
-const TONES: Record<Tone, string> = {
-  green: "bg-green-50 text-green-800 ring-green-200",
-  blue: "bg-blue-50 text-blue-800 ring-blue-200",
-  indigo: "bg-indigo-50 text-indigo-800 ring-indigo-200",
-  amber: "bg-amber-50 text-amber-800 ring-amber-200",
-  orange: "bg-orange-50 text-orange-800 ring-orange-200",
-  red: "bg-red-50 text-red-800 ring-red-200",
-  purple: "bg-purple-50 text-purple-800 ring-purple-200",
-  gray: "bg-gray-100 text-gray-700 ring-gray-200",
-  teal: "bg-teal-50 text-teal-800 ring-teal-200",
-};
 type Entry = [label: string, tone: Tone, icon: LucideIcon];
 
 const CORE: Record<BadgeKind, Record<string, Entry>> = {
@@ -225,10 +234,10 @@ export default function StatusBadge({ status, kind, label, className }: StatusBa
       </span>
     );
   }
-  const style = statusStyles[s] || { bg: "bg-gray-100", text: "text-gray-600", dot: "bg-gray-400" };
+  const tone = statusStyles[s] || "gray";
   return (
-    <span className={cn("inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-bold capitalize", style.bg, style.text, className)}>
-      <span className={cn("w-1.5 h-1.5 rounded-full", style.dot)} />
+    <span className={cn("inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-bold capitalize ring-1 ring-inset whitespace-nowrap", TONES[tone], className)}>
+      <span className={cn("w-1.5 h-1.5 rounded-full", DOT[tone])} aria-hidden />
       {label || s.replace(/_/g, " ")}
     </span>
   );

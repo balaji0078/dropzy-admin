@@ -27,9 +27,9 @@ interface FleetMapProps {
 }
 
 const statusColors: Record<string, string> = {
-  active: "#22c55e",
-  idle: "#6b7280",
-  maintenance: "#f97316",
+  active: "#34D399",
+  idle: "#8F89A3",
+  maintenance: "#FB923C",
 };
 
 const statusLabels: Record<string, string> = {
@@ -39,7 +39,7 @@ const statusLabels: Record<string, string> = {
 };
 
 function createBusIcon(status: string, isSelected: boolean): L.DivIcon {
-  const color = statusColors[status] || "#6b7280";
+  const color = statusColors[status] || "#8F89A3";
   const size = isSelected ? 36 : 28;
   const borderWidth = isSelected ? 3 : 2;
 
@@ -124,12 +124,12 @@ export default function FleetMap({ buses, onBusClick, selectedBusId }: FleetMapP
         .addTo(map)
         .bindPopup(
           `<div style="font-family: system-ui; min-width: 180px;">
-            <div style="font-weight: 600; font-size: 14px; margin-bottom: 6px; color: #1e3a5f;">${bus.busNumber}</div>
-            <div style="display: grid; gap: 4px; font-size: 12px; color: #374151;">
-              <div><span style="color: #6b7280;">Route:</span> ${bus.route}</div>
-              <div><span style="color: #6b7280;">Driver:</span> ${bus.driver}</div>
-              <div><span style="color: #6b7280;">Speed:</span> ${bus.speed} km/h</div>
-              <div><span style="color: #6b7280;">Parcels:</span> ${bus.parcelsOnboard}/${bus.capacity}</div>
+            <div style="font-weight: 600; font-size: 14px; margin-bottom: 6px; color: #F5C451;">${bus.busNumber}</div>
+            <div style="display: grid; gap: 4px; font-size: 12px; color: #F4F3F7;">
+              <div><span style="color: #9E99AC;">Route:</span> ${bus.route}</div>
+              <div><span style="color: #9E99AC;">Driver:</span> ${bus.driver}</div>
+              <div><span style="color: #9E99AC;">Speed:</span> ${bus.speed} km/h</div>
+              <div><span style="color: #9E99AC;">Parcels:</span> ${bus.parcelsOnboard}/${bus.capacity}</div>
               <div style="margin-top: 4px;">
                 <span style="
                   display: inline-block;
@@ -137,8 +137,9 @@ export default function FleetMap({ buses, onBusClick, selectedBusId }: FleetMapP
                   border-radius: 12px;
                   font-size: 11px;
                   font-weight: 500;
-                  color: white;
-                  background: ${statusColors[bus.status] || "#6b7280"};
+                  color: ${statusColors[bus.status] || "#9E99AC"};
+                  background: ${statusColors[bus.status] || "#9E99AC"}22;
+                  border: 1px solid ${statusColors[bus.status] || "#9E99AC"}66;
                 ">${statusLabels[bus.status] || bus.status}</span>
               </div>
             </div>
@@ -165,12 +166,12 @@ export default function FleetMap({ buses, onBusClick, selectedBusId }: FleetMapP
   }, [selectedBusId]);
 
   return (
-    <div className="relative w-full h-[500px] rounded-lg overflow-hidden border border-gray-200">
+    <div className="relative w-full h-[500px] rounded-lg overflow-hidden border border-line">
       <div ref={mapContainerRef} className="w-full h-full" />
 
       {/* Legend overlay */}
-      <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur px-4 py-3 rounded-lg border border-gray-200 shadow-sm z-[1000]">
-        <p className="text-xs font-semibold text-gray-700 mb-2">Fleet Status</p>
+      <div className="absolute bottom-4 left-4 bg-surface/95 backdrop-blur px-4 py-3 rounded-lg border border-line shadow-sm z-[1000]">
+        <p className="text-xs font-semibold text-ink mb-2">Fleet Status</p>
         <div className="space-y-1.5">
           {Object.entries(statusColors).map(([status, color]) => (
             <div key={status} className="flex items-center gap-2">
@@ -178,8 +179,8 @@ export default function FleetMap({ buses, onBusClick, selectedBusId }: FleetMapP
                 className="w-3 h-3 rounded-full border border-white shadow-sm"
                 style={{ background: color }}
               />
-              <span className="text-xs text-gray-600 capitalize">{status}</span>
-              <span className="text-xs text-gray-400 ml-auto">
+              <span className="text-xs text-ink-soft capitalize">{status}</span>
+              <span className="text-xs text-ink-faint ml-auto">
                 {buses.filter((b) => b.status === status).length}
               </span>
             </div>
@@ -188,9 +189,9 @@ export default function FleetMap({ buses, onBusClick, selectedBusId }: FleetMapP
       </div>
 
       {/* Bus count overlay */}
-      <div className="absolute top-4 right-4 bg-white/95 backdrop-blur px-4 py-2 rounded-lg border border-gray-200 shadow-sm z-[1000]">
-        <p className="text-sm font-bold text-gray-900">{buses.length} Buses</p>
-        <p className="text-xs text-gray-500">Live tracking</p>
+      <div className="absolute top-4 right-4 bg-surface/95 backdrop-blur px-4 py-2 rounded-lg border border-line shadow-sm z-[1000]">
+        <p className="text-sm font-bold text-ink">{buses.length} Buses</p>
+        <p className="text-xs text-ink-soft">Live tracking</p>
       </div>
     </div>
   );

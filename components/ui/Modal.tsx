@@ -54,12 +54,12 @@ export default function Modal({ open, onClose, title, children, size = "md" }: M
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center animate-fade-in">
-      <div className="absolute inset-0 bg-black/40" onClick={onClose} aria-hidden />
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-[2px]" onClick={onClose} aria-hidden />
       <div ref={panelRef} role="dialog" aria-modal="true" aria-labelledby={titleId} tabIndex={-1}
-        className={`relative bg-white rounded-2xl shadow-rb-xl w-full ${sizeClasses[size]} mx-4 max-h-[85vh] flex flex-col animate-scale-in focus:outline-none`}>
-        <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: "1px solid #EEEEEE" }}>
-          <h2 id={titleId} className="text-[16px] font-bold text-gray-900">{title}</h2>
-          <button onClick={onClose} aria-label="Close dialog" className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 transition-colors">
+        className={`relative bg-surface border border-line rounded-2xl shadow-rb-xl w-full ${sizeClasses[size]} mx-4 max-h-[85vh] flex flex-col animate-scale-in focus:outline-none`}>
+        <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: "1px solid var(--dz-line)" }}>
+          <h2 id={titleId} className="text-[16px] font-bold text-ink">{title}</h2>
+          <button onClick={onClose} aria-label="Close dialog" className="p-1.5 rounded-lg hover:bg-surface-alt hover:text-gold text-ink-faint transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-gold/70">
             <X className="w-4 h-4" />
           </button>
         </div>

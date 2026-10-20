@@ -89,23 +89,20 @@ export default function Sidebar() {
   return (
     <aside
       className={cn(
-        "fixed left-0 top-0 h-screen bg-white flex flex-col transition-all duration-300 z-50",
+        "fixed left-0 top-0 h-screen bg-surface border-r border-line flex flex-col transition-all duration-300 z-50",
         collapsed ? "w-[72px]" : "w-[260px]"
       )}
-      style={{ borderRight: "1px solid #EEEEEE" }}
     >
       {/* Logo */}
-      <div className="flex items-center justify-between h-[60px] px-4" style={{ borderBottom: "1px solid #EEEEEE" }}>
+      <div className="flex items-center justify-between h-[60px] px-4 border-b border-line">
         {!collapsed && (
-          <Link href="/dashboard" className="flex items-center gap-2.5">
-            <div
-              className="w-8 h-8 rounded-lg flex items-center justify-center"
-              style={{ background: "#D82C2C" }}
-            >
-              <Package className="w-[18px] h-[18px] text-white" />
+          <Link href="/dashboard" className="group flex items-center gap-2.5 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-gold/60">
+            {/* Logo mark: violet tile with a gold parcel glyph and gold edge (the app's DropzyHero palette). */}
+            <div className="w-8 h-8 rounded-[10px] flex items-center justify-center bg-dz-offer ring-1 ring-gold/50 shadow-violet">
+              <Package className="w-[18px] h-[18px] text-gold" />
             </div>
-            <span className="text-[17px] font-bold text-gray-900">Dropzy</span>
-            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded" style={{ background: "#FEF2F2", color: "#D82C2C" }}>
+            <span className="text-[17px] font-extrabold text-ink tracking-tight">Drop<span className="text-gold">zy</span></span>
+            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-gold/10 text-gold border border-gold/40">
               {CORE_API ? "Staff" : "Admin"}
             </span>
           </Link>
@@ -113,7 +110,7 @@ export default function Sidebar() {
         <button
           onClick={() => setCollapsed(!collapsed)}
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-          className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 transition-colors"
+          className="p-1.5 rounded-lg hover:bg-surface-alt hover:text-gold text-ink-faint transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
         >
           {collapsed ? <Menu className="w-[18px] h-[18px]" /> : <ChevronLeft className="w-[18px] h-[18px]" />}
         </button>
@@ -124,7 +121,7 @@ export default function Sidebar() {
         {sections.map((section) => (
           <div key={section.title}>
             {!collapsed && (
-              <p className="px-3 mb-2 text-[10px] font-bold uppercase tracking-widest text-gray-400">
+              <p className="px-3 mb-2 text-[10px] font-bold uppercase tracking-widest text-ink-faint">
                 {section.title}
               </p>
             )}
@@ -153,20 +150,19 @@ export default function Sidebar() {
       </nav>
 
       {/* User section */}
-      <div className="p-3" style={{ borderTop: "1px solid #EEEEEE" }}>
+      <div className="p-3 border-t border-line">
         <div className="flex items-center gap-3">
           <div
-            className="w-8 h-8 rounded-full flex items-center justify-center text-[12px] font-bold flex-shrink-0 text-white"
-            style={{ background: "#D82C2C" }}
+            className="w-8 h-8 rounded-full flex items-center justify-center text-[12px] font-bold flex-shrink-0 text-primary-light bg-primary-tint ring-1 ring-primary/50"
           >
             {user ? getInitials(user.first_name, user.last_name) : "AD"}
           </div>
           {!collapsed && (
             <div className="flex-1 min-w-0">
-              <p className="text-[13px] font-semibold text-gray-900 truncate">
+              <p className="text-[13px] font-semibold text-ink truncate">
                 {user ? `${user.first_name} ${user.last_name}` : "Admin"}
               </p>
-              <p className="text-[11px] text-gray-400 truncate" title={me?.phone || subtitle}>{subtitle}</p>
+              <p className="text-[11px] text-ink-faint truncate" title={me?.phone || subtitle}>{subtitle}</p>
             </div>
           )}
           {!collapsed && (
@@ -174,7 +170,7 @@ export default function Sidebar() {
               onClick={logout}
               aria-label="Log out"
               title="Log out"
-              className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 transition-colors"
+              className="p-1.5 rounded-lg hover:bg-surface-alt hover:text-gold text-ink-faint transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
             >
               <LogOut className="w-4 h-4" />
             </button>

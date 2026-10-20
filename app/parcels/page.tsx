@@ -16,9 +16,9 @@ import type { IndianLocation } from "@/lib/india-pincodes";
 import { useToast } from "@/components/ui/Toast";
 
 // redBus red theme
-const REDBUS_RED = "#D82C2C";
-const REDBUS_GREEN = "#34C759";
-const REDBUS_ORANGE = "#FF9500";
+const REDBUS_RED = "#8B5CF6";
+const REDBUS_GREEN = "#34D399";
+const REDBUS_ORANGE = "#FBBF24";
 
 const PARCEL_STATUSES = [
   { id: "all", label: "All" },
@@ -304,9 +304,9 @@ function ParcelDetailModal({ parcel, onClose }: ParcelDetailModalProps) {
     <Modal open={!!parcel} onClose={onClose} title={parcel?.trackingId || "Parcel Details"}>
       <div className="max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-[22px] font-bold text-gray-900">{parcel.trackingId}</h2>
+          <h2 className="text-[22px] font-bold text-ink">{parcel.trackingId}</h2>
           <button onClick={onClose} className="p-1 hover:opacity-70 rounded-xl transition-opacity">
-            <X className="w-5 h-5 text-gray-500" />
+            <X className="w-5 h-5 text-ink-soft" />
           </button>
         </div>
 
@@ -314,108 +314,108 @@ function ParcelDetailModal({ parcel, onClose }: ParcelDetailModalProps) {
           {/* Sender & Receiver */}
           <div className="grid grid-cols-2 gap-6">
             <div className="rb-card-flat p-4 rounded-xl">
-              <h3 className="font-semibold text-gray-900 mb-3 text-[13px]">Sender</h3>
+              <h3 className="font-semibold text-ink mb-3 text-[13px]">Sender</h3>
               <div className="space-y-2 text-[13px]">
                 <div className="flex items-start gap-2">
-                  <span className="text-gray-500">Name:</span>
-                  <span className="font-medium text-gray-900">{parcel.sender.name}</span>
+                  <span className="text-ink-soft">Name:</span>
+                  <span className="font-medium text-ink">{parcel.sender.name}</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <span className="text-gray-500">City:</span>
-                  <span className="text-gray-900">{parcel.sender.city}</span>
+                  <span className="text-ink-soft">City:</span>
+                  <span className="text-ink">{parcel.sender.city}</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <span className="text-gray-500">Pincode:</span>
-                  <span className="text-gray-900">{parcel.sender.pincode}</span>
+                  <span className="text-ink-soft">Pincode:</span>
+                  <span className="text-ink">{parcel.sender.pincode}</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <span className="text-gray-500">District:</span>
-                  <span className="text-gray-900">{parcel.sender.district}</span>
+                  <span className="text-ink-soft">District:</span>
+                  <span className="text-ink">{parcel.sender.district}</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <span className="text-gray-500">Phone:</span>
-                  <span className="text-gray-900">{parcel.sender.phone}</span>
+                  <span className="text-ink-soft">Phone:</span>
+                  <span className="text-ink">{parcel.sender.phone}</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <span className="text-gray-500">Email:</span>
-                  <span className="text-gray-900">{parcel.sender.email}</span>
+                  <span className="text-ink-soft">Email:</span>
+                  <span className="text-ink">{parcel.sender.email}</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <span className="text-gray-500">Address:</span>
-                  <span className="text-gray-900">{parcel.sender.address}</span>
+                  <span className="text-ink-soft">Address:</span>
+                  <span className="text-ink">{parcel.sender.address}</span>
                 </div>
               </div>
             </div>
 
             <div className="rb-card-flat p-4 rounded-xl">
-              <h3 className="font-semibold text-gray-900 mb-3 text-[13px]">Receiver</h3>
+              <h3 className="font-semibold text-ink mb-3 text-[13px]">Receiver</h3>
               <div className="space-y-2 text-[13px]">
                 <div className="flex items-start gap-2">
-                  <span className="text-gray-500">Name:</span>
-                  <span className="font-medium text-gray-900">{parcel.receiver.name}</span>
+                  <span className="text-ink-soft">Name:</span>
+                  <span className="font-medium text-ink">{parcel.receiver.name}</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <span className="text-gray-500">City:</span>
-                  <span className="text-gray-900">{parcel.receiver.city}</span>
+                  <span className="text-ink-soft">City:</span>
+                  <span className="text-ink">{parcel.receiver.city}</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <span className="text-gray-500">Pincode:</span>
-                  <span className="text-gray-900">{parcel.receiver.pincode}</span>
+                  <span className="text-ink-soft">Pincode:</span>
+                  <span className="text-ink">{parcel.receiver.pincode}</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <span className="text-gray-500">District:</span>
-                  <span className="text-gray-900">{parcel.receiver.district}</span>
+                  <span className="text-ink-soft">District:</span>
+                  <span className="text-ink">{parcel.receiver.district}</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <span className="text-gray-500">Phone:</span>
-                  <span className="text-gray-900">{parcel.receiver.phone}</span>
+                  <span className="text-ink-soft">Phone:</span>
+                  <span className="text-ink">{parcel.receiver.phone}</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <span className="text-gray-500">Email:</span>
-                  <span className="text-gray-900">{parcel.receiver.email}</span>
+                  <span className="text-ink-soft">Email:</span>
+                  <span className="text-ink">{parcel.receiver.email}</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <span className="text-gray-500">Address:</span>
-                  <span className="text-gray-900">{parcel.receiver.address}</span>
+                  <span className="text-ink-soft">Address:</span>
+                  <span className="text-ink">{parcel.receiver.address}</span>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Package Details */}
-          <div className="rb-card-flat p-4 rounded-xl" style={{ borderBottom: "1px solid rgba(216,44,44,0.12)" }}>
-            <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2 text-[13px]">
-              <Package className="w-4 h-4" style={{ color: "#D82C2C" }} />
+          <div className="rb-card-flat p-4 rounded-xl" style={{ borderBottom: "1px solid rgba(139,92,246,0.30)" }}>
+            <h3 className="font-semibold text-ink mb-3 flex items-center gap-2 text-[13px]">
+              <Package className="w-4 h-4" style={{ color: "var(--dz-primary-light)" }} />
               Package Details
             </h3>
             <div className="grid grid-cols-2 gap-4 text-[13px]">
               <div>
-                <span className="text-gray-500 text-[12px]">Type:</span>
-                <p className="font-medium text-gray-900">{parcel.packageType}</p>
+                <span className="text-ink-soft text-[12px]">Type:</span>
+                <p className="font-medium text-ink">{parcel.packageType}</p>
               </div>
               <div>
-                <span className="text-gray-500 text-[12px]">Weight:</span>
-                <p className="font-medium text-gray-900">{parcel.weight} kg</p>
+                <span className="text-ink-soft text-[12px]">Weight:</span>
+                <p className="font-medium text-ink">{parcel.weight} kg</p>
               </div>
               <div>
-                <span className="text-gray-500 text-[12px]">Dimensions:</span>
-                <p className="font-medium text-gray-900">{parcel.dimensions}</p>
+                <span className="text-ink-soft text-[12px]">Dimensions:</span>
+                <p className="font-medium text-ink">{parcel.dimensions}</p>
               </div>
               <div>
-                <span className="text-gray-500 text-[12px]">Value:</span>
-                <p className="font-medium text-gray-900">₹{parcel.value.toLocaleString()}</p>
+                <span className="text-ink-soft text-[12px]">Value:</span>
+                <p className="font-medium text-ink">₹{parcel.value.toLocaleString()}</p>
               </div>
               <div className="col-span-2">
-                <span className="text-gray-500 text-[12px]">E-way Bill:</span>
-                <p className="font-medium text-gray-900">{parcel.ewayBill}</p>
+                <span className="text-ink-soft text-[12px]">E-way Bill:</span>
+                <p className="font-medium text-ink">{parcel.ewayBill}</p>
               </div>
             </div>
           </div>
 
           {/* Status Timeline */}
           <div>
-            <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2 text-[13px]">
-              <Clock className="w-4 h-4" style={{ color: "#D82C2C" }} />
+            <h3 className="font-semibold text-ink mb-4 flex items-center gap-2 text-[13px]">
+              <Clock className="w-4 h-4" style={{ color: "var(--dz-primary-light)" }} />
               Delivery Timeline
             </h3>
             <Timeline
@@ -433,20 +433,20 @@ function ParcelDetailModal({ parcel, onClose }: ParcelDetailModalProps) {
 
           {/* Communications Log */}
           <div>
-            <h3 className="font-semibold text-gray-900 mb-3 text-[13px]">Communications</h3>
+            <h3 className="font-semibold text-ink mb-3 text-[13px]">Communications</h3>
             <div className="space-y-3">
               {parcel.communications.length > 0 ? (
                 parcel.communications.map((comm, idx) => (
-                  <div key={idx} className="rb-card-flat p-3 rounded-lg" style={{ borderBottom: "1px solid rgba(0,0,0,0.06)" }}>
+                  <div key={idx} className="rb-card-flat p-3 rounded-lg" style={{ borderBottom: "1px solid var(--dz-line)" }}>
                     <div className="flex items-center justify-between mb-1">
-                      <span className="font-medium text-gray-900 text-[13px]">{comm.type}</span>
-                      <span className="text-[11px] text-gray-500">{comm.timestamp}</span>
+                      <span className="font-medium text-ink text-[13px]">{comm.type}</span>
+                      <span className="text-[11px] text-ink-soft">{comm.timestamp}</span>
                     </div>
-                    <p className="text-gray-700 text-[13px]">{comm.message}</p>
+                    <p className="text-ink text-[13px]">{comm.message}</p>
                   </div>
                 ))
               ) : (
-                <p className="text-gray-500 text-[13px]">No communications yet</p>
+                <p className="text-ink-soft text-[13px]">No communications yet</p>
               )}
             </div>
           </div>
@@ -569,8 +569,8 @@ function LegacyParcelsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[28px] font-bold text-gray-900">Parcel Management</h1>
-          <p className="text-[13px] text-gray-500 mt-1">Manage parcel lifecycle and track deliveries</p>
+          <h1 className="text-[28px] font-bold text-ink">Parcel Management</h1>
+          <p className="text-[13px] text-ink-soft mt-1">Manage parcel lifecycle and track deliveries</p>
         </div>
         <button
           onClick={() => setShowNewParcel(true)}
@@ -585,14 +585,13 @@ function LegacyParcelsPage() {
       <div className="rb-card-flat p-4 rounded-xl">
         <div className="flex flex-col lg:flex-row gap-4">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-ink-faint" />
             <input
               type="text"
               placeholder="Search by tracking ID, sender/receiver name, city, or pincode..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="rb-input w-full pl-10 pr-4 py-2 text-[13px]"
-              style={{ background: "rgba(0,0,0,0.03)", border: "1px solid rgba(0,0,0,0.06)" }}
             />
           </div>
           <button
@@ -600,17 +599,17 @@ function LegacyParcelsPage() {
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[13px] font-medium border transition-colors ${
               showFilters || activeFilterCount > 0
                 ? "text-white"
-                : "text-gray-700 hover:opacity-80"
+                : "text-ink hover:border-line-strong"
             }`}
             style={{
-              backgroundColor: showFilters || activeFilterCount > 0 ? "#D82C2C" : "rgba(0,0,0,0.04)",
-              borderColor: showFilters || activeFilterCount > 0 ? "#D82C2C" : "transparent",
+              backgroundColor: showFilters || activeFilterCount > 0 ? "var(--dz-primary-deep)" : "var(--dz-surface-alt)",
+              borderColor: showFilters || activeFilterCount > 0 ? "var(--dz-gold)" : "transparent",
             }}
           >
             <Filter className="w-4 h-4" />
             Location Filters
             {activeFilterCount > 0 && (
-              <span className="text-white text-[11px] w-5 h-5 rounded-full flex items-center justify-center font-bold" style={{ backgroundColor: "#D82C2C" }}>
+              <span className="text-canvas bg-gold text-[11px] w-5 h-5 rounded-full flex items-center justify-center font-bold">
                 {activeFilterCount}
               </span>
             )}
@@ -619,14 +618,13 @@ function LegacyParcelsPage() {
 
         {/* Location Filter Dropdowns */}
         {showFilters && (
-          <div className="mt-4 pt-4" style={{ borderTop: "1px solid rgba(0,0,0,0.06)" }}>
+          <div className="mt-4 pt-4" style={{ borderTop: "1px solid var(--dz-line)" }}>
             <div className="flex items-center justify-between mb-3">
-              <h4 className="text-[13px] font-medium text-gray-700">Filter by Location</h4>
+              <h4 className="text-[13px] font-medium text-ink">Filter by Location</h4>
               {activeFilterCount > 0 && (
                 <button
                   onClick={clearAllFilters}
-                  className="text-[12px] hover:opacity-70 font-medium transition-opacity"
-                  style={{ color: "#D82C2C" }}
+                  className="text-[12px] font-medium text-primary-light hover:text-gold transition-colors"
                 >
                   Clear all filters
                 </button>
@@ -656,19 +654,16 @@ function LegacyParcelsPage() {
         )}
 
         {/* Status Tabs */}
-        <div className="flex flex-wrap gap-1 mt-4 p-1 rounded-xl" style={{ background: "rgba(0,0,0,0.04)" }}>
+        <div className="flex flex-wrap gap-1 mt-4 p-1 rounded-xl bg-surface-alt border border-line">
           {PARCEL_STATUSES.map((status) => (
             <button
               key={status.id}
               onClick={() => setSelectedStatus(status.id)}
               className={`px-4 py-2 rounded-lg text-[13px] font-medium transition-colors ${
                 selectedStatus === status.id
-                  ? "bg-white text-gray-900"
-                  : "text-gray-500 hover:opacity-80"
+                  ? "bg-surface text-gold ring-1 ring-gold/40 shadow-[inset_0_-2px_0_#F5C451]"
+                  : "text-ink-soft hover:text-ink hover:bg-surface-raised"
               }`}
-              style={{
-                boxShadow: selectedStatus === status.id ? "0 1px 3px rgba(0,0,0,0.1)" : "none",
-              }}
             >
               {status.label}
             </button>
@@ -676,7 +671,7 @@ function LegacyParcelsPage() {
         </div>
 
         {/* Results count */}
-        <div className="mt-4 text-[13px] text-gray-600">
+        <div className="mt-4 text-[13px] text-ink-soft">
           Showing {filteredParcels.length} parcels {selectedStatus !== "all" && `with status "${selectedStatus}"`}
           {activeFilterCount > 0 && " (location filters active)"}
         </div>
@@ -687,15 +682,15 @@ function LegacyParcelsPage() {
         <div className="overflow-x-auto">
           <table className="w-full rb-table">
             <thead>
-              <tr style={{ borderBottom: "1px solid rgba(0,0,0,0.06)" }} className="bg-transparent">
-                <th className="text-left py-3 px-4 text-[12px] font-semibold text-gray-600 uppercase tracking-wider">Tracking ID</th>
-                <th className="text-left py-3 px-4 text-[12px] font-semibold text-gray-600 uppercase tracking-wider">Pickup City</th>
-                <th className="text-left py-3 px-4 text-[12px] font-semibold text-gray-600 uppercase tracking-wider">Destination</th>
-                <th className="text-left py-3 px-4 text-[12px] font-semibold text-gray-600 uppercase tracking-wider">Route</th>
-                <th className="text-left py-3 px-4 text-[12px] font-semibold text-gray-600 uppercase tracking-wider">Package Type</th>
-                <th className="text-left py-3 px-4 text-[12px] font-semibold text-gray-600 uppercase tracking-wider">Weight</th>
-                <th className="text-left py-3 px-4 text-[12px] font-semibold text-gray-600 uppercase tracking-wider">Status</th>
-                <th className="text-left py-3 px-4 text-[12px] font-semibold text-gray-600 uppercase tracking-wider">Booked Date</th>
+              <tr style={{ borderBottom: "1px solid var(--dz-line)" }} className="bg-transparent">
+                <th className="text-left py-3 px-4 text-[12px] font-semibold text-ink-soft uppercase tracking-wider">Tracking ID</th>
+                <th className="text-left py-3 px-4 text-[12px] font-semibold text-ink-soft uppercase tracking-wider">Pickup City</th>
+                <th className="text-left py-3 px-4 text-[12px] font-semibold text-ink-soft uppercase tracking-wider">Destination</th>
+                <th className="text-left py-3 px-4 text-[12px] font-semibold text-ink-soft uppercase tracking-wider">Route</th>
+                <th className="text-left py-3 px-4 text-[12px] font-semibold text-ink-soft uppercase tracking-wider">Package Type</th>
+                <th className="text-left py-3 px-4 text-[12px] font-semibold text-ink-soft uppercase tracking-wider">Weight</th>
+                <th className="text-left py-3 px-4 text-[12px] font-semibold text-ink-soft uppercase tracking-wider">Status</th>
+                <th className="text-left py-3 px-4 text-[12px] font-semibold text-ink-soft uppercase tracking-wider">Booked Date</th>
               </tr>
             </thead>
             <tbody>
@@ -704,18 +699,18 @@ function LegacyParcelsPage() {
                   key={parcel.id}
                   onClick={() => setSelectedParcel(parcel)}
                   className="cursor-pointer transition-colors hover:opacity-75"
-                  style={{ borderBottom: "1px solid rgba(0,0,0,0.03)" }}
+                  style={{ borderBottom: "1px solid var(--dz-line)" }}
                 >
-                  <td className="py-3 px-4 text-[13px] font-medium" style={{ color: "#D82C2C" }}>{parcel.trackingId}</td>
-                  <td className="py-3 px-4 text-[13px] text-gray-900">{parcel.sender.city} - {parcel.sender.pincode}</td>
-                  <td className="py-3 px-4 text-[13px] text-gray-900">{parcel.receiver.city} - {parcel.receiver.pincode}</td>
-                  <td className="py-3 px-4 text-[13px] text-gray-600">{parcel.route}</td>
-                  <td className="py-3 px-4 text-[13px] text-gray-600">{parcel.packageType}</td>
-                  <td className="py-3 px-4 text-[13px] text-gray-600">{parcel.weight} kg</td>
+                  <td className="py-3 px-4 text-[13px] font-medium" style={{ color: "var(--dz-primary-light)" }}>{parcel.trackingId}</td>
+                  <td className="py-3 px-4 text-[13px] text-ink">{parcel.sender.city} - {parcel.sender.pincode}</td>
+                  <td className="py-3 px-4 text-[13px] text-ink">{parcel.receiver.city} - {parcel.receiver.pincode}</td>
+                  <td className="py-3 px-4 text-[13px] text-ink-soft">{parcel.route}</td>
+                  <td className="py-3 px-4 text-[13px] text-ink-soft">{parcel.packageType}</td>
+                  <td className="py-3 px-4 text-[13px] text-ink-soft">{parcel.weight} kg</td>
                   <td className="py-3 px-4">
                     <StatusBadge status={parcel.status} />
                   </td>
-                  <td className="py-3 px-4 text-[13px] text-gray-600">{formatDate(parcel.bookedDate)}</td>
+                  <td className="py-3 px-4 text-[13px] text-ink-soft">{formatDate(parcel.bookedDate)}</td>
                 </tr>
               ))}
             </tbody>
@@ -723,8 +718,8 @@ function LegacyParcelsPage() {
         </div>
 
         {filteredParcels.length === 0 && (
-          <div className="text-center py-12 text-gray-500">
-            <Package className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+          <div className="text-center py-12 text-ink-soft">
+            <Package className="w-12 h-12 mx-auto mb-3 text-ink-faint" />
             <p className="text-[15px] font-medium">No parcels found</p>
             <p className="text-[13px]">Try adjusting your search or filters</p>
           </div>
@@ -738,17 +733,17 @@ function LegacyParcelsPage() {
       <Modal open={showNewParcel} onClose={() => setShowNewParcel(false)} title="Book New Parcel">
         <div className="max-w-2xl w-full max-h-[85vh] overflow-y-auto">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-[22px] font-bold text-gray-900">Book New Parcel</h2>
+            <h2 className="text-[22px] font-bold text-ink">Book New Parcel</h2>
             <button onClick={() => setShowNewParcel(false)} className="p-1 hover:opacity-70 rounded-xl transition-opacity">
-              <X className="w-5 h-5 text-gray-500" />
+              <X className="w-5 h-5 text-ink-soft" />
             </button>
           </div>
 
           <div className="space-y-6">
             {/* Pickup Location */}
-            <div className="rb-card-flat p-4 rounded-xl" style={{ borderBottom: "1px solid rgba(216,44,44,0.12)" }}>
-              <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2 text-[13px]">
-                <MapPin className="w-4 h-4" style={{ color: "#34C759" }} />
+            <div className="rb-card-flat p-4 rounded-xl" style={{ borderBottom: "1px solid rgba(139,92,246,0.30)" }}>
+              <h3 className="font-semibold text-ink mb-3 flex items-center gap-2 text-[13px]">
+                <MapPin className="w-4 h-4" style={{ color: "#34D399" }} />
                 Pickup Location
               </h3>
               <SearchableDropdown
@@ -762,31 +757,31 @@ function LegacyParcelsPage() {
                 const [city, pin] = newParcelPickup.split("|");
                 const loc = INDIA_PINCODES.find((l) => l.pincode === pin && l.city === city);
                 return loc ? (
-                  <div className="mt-2 text-[11px] text-gray-500 bg-white rounded-lg p-2">
+                  <div className="mt-2 text-[11px] text-ink-soft bg-surface rounded-lg p-2">
                     {loc.city}, {loc.district}, {loc.state} — {loc.pincode}
                   </div>
                 ) : null;
               })()}
               <div className="grid grid-cols-2 gap-3 mt-3">
                 <div>
-                  <label className="block text-[12px] font-semibold text-gray-600 uppercase tracking-wider mb-1">Sender Name</label>
-                  <input type="text" placeholder="Full name" className="rb-input w-full px-3 py-2 text-[13px]" style={{ background: "rgba(0,0,0,0.03)", border: "1px solid rgba(0,0,0,0.06)" }} />
+                  <label className="block text-[12px] font-semibold text-ink-soft uppercase tracking-wider mb-1">Sender Name</label>
+                  <input type="text" placeholder="Full name" className="rb-input w-full px-3 py-2 text-[13px]" />
                 </div>
                 <div>
-                  <label className="block text-[12px] font-semibold text-gray-600 uppercase tracking-wider mb-1">Phone</label>
-                  <input type="text" placeholder="+91-XXXXXXXXXX" className="rb-input w-full px-3 py-2 text-[13px]" style={{ background: "rgba(0,0,0,0.03)", border: "1px solid rgba(0,0,0,0.06)" }} />
+                  <label className="block text-[12px] font-semibold text-ink-soft uppercase tracking-wider mb-1">Phone</label>
+                  <input type="text" placeholder="+91-XXXXXXXXXX" className="rb-input w-full px-3 py-2 text-[13px]" />
                 </div>
               </div>
               <div className="mt-3">
-                <label className="block text-[12px] font-semibold text-gray-600 uppercase tracking-wider mb-1">Address</label>
-                <input type="text" placeholder="Full address" className="rb-input w-full px-3 py-2 text-[13px]" style={{ background: "rgba(0,0,0,0.03)", border: "1px solid rgba(0,0,0,0.06)" }} />
+                <label className="block text-[12px] font-semibold text-ink-soft uppercase tracking-wider mb-1">Address</label>
+                <input type="text" placeholder="Full address" className="rb-input w-full px-3 py-2 text-[13px]" />
               </div>
             </div>
 
             {/* Destination */}
-            <div className="rb-card-flat p-4 rounded-xl" style={{ borderBottom: "1px solid rgba(216,44,44,0.12)" }}>
-              <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2 text-[13px]">
-                <MapPin className="w-4 h-4" style={{ color: "#D82C2C" }} />
+            <div className="rb-card-flat p-4 rounded-xl" style={{ borderBottom: "1px solid rgba(139,92,246,0.30)" }}>
+              <h3 className="font-semibold text-ink mb-3 flex items-center gap-2 text-[13px]">
+                <MapPin className="w-4 h-4" style={{ color: "var(--dz-primary-light)" }} />
                 Destination
               </h3>
               <SearchableDropdown
@@ -800,37 +795,37 @@ function LegacyParcelsPage() {
                 const [city, pin] = newParcelDestination.split("|");
                 const loc = INDIA_PINCODES.find((l) => l.pincode === pin && l.city === city);
                 return loc ? (
-                  <div className="mt-2 text-[11px] text-gray-500 bg-white rounded-lg p-2">
+                  <div className="mt-2 text-[11px] text-ink-soft bg-surface rounded-lg p-2">
                     {loc.city}, {loc.district}, {loc.state} — {loc.pincode}
                   </div>
                 ) : null;
               })()}
               <div className="grid grid-cols-2 gap-3 mt-3">
                 <div>
-                  <label className="block text-[12px] font-semibold text-gray-600 uppercase tracking-wider mb-1">Receiver Name</label>
-                  <input type="text" placeholder="Full name" className="rb-input w-full px-3 py-2 text-[13px]" style={{ background: "rgba(0,0,0,0.03)", border: "1px solid rgba(0,0,0,0.06)" }} />
+                  <label className="block text-[12px] font-semibold text-ink-soft uppercase tracking-wider mb-1">Receiver Name</label>
+                  <input type="text" placeholder="Full name" className="rb-input w-full px-3 py-2 text-[13px]" />
                 </div>
                 <div>
-                  <label className="block text-[12px] font-semibold text-gray-600 uppercase tracking-wider mb-1">Phone</label>
-                  <input type="text" placeholder="+91-XXXXXXXXXX" className="rb-input w-full px-3 py-2 text-[13px]" style={{ background: "rgba(0,0,0,0.03)", border: "1px solid rgba(0,0,0,0.06)" }} />
+                  <label className="block text-[12px] font-semibold text-ink-soft uppercase tracking-wider mb-1">Phone</label>
+                  <input type="text" placeholder="+91-XXXXXXXXXX" className="rb-input w-full px-3 py-2 text-[13px]" />
                 </div>
               </div>
               <div className="mt-3">
-                <label className="block text-[12px] font-semibold text-gray-600 uppercase tracking-wider mb-1">Address</label>
-                <input type="text" placeholder="Full address" className="rb-input w-full px-3 py-2 text-[13px]" style={{ background: "rgba(0,0,0,0.03)", border: "1px solid rgba(0,0,0,0.06)" }} />
+                <label className="block text-[12px] font-semibold text-ink-soft uppercase tracking-wider mb-1">Address</label>
+                <input type="text" placeholder="Full address" className="rb-input w-full px-3 py-2 text-[13px]" />
               </div>
             </div>
 
             {/* Package Details */}
-            <div className="rb-card-flat p-4 rounded-xl" style={{ background: "rgba(0,0,0,0.02)" }}>
-              <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2 text-[13px]">
+            <div className="rb-card-flat p-4 rounded-xl" style={{ background: "var(--dz-surface-alt)" }}>
+              <h3 className="font-semibold text-ink mb-3 flex items-center gap-2 text-[13px]">
                 <Package className="w-4 h-4" />
                 Package Details
               </h3>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[12px] font-semibold text-gray-600 uppercase tracking-wider mb-1">Package Type</label>
-                  <select className="rb-input w-full px-3 py-2 text-[13px]" style={{ background: "rgba(0,0,0,0.03)", border: "1px solid rgba(0,0,0,0.06)" }}>
+                  <label className="block text-[12px] font-semibold text-ink-soft uppercase tracking-wider mb-1">Package Type</label>
+                  <select className="rb-input w-full px-3 py-2 text-[13px]">
                     <option value="">Select type...</option>
                     <option value="Electronics">Electronics</option>
                     <option value="Documents">Documents</option>
@@ -845,16 +840,16 @@ function LegacyParcelsPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-[12px] font-semibold text-gray-600 uppercase tracking-wider mb-1">Weight (kg)</label>
-                  <input type="number" step="0.1" placeholder="0.0" className="rb-input w-full px-3 py-2 text-[13px]" style={{ background: "rgba(0,0,0,0.03)", border: "1px solid rgba(0,0,0,0.06)" }} />
+                  <label className="block text-[12px] font-semibold text-ink-soft uppercase tracking-wider mb-1">Weight (kg)</label>
+                  <input type="number" step="0.1" placeholder="0.0" className="rb-input w-full px-3 py-2 text-[13px]" />
                 </div>
                 <div>
-                  <label className="block text-[12px] font-semibold text-gray-600 uppercase tracking-wider mb-1">Dimensions (cm)</label>
-                  <input type="text" placeholder="L x W x H" className="rb-input w-full px-3 py-2 text-[13px]" style={{ background: "rgba(0,0,0,0.03)", border: "1px solid rgba(0,0,0,0.06)" }} />
+                  <label className="block text-[12px] font-semibold text-ink-soft uppercase tracking-wider mb-1">Dimensions (cm)</label>
+                  <input type="text" placeholder="L x W x H" className="rb-input w-full px-3 py-2 text-[13px]" />
                 </div>
                 <div>
-                  <label className="block text-[12px] font-semibold text-gray-600 uppercase tracking-wider mb-1">Declared Value (₹)</label>
-                  <input type="number" placeholder="0" className="rb-input w-full px-3 py-2 text-[13px]" style={{ background: "rgba(0,0,0,0.03)", border: "1px solid rgba(0,0,0,0.06)" }} />
+                  <label className="block text-[12px] font-semibold text-ink-soft uppercase tracking-wider mb-1">Declared Value (₹)</label>
+                  <input type="number" placeholder="0" className="rb-input w-full px-3 py-2 text-[13px]" />
                 </div>
               </div>
             </div>
@@ -864,14 +859,14 @@ function LegacyParcelsPage() {
               const [pCity, pPin] = newParcelPickup.split("|");
               const [dCity, dPin] = newParcelDestination.split("|");
               return (
-                <div className="rb-card-flat p-4 rounded-xl" style={{ background: "rgba(88,86,214,0.06)" }}>
-                  <h3 className="font-semibold text-gray-900 mb-2 text-[13px]">Route Preview</h3>
+                <div className="rb-card-flat p-4 rounded-xl" style={{ background: "rgba(129,140,248,0.10)", border: "1px solid rgba(129,140,248,0.35)" }}>
+                  <h3 className="font-semibold text-ink mb-2 text-[13px]">Route Preview</h3>
                   <div className="flex items-center gap-3 text-[13px]">
-                    <span className="text-white px-2 py-1 rounded-lg font-medium" style={{ backgroundColor: "#D82C2C" }}>{pCity} ({pPin})</span>
-                    <span className="text-gray-400">→</span>
-                    <span className="text-white px-2 py-1 rounded-lg font-medium" style={{ backgroundColor: "#D82C2C" }}>{dCity} ({dPin})</span>
+                    <span className="text-white px-2 py-1 rounded-lg font-medium" style={{ backgroundColor: "var(--dz-primary-deep)" }}>{pCity} ({pPin})</span>
+                    <span className="text-ink-faint">→</span>
+                    <span className="text-white px-2 py-1 rounded-lg font-medium" style={{ backgroundColor: "var(--dz-primary-deep)" }}>{dCity} ({dPin})</span>
                   </div>
-                  <p className="text-[11px] text-gray-500 mt-2">
+                  <p className="text-[11px] text-ink-soft mt-2">
                     Route code: {getCityCode(pCity)}-{pPin} → {getCityCode(dCity)}-{dPin}
                   </p>
                 </div>

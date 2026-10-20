@@ -20,33 +20,34 @@ export interface TimelineItem {
  * Used by the legacy parcels page and the core shipment detail (transitions / custody).
  */
 export default function Timeline({ items, emptyMessage = "No events yet" }: { items: TimelineItem[]; emptyMessage?: string }) {
-  if (!items.length) return <p className="text-gray-500 text-[13px]">{emptyMessage}</p>;
+  if (!items.length) return <p className="text-ink-soft text-[13px]">{emptyMessage}</p>;
   return (
     <ol className="relative" aria-label="Timeline">
       {items.map((item, index) => {
         const completed = item.completed !== false;
-        const color = item.tone === "danger" ? "#DC2626" : item.tone === "warning" ? "#D97706" : "#34C759";
+        const color = item.tone === "danger" ? "var(--dz-danger)" : item.tone === "warning" ? "var(--dz-warning)" : "var(--dz-success)";
         return (
           <li key={item.key} className="flex gap-4 mb-4 last:mb-0">
             <div className="flex flex-col items-center">
               <div
-                className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
+                className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
                 style={{
-                  backgroundColor: completed ? color : "rgba(0,0,0,0.08)",
-                  color: completed ? "white" : "rgba(0,0,0,0.4)",
+                  backgroundColor: completed ? color : "var(--dz-surface-alt)",
+                  color: completed ? "var(--dz-bg)" : "var(--dz-ink-faint)",
+                  border: completed ? "none" : "1px solid var(--dz-line-strong)",
                 }}
                 aria-hidden
               >
                 {index + 1}
               </div>
               {index < items.length - 1 && (
-                <div className="w-0.5 flex-1 min-h-[2rem]" style={{ backgroundColor: completed ? color : "rgba(0,0,0,0.08)" }} />
+                <div className="w-0.5 flex-1 min-h-[2rem]" style={{ backgroundColor: completed ? color : "var(--dz-line)", opacity: completed ? 0.55 : 1 }} />
               )}
             </div>
             <div className="flex-1 pt-1 pb-1">
-              <p className="font-medium text-gray-900 text-[13px]">{item.title}</p>
-              {item.subtitle && <p className="text-[12px] text-gray-500">{item.subtitle}</p>}
-              {item.detail && <div className="mt-1 text-[12px] text-gray-600">{item.detail}</div>}
+              <p className="font-medium text-ink text-[13px]">{item.title}</p>
+              {item.subtitle && <p className="text-[12px] text-ink-soft">{item.subtitle}</p>}
+              {item.detail && <div className="mt-1 text-[12px] text-ink-soft">{item.detail}</div>}
             </div>
           </li>
         );

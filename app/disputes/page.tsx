@@ -46,16 +46,16 @@ function DisputesBody() {
       <DataTable caption="Disputes (oldest open first)" rowKey={(d) => d.id} data={q.data?.data || []} loading={q.loading && !q.data} emptyMessage="No disputes"
         onRowClick={(d) => router.push(`/disputes/${d.id}`)} page={q.data?.meta?.page || page} totalPages={q.data?.meta?.totalPages || 1} onPageChange={setPage}
         columns={[
-          { key: "case", label: "Case", render: (d: Dispute) => <Link href={`/disputes/${d.id}`} onClick={(e) => e.stopPropagation()} className="font-mono text-xs text-blue-700 hover:underline">{d.caseNumber || shortId(d.id)}</Link> },
-          { key: "dcn", label: "DCN", render: (d: Dispute) => (canShipment && d.shipmentId ? <Link href={`/shipments/${d.shipmentId}`} onClick={(e) => e.stopPropagation()} className="font-mono text-xs hover:underline">{d.dcn}</Link> : <span className="font-mono text-xs">{d.dcn}</span>) },
+          { key: "case", label: "Case", render: (d: Dispute) => <Link href={`/disputes/${d.id}`} onClick={(e) => e.stopPropagation()} className="font-mono text-xs text-primary-light hover:text-gold hover:underline">{d.caseNumber || shortId(d.id)}</Link> },
+          { key: "dcn", label: "DCN", render: (d: Dispute) => (canShipment && d.shipmentId ? <Link href={`/shipments/${d.shipmentId}`} onClick={(e) => e.stopPropagation()} className="font-mono text-xs text-primary-light hover:text-gold hover:underline">{d.dcn}</Link> : <span className="font-mono text-xs">{d.dcn}</span>) },
           { key: "reason", label: "Reason", render: (d: Dispute) => humanize(d.reasonCode) },
           { key: "status", label: "Status", render: (d: Dispute) => (d.status ? <StatusBadge status={d.status} kind="generic" /> : "—") },
-          { key: "hold", label: "Hold", render: (d: Dispute) => (d.holdPlaced ? <StatusBadge status="DISPUTE" kind="hold" /> : <span className="text-gray-400 text-[12px]">No hold</span>) },
-          { key: "assignee", label: "Assigned to", render: (d: Dispute) => (d.assignedTo ? (d.assignedTo === me?.id ? "Me" : <span className="font-mono text-[11px]">{shortId(d.assignedTo)}</span>) : <span className="text-gray-400">Unassigned</span>) },
+          { key: "hold", label: "Hold", render: (d: Dispute) => (d.holdPlaced ? <StatusBadge status="DISPUTE" kind="hold" /> : <span className="text-ink-faint text-[12px]">No hold</span>) },
+          { key: "assignee", label: "Assigned to", render: (d: Dispute) => (d.assignedTo ? (d.assignedTo === me?.id ? "Me" : <span className="font-mono text-[11px]">{shortId(d.assignedTo)}</span>) : <span className="text-ink-faint">Unassigned</span>) },
           { key: "outcome", label: "Outcome", render: (d: Dispute) => humanize(d.outcome) },
           { key: "created", label: "Opened", render: (d: Dispute) => <span className="text-[12px]">{formatIST(d.createdAt)}</span> },
           { key: "ops", label: "Operations", render: (d: Dispute) => (canAssign && d.status !== "RESOLVED" && d.assignedTo !== me?.id ? (
-            <button className={rowAction("indigo")} onClick={(e) => { e.stopPropagation(); assignToMe(d); }}>Assign to me</button>) : <span className="text-gray-400">—</span>) },
+            <button className={rowAction("indigo")} onClick={(e) => { e.stopPropagation(); assignToMe(d); }}>Assign to me</button>) : <span className="text-ink-faint">—</span>) },
         ]} />
     </>
   );

@@ -4,24 +4,62 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
 
-/* ─── redBus-Inspired Design System ─── */
+/* ─── Dropzy dark theme (matches the customer app: dropzy_mobile/lib/core/theme.dart) ───
+   Violet = brand / primary actions. Gold = highlight (active nav, focus, key numbers, selected tabs, urgent rows). */
 
 @layer base {
   :root {
-    --rb-red: #D82C2C;
-    --rb-darkred: #B71C1C;
-    --rb-lightred: #FF5252;
-    --rb-orange: #FF6F00;
-    --rb-yellow: #FFB300;
-    --rb-green: #43A047;
-    --rb-blue: #1565C0;
-    --rb-bg: #F5F5F5;
-    --rb-card: #FFFFFF;
-    --rb-text: #212121;
-    --rb-text-secondary: #757575;
-    --rb-text-light: #9E9E9E;
-    --rb-border: #E0E0E0;
-    --rb-radius: 12px;
+    color-scheme: dark;
+
+    /* surfaces & text */
+    --dz-bg: #0E0C15;
+    --dz-surface: #1B1826;
+    --dz-surface-alt: #221E30;
+    --dz-surface-raised: #2A2540;
+    --dz-ink: #F4F3F7;
+    --dz-ink-soft: #9E99AC;
+    --dz-ink-faint: #8F89A3;
+    --dz-line: #2C2838;
+    --dz-line-strong: #3A3550;
+
+    /* brand */
+    --dz-primary: #8B5CF6;
+    --dz-primary-deep: #7C3AED;
+    --dz-primary-dark: #6D28D9;
+    --dz-primary-light: #A78BFA;
+    --dz-primary-tint: #241B38;
+    --dz-offer: linear-gradient(90deg, #7C3AED 0%, #4C1D95 100%);
+    --dz-glow: linear-gradient(180deg, #2A1B4D 0%, #0E0C15 100%);
+
+    /* gold highlight */
+    --dz-gold: #F5C451;
+    --dz-gold-deep: #D4A53A;
+    --dz-gold-light: #F9D77E;
+    --dz-gold-tint: rgba(245, 196, 81, 0.12);
+    --dz-gold-ring: rgba(245, 196, 81, 0.45);
+
+    /* semantic */
+    --dz-success: #34D399;
+    --dz-info: #818CF8;
+    --dz-warning: #FBBF24;
+    --dz-danger: #F87171;
+
+    --rb-radius: 14px;
+
+    /* legacy aliases (old --rb-* names now resolve to the dark theme) */
+    --rb-red: var(--dz-primary-deep);
+    --rb-darkred: var(--dz-primary-dark);
+    --rb-lightred: var(--dz-primary-light);
+    --rb-orange: #FB923C;
+    --rb-yellow: var(--dz-gold);
+    --rb-green: var(--dz-success);
+    --rb-blue: var(--dz-info);
+    --rb-bg: var(--dz-bg);
+    --rb-card: var(--dz-surface);
+    --rb-text: var(--dz-ink);
+    --rb-text-secondary: var(--dz-ink-soft);
+    --rb-text-light: var(--dz-ink-faint);
+    --rb-border: var(--dz-line);
   }
 
   * {
@@ -29,16 +67,37 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
+  html { background: var(--dz-bg); }
+
   body {
-    @apply text-gray-900 antialiased;
-    background: var(--rb-bg);
+    @apply antialiased;
+    color: var(--dz-ink);
+    background: var(--dz-bg);
     font-family: 'Poppins', -apple-system, sans-serif;
   }
 
+  ::selection { background: rgba(245, 196, 81, 0.28); color: var(--dz-ink); }
+
+  a:not([class]):hover { color: var(--dz-gold); }
+
+  input, select, textarea { color: var(--dz-ink); }
+  input::placeholder, textarea::placeholder { color: var(--dz-ink-faint); opacity: 1; }
+  select option, select optgroup { background: var(--dz-surface); color: var(--dz-ink); }
+  input[type="date"]::-webkit-calendar-picker-indicator,
+  input[type="time"]::-webkit-calendar-picker-indicator,
+  input[type="datetime-local"]::-webkit-calendar-picker-indicator { filter: invert(0.8); }
+  input[type="checkbox"], input[type="radio"] { accent-color: var(--dz-primary); }
+
+  /* Keyboard focus is always gold. */
+  :focus-visible { outline-color: var(--dz-gold); }
+
+  code, pre, kbd { color: var(--dz-ink); }
+  hr { border-color: var(--dz-line); }
+
   ::-webkit-scrollbar { width: 8px; height: 8px; }
-  ::-webkit-scrollbar-track { background: #f5f5f5; }
-  ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
-  ::-webkit-scrollbar-thumb:hover { background: #aaa; }
+  ::-webkit-scrollbar-track { background: var(--dz-bg); }
+  ::-webkit-scrollbar-thumb { background: var(--dz-line-strong); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: #4A4466; }
 }
 
 /* ─── Animations ─── */
@@ -91,131 +150,252 @@
 .animation-delay-500 { animation-delay: 0.5s; }
 
 @layer components {
-  /* ─── redBus Card ─── */
+  /* ─── Card (DropzyColors.surface, 16px radius like the app's CardTheme) ─── */
   .rb-card {
-    background: white;
-    border-radius: var(--rb-radius);
-    box-shadow: 0 1px 4px rgba(0,0,0,0.08), 0 2px 12px rgba(0,0,0,0.04);
-    transition: all 0.2s ease;
+    background: var(--dz-surface);
+    border: 1px solid var(--dz-line);
+    border-radius: 16px;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.28);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
   }
   .rb-card:hover {
-    box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+    border-color: var(--dz-line-strong);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.4);
     transform: translateY(-2px);
   }
   .rb-card-flat {
-    background: white;
-    border-radius: var(--rb-radius);
-    box-shadow: 0 1px 4px rgba(0,0,0,0.08), 0 2px 12px rgba(0,0,0,0.04);
+    background: var(--dz-surface);
+    border: 1px solid var(--dz-line);
+    border-radius: 16px;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.22);
   }
 
   /* ─── Sidebar ─── */
   .sidebar-link {
-    @apply flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium transition-all duration-200;
+    @apply relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-200;
   }
+  .sidebar-link:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--dz-gold-ring);
+  }
+  /* Active item: gold left bar + gold text/icon on a soft gold wash. */
   .sidebar-link-active {
-    background: var(--rb-red);
-    color: white;
-    box-shadow: 0 2px 8px rgba(216,44,44,0.3);
+    background: linear-gradient(90deg, rgba(245,196,81,0.16) 0%, rgba(245,196,81,0.04) 100%);
+    color: var(--dz-gold);
+    font-weight: 600;
+  }
+  .sidebar-link-active::before {
+    content: "";
+    position: absolute;
+    left: -12px;
+    top: 6px;
+    bottom: 6px;
+    width: 3px;
+    border-radius: 0 3px 3px 0;
+    background: var(--dz-gold);
+    box-shadow: 0 0 10px rgba(245,196,81,0.55);
   }
   .sidebar-link-inactive {
-    @apply text-gray-600 hover:bg-gray-100 hover:text-gray-900;
+    color: var(--dz-ink-soft);
+  }
+  .sidebar-link-inactive:hover {
+    background: var(--dz-surface-alt);
+    color: var(--dz-ink);
   }
 
-  /* ─── redBus Button ─── */
+  /* ─── Buttons ─── */
   .rb-btn {
     @apply inline-flex items-center justify-center gap-2 font-semibold transition-all duration-200;
-    border-radius: 8px;
+    border-radius: 12px;
   }
+  /* Primary = violet (customer app ElevatedButton); hover/focus = gold edge. */
   .rb-btn-primary {
-    background: var(--rb-red);
-    color: white;
-    box-shadow: 0 2px 8px rgba(216,44,44,0.25);
+    background: var(--dz-primary-deep);
+    color: #fff;
+    border: 1px solid transparent;
+    box-shadow: 0 2px 10px rgba(124,58,237,0.30);
   }
   .rb-btn-primary:hover {
-    background: var(--rb-darkred);
-    box-shadow: 0 4px 16px rgba(216,44,44,0.35);
+    background: var(--dz-primary-dark);
+    border-color: var(--dz-gold);
+    box-shadow: 0 0 0 1px rgba(245,196,81,0.35), 0 6px 18px rgba(124,58,237,0.40);
     transform: translateY(-1px);
   }
   .rb-btn-primary:active {
     transform: translateY(0);
   }
+  .rb-btn-primary:disabled,
+  .rb-btn-primary[disabled] {
+    background: var(--dz-line);
+    color: #6C6780;
+    border-color: transparent;
+  }
   .rb-btn-outline {
-    background: white;
-    color: var(--rb-red);
-    border: 1.5px solid var(--rb-red);
+    background: transparent;
+    color: var(--dz-primary-light);
+    border: 1.5px solid var(--dz-primary);
   }
   .rb-btn-outline:hover {
-    background: #fef2f2;
+    background: var(--dz-primary-tint);
+    border-color: var(--dz-gold);
+    color: var(--dz-gold);
   }
   .rb-btn-ghost {
     background: transparent;
-    color: var(--rb-text-secondary);
+    color: var(--dz-ink-soft);
   }
   .rb-btn-ghost:hover {
-    background: rgba(0,0,0,0.04);
-    color: var(--rb-text);
+    background: var(--dz-surface-alt);
+    color: var(--dz-ink);
   }
 
-  /* ─── redBus Input ─── */
+  /* ─── Input (DropzyColors.surface fill, line border, 14px radius) ─── */
   .rb-input {
-    @apply w-full px-4 py-3 text-sm rounded-lg border border-gray-200 transition-all duration-200;
-    background: white;
+    @apply w-full px-4 py-3 text-sm rounded-xl border transition-all duration-200;
+    background: var(--dz-surface-alt);
+    border-color: var(--dz-line);
+    color: var(--dz-ink);
   }
+  .rb-input::placeholder { color: var(--dz-ink-faint); }
   .rb-input:focus {
     @apply outline-none;
-    border-color: var(--rb-red);
-    box-shadow: 0 0 0 3px rgba(216,44,44,0.1);
+    border-color: var(--dz-gold);
+    box-shadow: 0 0 0 3px rgba(245,196,81,0.18);
   }
 
-  /* ─── redBus Search Form ─── */
+  /* ─── Search form ─── */
   .rb-search-input {
     @apply w-full px-4 py-4 text-base font-medium border-0 bg-transparent;
-    color: var(--rb-text);
+    color: var(--dz-ink);
   }
   .rb-search-input:focus {
     @apply outline-none;
   }
   .rb-search-input::placeholder {
-    color: var(--rb-text-light);
+    color: var(--dz-ink-faint);
     font-weight: 400;
   }
 
   /* ─── Login input glow ─── */
   .input-glow:focus {
-    box-shadow: 0 0 0 3px rgba(216,44,44,0.15), 0 1px 2px rgba(0,0,0,0.05);
+    box-shadow: 0 0 0 3px rgba(245,196,81,0.20), 0 1px 2px rgba(0,0,0,0.3);
   }
 
-  /* ─── redBus Table ─── */
+  /* ─── Table ─── */
   .rb-table {
     @apply w-full;
   }
   .rb-table thead tr {
-    border-bottom: 2px solid #f0f0f0;
+    background: var(--dz-surface-alt);
+    border-bottom: 1px solid var(--dz-line);
   }
   .rb-table thead th {
-    @apply text-left py-3 px-4 text-[11px] font-semibold uppercase tracking-wider text-gray-500;
+    @apply text-left py-3 px-4 text-[11px] font-semibold uppercase tracking-wider;
+    color: var(--dz-ink-soft);
   }
   .rb-table tbody tr {
-    border-bottom: 1px solid #f5f5f5;
+    border-bottom: 1px solid var(--dz-line);
     transition: background 0.15s ease;
   }
+  .rb-table tbody tr:last-child { border-bottom: 0; }
   .rb-table tbody tr:hover {
-    background: #fef2f2;
+    background: var(--dz-surface-alt);
+  }
+  .rb-table tbody tr:focus-visible {
+    outline: none;
+    background: var(--dz-surface-alt);
+    box-shadow: inset 3px 0 0 var(--dz-gold);
   }
   .rb-table tbody td {
     @apply py-3.5 px-4 text-sm;
+    color: var(--dz-ink);
+  }
+
+  /* Highlighted (urgent) table row — cutoff soon / overdue: gold bar + gold wash. */
+  .dz-row-highlight {
+    background: rgba(245,196,81,0.07);
+    box-shadow: inset 3px 0 0 var(--dz-gold);
+  }
+  .rb-table tbody tr.dz-row-highlight:hover { background: rgba(245,196,81,0.11); }
+  .dz-row-danger {
+    background: rgba(248,113,113,0.07);
+    box-shadow: inset 3px 0 0 var(--dz-danger);
+  }
+
+  /* ─── Gold highlight helpers ─── */
+  .dz-kpi { color: var(--dz-gold); font-variant-numeric: tabular-nums; }
+  .dz-link { color: var(--dz-primary-light); text-underline-offset: 2px; transition: color 0.15s ease; }
+  .dz-link:hover { color: var(--dz-gold); text-decoration: underline; }
+  .dz-chip {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-bold;
+    border: 1px solid;
   }
 
   /* ─── Offer Tag ─── */
   .rb-offer-tag {
     @apply inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-semibold;
-    background: #FFF3E0;
-    color: var(--rb-orange);
+    background: var(--dz-gold-tint);
+    color: var(--dz-gold);
+    border: 1px solid rgba(245,196,81,0.4);
   }
 
-  /* ─── Rating Stars ─── */
+  /* ─── Rating ─── */
   .rb-rating {
-    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded text-[12px] font-bold text-white;
-    background: var(--rb-green);
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded text-[12px] font-bold;
+    background: rgba(52,211,153,0.15);
+    color: var(--dz-success);
+    border: 1px solid rgba(52,211,153,0.4);
   }
 }
+
+/* ─── Leaflet on dark ─── */
+.leaflet-container {
+  background: #15121E !important;
+  font-family: inherit;
+}
+/* Darken the light raster tiles without touching markers/overlays. */
+.leaflet-tile-pane {
+  filter: invert(1) hue-rotate(200deg) brightness(0.92) contrast(0.88) saturate(0.55);
+}
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background: var(--dz-surface) !important;
+  color: var(--dz-ink) !important;
+  border: 1px solid var(--dz-line);
+  box-shadow: 0 8px 28px rgba(0,0,0,0.5) !important;
+}
+.leaflet-popup-content-wrapper { border-radius: 14px !important; }
+.leaflet-container a.leaflet-popup-close-button { color: var(--dz-ink-soft) !important; }
+.leaflet-container a.leaflet-popup-close-button:hover { color: var(--dz-gold) !important; }
+.leaflet-bar a,
+.leaflet-bar a:hover {
+  background: var(--dz-surface) !important;
+  color: var(--dz-ink) !important;
+  border-bottom-color: var(--dz-line) !important;
+}
+.leaflet-bar a:hover { color: var(--dz-gold) !important; }
+.leaflet-bar { border: 1px solid var(--dz-line) !important; }
+.leaflet-control-attribution {
+  background: rgba(14,12,21,0.75) !important;
+  color: var(--dz-ink-faint) !important;
+}
+.leaflet-control-attribution a { color: var(--dz-primary-light) !important; }
+.leaflet-tooltip {
+  background: var(--dz-surface) !important;
+  color: var(--dz-ink) !important;
+  border-color: var(--dz-line) !important;
+}
+
+/* ─── Recharts on dark ─── */
+.recharts-cartesian-grid line { stroke: var(--dz-line); }
+.recharts-cartesian-axis-tick-value { fill: var(--dz-ink-soft); }
+.recharts-cartesian-axis-line, .recharts-cartesian-axis-tick-line { stroke: var(--dz-line-strong); }
+.recharts-legend-item-text { color: var(--dz-ink-soft) !important; }
+.recharts-default-tooltip {
+  background: var(--dz-surface-alt) !important;
+  border: 1px solid var(--dz-line-strong) !important;
+  border-radius: 12px !important;
+  color: var(--dz-ink) !important;
+}
+.recharts-tooltip-label { color: var(--dz-ink) !important; }
+.recharts-tooltip-cursor { fill: rgba(255,255,255,0.04); }

@@ -80,28 +80,28 @@ function SettlementsBody() {
       <DataTable caption="Operator settlements" rowKey={(s) => s.id} data={rows} loading={q.loading && !q.data} emptyMessage="No settlements" onRowClick={setDetail}
         page={q.data?.meta?.page || page} totalPages={q.data?.meta?.totalPages || 1} onPageChange={setPage}
         columns={[
-          { key: "no", label: "Statement", render: (s: Settlement) => <div><p className="font-mono text-[12px]">{s.statementNumber}</p><p className="text-xs text-gray-500">{s.operatorName}</p></div> },
+          { key: "no", label: "Statement", render: (s: Settlement) => <div><p className="font-mono text-[12px]">{s.statementNumber}</p><p className="text-xs text-ink-soft">{s.operatorName}</p></div> },
           { key: "period", label: "Period", render: (s: Settlement) => <span className="text-[12px]">{formatISTDate(s.periodStart)} – {formatISTDate(s.periodEnd)}</span> },
           { key: "count", label: "Shipments", render: (s: Settlement) => s.shipmentCount ?? "—" },
           { key: "gross", label: "Gross base fare", render: (s: Settlement) => <span className="tabular-nums">{formatPaise(s.grossBaseFarePaise)}</span> },
           { key: "commission", label: "Commission", render: (s: Settlement) => <span className="tabular-nums">{formatPaise(s.commissionPaise)}</span> },
           { key: "net", label: "Net payable", render: (s: Settlement) => <span className="tabular-nums font-semibold">{formatPaise(s.netPayablePaise)}</span> },
-          { key: "mismatch", label: "Ledger check", render: (s: Settlement) => (s.mismatchCount ? <span className="text-[12px] font-semibold text-red-700">{s.mismatchCount} mismatch(es)</span> : <span className="text-[12px] text-green-700">Matches ledger</span>) },
+          { key: "mismatch", label: "Ledger check", render: (s: Settlement) => (s.mismatchCount ? <span className="text-[12px] font-semibold text-danger">{s.mismatchCount} mismatch(es)</span> : <span className="text-[12px] text-success">Matches ledger</span>) },
           { key: "status", label: "Status", render: (s: Settlement) => (s.status ? <StatusBadge status={s.status} kind="generic" /> : "—") },
           { key: "ops", label: "Operations", render: (s: Settlement) => {
-            if (!canWrite) return <span className="text-gray-400">—</span>;
+            if (!canWrite) return <span className="text-ink-faint">—</span>;
             const ownStatement = !!me && s.generatedBy === me.id;
             return (
               <div className="flex flex-wrap items-center gap-1" onClick={(e) => e.stopPropagation()}>
                 {s.status === "GENERATED" && (
                   <span className="inline-flex flex-col">
                     <button className={rowAction("green")} disabled={ownStatement} onClick={() => setApproving(s)}>Approve</button>
-                    {ownStatement && <span className="text-[11px] text-gray-500">{FOUR_EYES}</span>}
+                    {ownStatement && <span className="text-[11px] text-ink-soft">{FOUR_EYES}</span>}
                   </span>
                 )}
                 {s.status === "APPROVED" && <button className={rowAction("blue")} onClick={() => { setPayoutRef(""); setPaying(s); }}>Mark paid</button>}
                 {(s.status === "GENERATED" || s.status === "APPROVED") && <button className={rowAction("red")} onClick={() => setVoiding(s)}>Void</button>}
-                {s.status === "PAID" && <span className="text-[12px] text-gray-600">Ref {s.payoutReference} · {formatIST(s.paidAt)}</span>}
+                {s.status === "PAID" && <span className="text-[12px] text-ink-soft">Ref {s.payoutReference} · {formatIST(s.paidAt)}</span>}
               </div>
             );
           } },
@@ -149,8 +149,8 @@ function SettlementsBody() {
 
 function DetailRows({ id }: { id: string }) {
   const q = useCoreQuery(() => coreAdmin.settlement(id), [id]);
-  if (q.loading && !q.data) return <p className="text-[13px] text-gray-500">Loading per-shipment details…</p>;
-  return <div><p className="text-[12px] font-semibold text-gray-600 mb-1">Per-shipment details</p><JsonBlock value={q.data?.details || []} /></div>;
+  if (q.loading && !q.data) return <p className="text-[13px] text-ink-soft">Loading per-shipment details…</p>;
+  return <div><p className="text-[12px] font-semibold text-ink-soft mb-1">Per-shipment details</p><JsonBlock value={q.data?.details || []} /></div>;
 }
 
 /** P15 — operator settlements: generate, approve (four-eyes), mark paid, void, CSV export (finance, admin). */

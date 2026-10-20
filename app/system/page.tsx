@@ -26,15 +26,15 @@ function OutboxPanel() {
       <ErrorBanner error={q.error} onRetry={q.reload} />
       <DataTable caption="Outbox events" rowKey={(e) => e.id} data={q.data?.data || []} loading={q.loading && !q.data} emptyMessage="No events" onRowClick={(e) => setOpen(open === e.id ? null : e.id)}
         page={q.data?.meta?.page || page} totalPages={q.data?.meta?.totalPages || 1} onPageChange={setPage}
-        rowClassName={(e) => (e.status === "DEAD" ? "bg-red-50" : undefined)}
+        rowClassName={(e) => (e.status === "DEAD" ? "dz-row-danger" : undefined)}
         columns={[
           { key: "type", label: "Event", render: (e: OutboxEvent) => <span className="font-mono text-[12px]">{e.eventType}</span> },
-          { key: "agg", label: "Aggregate", render: (e: OutboxEvent) => <span className="text-[12px]">{e.aggregateType} <span className="font-mono text-gray-500">{shortId(e.aggregateId)}</span>{e.aggregateVersion !== null && e.aggregateVersion !== undefined ? ` v${e.aggregateVersion}` : ""}</span> },
+          { key: "agg", label: "Aggregate", render: (e: OutboxEvent) => <span className="text-[12px]">{e.aggregateType} <span className="font-mono text-ink-soft">{shortId(e.aggregateId)}</span>{e.aggregateVersion !== null && e.aggregateVersion !== undefined ? ` v${e.aggregateVersion}` : ""}</span> },
           { key: "time", label: "Occurred", render: (e: OutboxEvent) => <span className="text-[12px]">{formatIST(e.occurredAt)}</span> },
           { key: "status", label: "Status", render: (e: OutboxEvent) => (e.status ? <StatusBadge status={e.status} kind="generic" /> : "—") },
           { key: "attempts", label: "Attempts", render: (e: OutboxEvent) => e.attempts ?? 0 },
-          { key: "error", label: "Last error", render: (e: OutboxEvent) => <span className="text-[11px] text-red-700">{e.lastError || ""}</span> },
-          { key: "ops", label: "Operations", render: (e: OutboxEvent) => (e.status === "DEAD" ? <button className={rowAction("blue")} onClick={(ev) => { ev.stopPropagation(); setRetrying(e); }}><RefreshCw className="w-3.5 h-3.5" aria-hidden />Retry</button> : <span className="text-gray-400">—</span>) },
+          { key: "error", label: "Last error", render: (e: OutboxEvent) => <span className="text-[11px] text-danger">{e.lastError || ""}</span> },
+          { key: "ops", label: "Operations", render: (e: OutboxEvent) => (e.status === "DEAD" ? <button className={rowAction("blue")} onClick={(ev) => { ev.stopPropagation(); setRetrying(e); }}><RefreshCw className="w-3.5 h-3.5" aria-hidden />Retry</button> : <span className="text-ink-faint">—</span>) },
         ]} />
       {open && <div className="mt-3"><JsonBlock value={(q.data?.data || []).find((e) => e.id === open)?.payload} /></div>}
       <ConfirmDialog open={!!retrying} title="Retry dead event" busy={busy} confirmLabel="Re-queue" onClose={() => setRetrying(null)}
@@ -59,24 +59,24 @@ function SystemBody() {
         <Notice tone="danger" title="Alerts need attention">One or more health indicators are above zero. Investigate dead events, provider exceptions, webhook signature failures and over-age warehouse items.</Notice>
       )}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatsCard title="Outbox pending" value={n(h?.outboxPending)} icon={Inbox} iconColor="text-blue-600" iconBg="bg-blue-50" />
-        <StatsCard title="Oldest pending event" value={formatDurationSeconds(h?.outboxOldestPendingAgeSeconds)} icon={Hourglass} iconColor="text-amber-600" iconBg="bg-amber-50" />
+        <StatsCard title="Outbox pending" value={n(h?.outboxPending)} icon={Inbox} iconColor="text-info" iconBg="bg-info/10" />
+        <StatsCard title="Oldest pending event" value={formatDurationSeconds(h?.outboxOldestPendingAgeSeconds)} icon={Hourglass} iconColor="text-warning" iconBg="bg-warning/10" />
         <StatsCard title="Dead events" value={n(h?.outboxDead)} icon={XCircle} />
         <StatsCard title="Provider events in exception" value={n(h?.providerEventsInException)} icon={AlertTriangle} />
-        <StatsCard title="Provider events pending retry" value={n(h?.providerEventsPendingRetry)} icon={RefreshCw} iconColor="text-amber-600" iconBg="bg-amber-50" />
-        <StatsCard title="Oldest pending provider intent" value={formatDurationSeconds(h?.oldestPendingProviderIntentAgeSeconds)} icon={Hourglass} iconColor="text-amber-600" iconBg="bg-amber-50" />
-        <StatsCard title="Last webhook received" value={h?.lastWebhookReceivedAt ? formatIST(h.lastWebhookReceivedAt) : "Never"} icon={Webhook} iconColor="text-blue-600" iconBg="bg-blue-50" />
+        <StatsCard title="Provider events pending retry" value={n(h?.providerEventsPendingRetry)} icon={RefreshCw} iconColor="text-warning" iconBg="bg-warning/10" />
+        <StatsCard title="Oldest pending provider intent" value={formatDurationSeconds(h?.oldestPendingProviderIntentAgeSeconds)} icon={Hourglass} iconColor="text-warning" iconBg="bg-warning/10" />
+        <StatsCard title="Last webhook received" value={h?.lastWebhookReceivedAt ? formatIST(h.lastWebhookReceivedAt) : "Never"} icon={Webhook} iconColor="text-info" iconBg="bg-info/10" />
         <StatsCard title="Webhook signature failures (24 h)" value={n(h?.webhookSignatureFailures24h)} icon={ShieldAlert} />
         <StatsCard title="Unpaid holds past cutoff" value={n(h?.unpaidHoldsPastCutoff)} icon={Lock} />
         <StatsCard title="Warehouse items over max hold" value={n(h?.warehouseItemsOverMaxHold)} icon={Warehouse} />
         <StatsCard title="Open recon exceptions" value={n(h?.openReconExceptions)} icon={Landmark} />
-        <StatsCard title="Workers" value={h?.workers ? `${h.workers.filter((w) => !w.lastError).length}/${h.workers.length} healthy` : "—"} icon={Activity} iconColor="text-green-600" iconBg="bg-green-50" />
+        <StatsCard title="Workers" value={h?.workers ? `${h.workers.filter((w) => !w.lastError).length}/${h.workers.length} healthy` : "—"} icon={Activity} iconColor="text-success" iconBg="bg-success/10" />
       </div>
       <Card title="Workers">
         <DataTable caption="Background workers" rowKey={(w) => w.name || ""} data={h?.workers || []} loading={q.loading && !q.data} emptyMessage="No worker data" columns={[
           { key: "name", label: "Worker", render: (w: { name?: string }) => <span className="font-mono text-[12px]">{w.name}</span> },
           { key: "last", label: "Last run", render: (w: { lastRunAt?: string | null }) => <span className="text-[12px]">{formatIST(w.lastRunAt)}</span> },
-          { key: "error", label: "Status", render: (w: { lastError?: string | null }) => (w.lastError ? <span className="inline-flex items-center gap-1 text-[12px] text-red-700"><XCircle className="w-3.5 h-3.5" aria-hidden />{w.lastError}</span> : <StatusBadge status="SUCCESS" kind="generic" label="OK" />) },
+          { key: "error", label: "Status", render: (w: { lastError?: string | null }) => (w.lastError ? <span className="inline-flex items-center gap-1 text-[12px] text-danger"><XCircle className="w-3.5 h-3.5" aria-hidden />{w.lastError}</span> : <StatusBadge status="SUCCESS" kind="generic" label="OK" />) },
         ]} />
       </Card>
       {canOutbox ? <OutboxPanel /> : <Notice tone="info">Outbox events and retries are available to admins only.</Notice>}

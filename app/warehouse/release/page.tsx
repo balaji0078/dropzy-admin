@@ -27,16 +27,17 @@ function ReleaseEntryBody() {
         <ScanInput label="Scan the parcel QR or enter the DCN to release" onResolved={(s) => router.push(`/warehouse/release/${s.id}`)} />
       </Card>
       <ErrorBanner error={q.error} onRetry={q.reload} />
-      <h2 className="text-[14px] font-bold text-gray-900">Ready for pickup</h2>
+      <h2 className="text-[14px] font-bold text-ink">Ready for pickup</h2>
       <DataTable caption="Parcels ready for pickup" rowKey={(i) => i.shipmentId} data={q.data?.data || []} loading={q.loading && !q.data} emptyMessage="No parcels are ready for pickup"
+        rowClassName={(i) => (i.overMaxHold ? "dz-row-highlight" : undefined)}
         onRowClick={(i) => router.push(`/warehouse/release/${i.shipmentId}`)}
         columns={[
-          { key: "dcn", label: "DCN", render: (i: InventoryItem) => <Link href={`/warehouse/release/${i.shipmentId}`} className="font-mono text-xs text-blue-700 hover:underline">{i.dcn}</Link> },
+          { key: "dcn", label: "DCN", render: (i: InventoryItem) => <Link href={`/warehouse/release/${i.shipmentId}`} className="font-mono text-xs text-primary-light hover:text-gold hover:underline">{i.dcn}</Link> },
           { key: "state", label: "State", render: (i: InventoryItem) => (i.shipmentState ? <StatusBadge status={i.shipmentState} kind="shipmentState" /> : "—") },
           { key: "receiver", label: "Receiver", render: (i: InventoryItem) => `${i.receiver?.name || "—"} ${i.receiver?.phone || ""}` },
           { key: "bin", label: "Bin", render: (i: InventoryItem) => <span className="font-mono">{i.binCode}</span> },
           { key: "received", label: "Received", render: (i: InventoryItem) => formatIST(i.receivedAt) },
-          { key: "age", label: "Age", render: (i: InventoryItem) => <span className={i.overMaxHold ? "text-red-700 font-semibold" : ""}>{formatAgeHours(i.ageHours)}</span> },
+          { key: "age", label: "Age", render: (i: InventoryItem) => <span className={i.overMaxHold ? "text-danger font-semibold" : ""}>{formatAgeHours(i.ageHours)}</span> },
         ]} />
     </>
   );

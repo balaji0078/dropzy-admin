@@ -56,12 +56,12 @@ function LegacyCustomersPage() {
       label: "Customer",
       render: (c: any) => (
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 bg-[#D82C2C]/10 text-[#D82C2C] rounded-full flex items-center justify-center text-sm font-semibold">
+          <div className="w-9 h-9 bg-primary/15 text-primary-light rounded-full flex items-center justify-center text-sm font-semibold">
             {getInitials(c.first_name, c.last_name)}
           </div>
           <div>
-            <p className="font-medium text-gray-900">{c.first_name} {c.last_name}</p>
-            <p className="text-xs text-gray-500">{c.email}</p>
+            <p className="font-medium text-ink">{c.first_name} {c.last_name}</p>
+            <p className="text-xs text-ink-soft">{c.email}</p>
           </div>
         </div>
       ),
@@ -69,13 +69,13 @@ function LegacyCustomersPage() {
     {
       key: "phone",
       label: "Phone",
-      render: (c: any) => <span className="text-gray-600">{c.phone}</span>,
+      render: (c: any) => <span className="text-ink-soft">{c.phone}</span>,
     },
     {
       key: "city",
       label: "City",
       render: (c: any) => (
-        <span className="flex items-center gap-1 text-gray-600">
+        <span className="flex items-center gap-1 text-ink-soft">
           <MapPin className="w-3 h-3" /> {c.city}
         </span>
       ),
@@ -98,21 +98,21 @@ function LegacyCustomersPage() {
     {
       key: "created_at",
       label: "Joined",
-      render: (c: any) => <span className="text-gray-500 text-xs">{formatDate(c.created_at)}</span>,
+      render: (c: any) => <span className="text-ink-soft text-xs">{formatDate(c.created_at)}</span>,
     },
   ];
 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-[16px] font-bold text-gray-900">All Customers</h2>
-        <p className="text-[13px] text-gray-500">{sampleCustomers.length} registered customers</p>
+        <h2 className="text-[16px] font-bold text-ink">All Customers</h2>
+        <p className="text-[13px] text-ink-soft">{sampleCustomers.length} registered customers</p>
       </div>
 
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <FilterTabs tabs={statusTabs} activeTab={statusFilter} onChange={setStatusFilter} />
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-faint" />
           <input type="text" placeholder="Search name, email, city..." value={search} onChange={(e) => setSearch(e.target.value)} className="rb-input pl-10 pr-4 py-2 w-64" />
         </div>
       </div>
@@ -123,12 +123,12 @@ function LegacyCustomersPage() {
         {selected && (
           <div className="space-y-4">
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 bg-[#D82C2C]/10 text-[#D82C2C] rounded-full flex items-center justify-center text-xl font-bold">
+              <div className="w-14 h-14 bg-primary/15 text-primary-light rounded-full flex items-center justify-center text-xl font-bold">
                 {getInitials(selected.first_name, selected.last_name)}
               </div>
               <div>
                 <h3 className="text-lg font-semibold">{selected.first_name} {selected.last_name}</h3>
-                <div className="flex items-center gap-3 text-sm text-gray-500">
+                <div className="flex items-center gap-3 text-sm text-ink-soft">
                   <span className="flex items-center gap-1"><Mail className="w-3.5 h-3.5" /> {selected.email}</span>
                   <span className="flex items-center gap-1"><Phone className="w-3.5 h-3.5" /> {selected.phone}</span>
                 </div>
@@ -136,15 +136,15 @@ function LegacyCustomersPage() {
             </div>
 
             {/* Tabs */}
-            <div className="flex gap-1" style={{ borderBottom: "1px solid rgba(0,0,0,0.06)" }}>
+            <div className="flex gap-1" style={{ borderBottom: "1px solid var(--dz-line)" }}>
               {["orders", "payments", "reviews"].map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
                   className={`px-4 py-2 text-sm font-medium capitalize border-b-2 transition-colors ${
                     activeTab === tab
-                      ? "border-[#D82C2C] text-[#D82C2C]"
-                      : "border-transparent text-gray-500 hover:text-gray-700"
+                      ? "border-gold text-gold"
+                      : "border-transparent text-ink-soft hover:text-ink"
                   }`}
                 >
                   {tab === "orders" && <Package className="w-4 h-4 inline mr-1.5" />}
@@ -155,14 +155,14 @@ function LegacyCustomersPage() {
               ))}
             </div>
 
-            <div className="min-h-[120px] flex items-center justify-center text-sm text-gray-400">
+            <div className="min-h-[120px] flex items-center justify-center text-sm text-ink-faint">
               {activeTab === "orders" && `${selected.total_orders} orders — connect API to load details`}
               {activeTab === "payments" && `${formatCurrency(selected.total_spent)} total spent — connect API to load details`}
               {activeTab === "reviews" && "Reviews will load from GET /api/v1/reviews/users/:id"}
             </div>
 
-            <div className="pt-4" style={{ borderTop: "1px solid rgba(0,0,0,0.06)" }}>
-              <button className="px-4 py-2 bg-red-50 text-red-700 rounded-xl text-sm font-medium hover:bg-red-100">
+            <div className="pt-4" style={{ borderTop: "1px solid var(--dz-line)" }}>
+              <button className="px-4 py-2 bg-danger/10 text-danger rounded-xl text-sm font-medium hover:bg-danger/15">
                 Deactivate Account
               </button>
             </div>

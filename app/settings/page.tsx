@@ -172,21 +172,21 @@ export default function SettingsPage() {
         <div
           className={`p-4 rounded-lg border ${
             message.type === "success"
-              ? "bg-emerald-50 border-emerald-200"
-              : "bg-red-50 border-red-200"
+              ? "bg-success/10 border-success/35"
+              : "bg-danger/10 border-danger/35"
           }`}
         >
           <div className="flex items-center gap-3">
             {message.type === "success" ? (
-              <Check className="w-5 h-5 text-emerald-600" />
+              <Check className="w-5 h-5 text-success" />
             ) : (
-              <AlertCircle className="w-5 h-5 text-red-600" />
+              <AlertCircle className="w-5 h-5 text-danger" />
             )}
             <p
               className={`text-sm font-medium ${
                 message.type === "success"
-                  ? "text-emerald-800"
-                  : "text-red-800"
+                  ? "text-success"
+                  : "text-danger"
               }`}
             >
               {message.text}
@@ -202,8 +202,8 @@ export default function SettingsPage() {
             onClick={() => setActiveTab("general")}
             className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-colors ${
               activeTab === "general"
-                ? "bg-[#D82C2C] text-white"
-                : "text-gray-600 hover:bg-gray-50"
+                ? "bg-gold/10 text-gold shadow-[inset_0_-2px_0_#F5C451]"
+                : "text-ink-soft hover:bg-surface-alt hover:text-ink"
             }`}
           >
             <Settings className="w-4 h-4 inline mr-2" />
@@ -213,8 +213,8 @@ export default function SettingsPage() {
             onClick={() => setActiveTab("templates")}
             className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
               activeTab === "templates"
-                ? "bg-[#D82C2C] text-white"
-                : "text-gray-600 hover:bg-gray-50"
+                ? "bg-gold/10 text-gold shadow-[inset_0_-2px_0_#F5C451]"
+                : "text-ink-soft hover:bg-surface-alt hover:text-ink"
             }`}
           >
             <Bell className="w-4 h-4 inline mr-2" />
@@ -224,8 +224,8 @@ export default function SettingsPage() {
             onClick={() => setActiveTab("pricing")}
             className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
               activeTab === "pricing"
-                ? "bg-[#D82C2C] text-white"
-                : "text-gray-600 hover:bg-gray-50"
+                ? "bg-gold/10 text-gold shadow-[inset_0_-2px_0_#F5C451]"
+                : "text-ink-soft hover:bg-surface-alt hover:text-ink"
             }`}
           >
             <DollarSign className="w-4 h-4 inline mr-2" />
@@ -235,8 +235,8 @@ export default function SettingsPage() {
             onClick={() => setActiveTab("integrations")}
             className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
               activeTab === "integrations"
-                ? "bg-[#D82C2C] text-white"
-                : "text-gray-600 hover:bg-gray-50"
+                ? "bg-gold/10 text-gold shadow-[inset_0_-2px_0_#F5C451]"
+                : "text-ink-soft hover:bg-surface-alt hover:text-ink"
             }`}
           >
             <Zap className="w-4 h-4 inline mr-2" />
@@ -249,7 +249,7 @@ export default function SettingsPage() {
       {activeTab === "general" && (
         <div className="rb-card p-8">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-semibold text-gray-900">General Settings</h2>
+            <h2 className="text-lg font-semibold text-ink">General Settings</h2>
             {!editingGeneral && (
               <button
                 onClick={() => setEditingGeneral(true)}
@@ -264,7 +264,7 @@ export default function SettingsPage() {
           <div className="space-y-6">
             {/* Company Name */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-ink mb-2">
                 Company Name
               </label>
               {editingGeneral ? (
@@ -275,7 +275,7 @@ export default function SettingsPage() {
                   className="rb-input w-full px-4 py-2 rounded-xl"
                 />
               ) : (
-                <p className="text-gray-900 font-medium">
+                <p className="text-ink font-medium">
                   {generalSettings.company_name}
                 </p>
               )}
@@ -283,7 +283,7 @@ export default function SettingsPage() {
 
             {/* Contact Email */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-ink mb-2">
                 Contact Email
               </label>
               {editingGeneral ? (
@@ -294,7 +294,7 @@ export default function SettingsPage() {
                   className="rb-input w-full px-4 py-2 rounded-xl"
                 />
               ) : (
-                <p className="text-gray-900 font-medium">
+                <p className="text-ink font-medium">
                   {generalSettings.contact_email}
                 </p>
               )}
@@ -302,7 +302,7 @@ export default function SettingsPage() {
 
             {/* Contact Phone */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-ink mb-2">
                 Contact Phone
               </label>
               {editingGeneral ? (
@@ -313,7 +313,7 @@ export default function SettingsPage() {
                   className="rb-input w-full px-4 py-2 rounded-xl"
                 />
               ) : (
-                <p className="text-gray-900 font-medium">
+                <p className="text-ink font-medium">
                   {generalSettings.contact_phone}
                 </p>
               )}
@@ -321,7 +321,7 @@ export default function SettingsPage() {
 
             {/* Timezone */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-ink mb-2">
                 Timezone
               </label>
               {editingGeneral ? (
@@ -334,7 +334,7 @@ export default function SettingsPage() {
                   <option value="UTC">UTC</option>
                 </select>
               ) : (
-                <p className="text-gray-900 font-medium">
+                <p className="text-ink font-medium">
                   {generalSettings.timezone}
                 </p>
               )}
@@ -342,7 +342,7 @@ export default function SettingsPage() {
 
             {/* Currency */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-ink mb-2">
                 Currency
               </label>
               {editingGeneral ? (
@@ -355,7 +355,7 @@ export default function SettingsPage() {
                   <option value="USD">USD</option>
                 </select>
               ) : (
-                <p className="text-gray-900 font-medium">
+                <p className="text-ink font-medium">
                   {generalSettings.currency}
                 </p>
               )}
@@ -363,7 +363,7 @@ export default function SettingsPage() {
 
             {/* Action Buttons */}
             {editingGeneral && (
-              <div className="flex gap-3 pt-4" style={{ borderTop: "1px solid rgba(0,0,0,0.06)" }}>
+              <div className="flex gap-3 pt-4" style={{ borderTop: "1px solid var(--dz-line)" }}>
                 <button
                   onClick={saveGeneralSettings}
                   className="rb-btn rb-btn-primary px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2"
@@ -395,7 +395,7 @@ export default function SettingsPage() {
               {editingTemplate === template.id ? (
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-ink mb-2">
                       Template Name
                     </label>
                     <input
@@ -409,7 +409,7 @@ export default function SettingsPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-ink mb-2">
                       Channel
                     </label>
                     <select
@@ -426,7 +426,7 @@ export default function SettingsPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-ink mb-2">
                       Template Text
                     </label>
                     <textarea
@@ -437,12 +437,12 @@ export default function SettingsPage() {
                       className="rb-input w-full px-4 py-2 rounded-xl"
                       rows={4}
                     />
-                    <p className="text-xs text-gray-500 mt-2">
+                    <p className="text-xs text-ink-soft mt-2">
                       {"Available variables: {{customer_name}}, {{tracking_id}}, {{status}}, {{location}}, {{eta}}, {{driver_name}}, {{hub_location}}, {{closing_time}}"}
                     </p>
                   </div>
 
-                  <div className="flex gap-3 pt-4" style={{ borderTop: "1px solid rgba(0,0,0,0.06)" }}>
+                  <div className="flex gap-3 pt-4" style={{ borderTop: "1px solid var(--dz-line)" }}>
                     <button
                       onClick={saveTemplate}
                       className="rb-btn rb-btn-primary px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2"
@@ -463,10 +463,10 @@ export default function SettingsPage() {
                 <div>
                   <div className="flex items-start justify-between mb-4">
                     <div>
-                      <h3 className="text-base font-semibold text-gray-900">
+                      <h3 className="text-base font-semibold text-ink">
                         {template.name}
                       </h3>
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="text-xs text-ink-soft mt-1">
                         Channel:{" "}
                         <span className="font-medium">
                           {template.channel === "both"
@@ -483,7 +483,7 @@ export default function SettingsPage() {
                       Edit
                     </button>
                   </div>
-                  <p className="text-sm text-gray-700 leading-relaxed rb-card-flat p-3 rounded-lg">
+                  <p className="text-sm text-ink leading-relaxed rb-card-flat p-3 rounded-lg">
                     {template.text}
                   </p>
                 </div>
@@ -497,7 +497,7 @@ export default function SettingsPage() {
       {activeTab === "pricing" && (
         <div className="rb-card p-8">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-semibold text-gray-900">Pricing Settings</h2>
+            <h2 className="text-lg font-semibold text-ink">Pricing Settings</h2>
             {!editingPricing && (
               <button
                 onClick={() => setEditingPricing(true)}
@@ -512,7 +512,7 @@ export default function SettingsPage() {
           <div className="space-y-6">
             {/* Base Rate */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-ink mb-2">
                 Base Rate (INR)
               </label>
               {editingPricing ? (
@@ -523,16 +523,16 @@ export default function SettingsPage() {
                   className="rb-input w-full px-4 py-2 rounded-xl"
                 />
               ) : (
-                <p className="text-gray-900 font-medium">
+                <p className="text-ink font-medium">
                   ₹{pricingSettings.base_rate}
                 </p>
               )}
-              <p className="text-xs text-gray-500 mt-1">Base charge per delivery</p>
+              <p className="text-xs text-ink-soft mt-1">Base charge per delivery</p>
             </div>
 
             {/* Per KM Rate */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-ink mb-2">
                 Per KM Rate (INR)
               </label>
               {editingPricing ? (
@@ -543,16 +543,16 @@ export default function SettingsPage() {
                   className="rb-input w-full px-4 py-2 rounded-xl"
                 />
               ) : (
-                <p className="text-gray-900 font-medium">
+                <p className="text-ink font-medium">
                   ₹{pricingSettings.per_km_rate} /km
                 </p>
               )}
-              <p className="text-xs text-gray-500 mt-1">Charge per kilometer</p>
+              <p className="text-xs text-ink-soft mt-1">Charge per kilometer</p>
             </div>
 
             {/* GST Percentage */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-ink mb-2">
                 GST Percentage (%)
               </label>
               {editingPricing ? (
@@ -563,16 +563,16 @@ export default function SettingsPage() {
                   className="rb-input w-full px-4 py-2 rounded-xl"
                 />
               ) : (
-                <p className="text-gray-900 font-medium">
+                <p className="text-ink font-medium">
                   {pricingSettings.gst_percentage}%
                 </p>
               )}
-              <p className="text-xs text-gray-500 mt-1">Goods & Services Tax</p>
+              <p className="text-xs text-ink-soft mt-1">Goods & Services Tax</p>
             </div>
 
             {/* Action Buttons */}
             {editingPricing && (
-              <div className="flex gap-3 pt-4" style={{ borderTop: "1px solid rgba(0,0,0,0.06)" }}>
+              <div className="flex gap-3 pt-4" style={{ borderTop: "1px solid var(--dz-line)" }}>
                 <button
                   onClick={savePricingSettings}
                   className="rb-btn rb-btn-primary px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2"
@@ -605,19 +605,19 @@ export default function SettingsPage() {
                 <div
                   className={`w-3 h-3 rounded-full ${
                     integration.status === "connected"
-                      ? "bg-emerald-500"
-                      : "bg-gray-300"
+                      ? "bg-success"
+                      : "bg-line-strong"
                   }`}
                 />
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-900">
+                  <h3 className="text-sm font-semibold text-ink">
                     {integration.name}
                   </h3>
                   <p
                     className={`text-xs mt-1 ${
                       integration.status === "connected"
-                        ? "text-emerald-600"
-                        : "text-gray-500"
+                        ? "text-success"
+                        : "text-ink-soft"
                     }`}
                   >
                     {integration.status === "connected"
@@ -630,11 +630,11 @@ export default function SettingsPage() {
               <button
                 onClick={() => toggleIntegration(integration.name)}
                 className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors ${
-                  integration.enabled ? "bg-emerald-500" : "bg-gray-300"
+                  integration.enabled ? "bg-success" : "bg-line-strong"
                 }`}
               >
                 <span
-                  className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${
+                  className={`inline-block h-6 w-6 transform rounded-full bg-surface transition-transform ${
                     integration.enabled ? "translate-x-7" : "translate-x-1"
                   }`}
                 />

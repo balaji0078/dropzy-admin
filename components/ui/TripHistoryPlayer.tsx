@@ -15,9 +15,9 @@ interface TripHistoryPlayerProps {
 }
 
 const statusColors: Record<string, string> = {
-  completed: "#22c55e",
-  delayed: "#ef4444",
-  in_progress: "#3b82f6",
+  completed: "#34D399",
+  delayed: "#F87171",
+  in_progress: "#8B5CF6",
 };
 
 function formatDateTime(iso: string): string {
@@ -93,7 +93,7 @@ export default function TripHistoryPlayer({ trip, onClose }: TripHistoryPlayerPr
     if (points.length > 1) {
       const routeCoords = points.map((p) => [p.lat, p.lng] as [number, number]);
       routeLineRef.current = L.polyline(routeCoords, {
-        color: "#94a3b8",
+        color: "#9E99AC",
         weight: 3,
         dashArray: "8, 8",
         opacity: 0.6,
@@ -101,7 +101,7 @@ export default function TripHistoryPlayer({ trip, onClose }: TripHistoryPlayerPr
 
       // Progress line (blue solid)
       progressLineRef.current = L.polyline([], {
-        color: "#3b82f6",
+        color: "#8B5CF6",
         weight: 4,
         opacity: 0.9,
       }).addTo(map);
@@ -113,7 +113,7 @@ export default function TripHistoryPlayer({ trip, onClose }: TripHistoryPlayerPr
     // Add start marker
     const startIcon = L.divIcon({
       className: "trip-stop-marker",
-      html: `<div style="width:24px;height:24px;border-radius:50%;background:#22c55e;border:3px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;">
+      html: `<div style="width:24px;height:24px;border-radius:50%;background:#34D399;border:3px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;">
         <svg width="10" height="10" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg>
       </div>`,
       iconSize: [24, 24],
@@ -126,7 +126,7 @@ export default function TripHistoryPlayer({ trip, onClose }: TripHistoryPlayerPr
     // Add end marker
     const endIcon = L.divIcon({
       className: "trip-stop-marker",
-      html: `<div style="width:24px;height:24px;border-radius:50%;background:#ef4444;border:3px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;">
+      html: `<div style="width:24px;height:24px;border-radius:50%;background:#F87171;border:3px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;">
         <svg width="10" height="10" viewBox="0 0 24 24" fill="white"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
       </div>`,
       iconSize: [24, 24],
@@ -141,8 +141,8 @@ export default function TripHistoryPlayer({ trip, onClose }: TripHistoryPlayerPr
     trip.stops.forEach((stop, idx) => {
       const stopIcon = L.divIcon({
         className: "trip-stop-marker",
-        html: `<div style="width:20px;height:20px;border-radius:50%;background:#f59e0b;border:2px solid white;box-shadow:0 2px 4px rgba(0,0,0,0.2);display:flex;align-items:center;justify-content:center;">
-          <span style="font-size:9px;font-weight:700;color:white;">${idx + 1}</span>
+        html: `<div style="width:20px;height:20px;border-radius:50%;background:#FBBF24;border:2px solid white;box-shadow:0 2px 4px rgba(0,0,0,0.2);display:flex;align-items:center;justify-content:center;">
+          <span style="font-size:9px;font-weight:700;color:#0E0C15;">${idx + 1}</span>
         </div>`,
         iconSize: [20, 20],
         iconAnchor: [10, 10],
@@ -151,7 +151,7 @@ export default function TripHistoryPlayer({ trip, onClose }: TripHistoryPlayerPr
         .bindPopup(`
           <div style="font-family:system-ui;min-width:180px;">
             <strong>${stop.city}</strong><br/>
-            <span style="font-size:12px;color:#6b7280;">
+            <span style="font-size:12px;color:#9E99AC;">
               Arrived: ${formatTime12(stop.arrivalTime)}<br/>
               Departed: ${formatTime12(stop.departureTime)}<br/>
               Stopped: ${stop.duration} min<br/>
@@ -166,7 +166,7 @@ export default function TripHistoryPlayer({ trip, onClose }: TripHistoryPlayerPr
     // Create bus marker
     const busIcon = L.divIcon({
       className: "trip-bus-marker",
-      html: `<div style="width:30px;height:30px;border-radius:50%;background:#3b82f6;border:3px solid white;box-shadow:0 3px 10px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;">
+      html: `<div style="width:30px;height:30px;border-radius:50%;background:#8B5CF6;border:3px solid white;box-shadow:0 3px 10px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
           <path d="M4 16c0 .88.39 1.67 1 2.22V20c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h8v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1.78c.61-.55 1-1.34 1-2.22V6c0-3.5-3.58-4-8-4S4 2.5 4 6v10zm3.5 1c-.83 0-1.5-.67-1.5-1.5S6.67 14 7.5 14s1.5.67 1.5 1.5S8.33 17 7.5 17zm9 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm1.5-6H6V6h12v5z"/>
         </svg>
@@ -253,17 +253,17 @@ export default function TripHistoryPlayer({ trip, onClose }: TripHistoryPlayerPr
   const maxBarSpeed = Math.max(...speedBars.map((b) => b.speed), 1);
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+    <div className="bg-surface rounded-xl border border-line overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gray-50">
+      <div className="flex items-center justify-between p-4 border-b border-line bg-surface-alt">
         <div className="flex items-center gap-3">
           <div className={`w-3 h-3 rounded-full`} style={{ backgroundColor: statusColors[trip.status] }} />
           <div>
-            <h3 className="font-semibold text-gray-900">{trip.route}</h3>
-            <p className="text-xs text-gray-500">{trip.tripId} &middot; {trip.busNumber} &middot; {trip.driverName}</p>
+            <h3 className="font-semibold text-ink">{trip.route}</h3>
+            <p className="text-xs text-ink-soft">{trip.tripId} &middot; {trip.busNumber} &middot; {trip.driverName}</p>
           </div>
         </div>
-        <button onClick={onClose} className="text-sm text-gray-500 hover:text-gray-700 px-3 py-1 rounded hover:bg-gray-100">
+        <button onClick={onClose} className="text-sm text-ink-soft hover:text-ink px-3 py-1 rounded hover:bg-surface-raised">
           Close
         </button>
       </div>
@@ -272,7 +272,7 @@ export default function TripHistoryPlayer({ trip, onClose }: TripHistoryPlayerPr
       <div ref={mapContainerRef} className="w-full h-[400px]" />
 
       {/* Playback Controls */}
-      <div className="p-4 border-t border-gray-200 bg-gray-50">
+      <div className="p-4 border-t border-line bg-surface-alt">
         {/* Timeline slider */}
         <div className="mb-3">
           <input
@@ -281,11 +281,11 @@ export default function TripHistoryPlayer({ trip, onClose }: TripHistoryPlayerPr
             max={totalPoints - 1}
             value={currentIndex}
             onChange={handleSliderChange}
-            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-brand-600"
+            className="w-full h-2 bg-line rounded-lg appearance-none cursor-pointer accent-brand-600"
           />
-          <div className="flex justify-between text-xs text-gray-500 mt-1">
+          <div className="flex justify-between text-xs text-ink-soft mt-1">
             <span>{formatTime12(trip.startTime)}</span>
-            <span className="font-medium text-gray-700">{currentPoint ? formatTime12(currentPoint.timestamp) : "--"}</span>
+            <span className="font-medium text-ink">{currentPoint ? formatTime12(currentPoint.timestamp) : "--"}</span>
             <span>{trip.endTime ? formatTime12(trip.endTime) : "In Progress"}</span>
           </div>
         </div>
@@ -293,12 +293,12 @@ export default function TripHistoryPlayer({ trip, onClose }: TripHistoryPlayerPr
         {/* Controls row */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <button onClick={handleReset} className="p-2 rounded-lg hover:bg-gray-200 text-gray-600" title="Reset">
+            <button onClick={handleReset} className="p-2 rounded-lg hover:bg-line text-ink-soft" title="Reset">
               <RotateCcw className="w-4 h-4" />
             </button>
             <button
               onClick={() => setCurrentIndex(Math.max(0, currentIndex - 10))}
-              className="p-2 rounded-lg hover:bg-gray-200 text-gray-600" title="Back 10"
+              className="p-2 rounded-lg hover:bg-line text-ink-soft" title="Back 10"
             >
               <SkipBack className="w-4 h-4" />
             </button>
@@ -310,13 +310,13 @@ export default function TripHistoryPlayer({ trip, onClose }: TripHistoryPlayerPr
             </button>
             <button
               onClick={() => setCurrentIndex(Math.min(totalPoints - 1, currentIndex + 10))}
-              className="p-2 rounded-lg hover:bg-gray-200 text-gray-600" title="Forward 10"
+              className="p-2 rounded-lg hover:bg-line text-ink-soft" title="Forward 10"
             >
               <SkipForward className="w-4 h-4" />
             </button>
             <button
               onClick={cycleSpeed}
-              className="px-3 py-1.5 rounded-lg bg-gray-200 text-gray-700 text-sm font-medium hover:bg-gray-300"
+              className="px-3 py-1.5 rounded-lg bg-line text-ink text-sm font-medium hover:bg-line-strong"
             >
               {playbackSpeed}x
             </button>
@@ -324,11 +324,11 @@ export default function TripHistoryPlayer({ trip, onClose }: TripHistoryPlayerPr
 
           {/* Current stats */}
           <div className="flex items-center gap-4 text-sm">
-            <div className="flex items-center gap-1.5 text-gray-600">
+            <div className="flex items-center gap-1.5 text-ink-soft">
               <Gauge className="w-3.5 h-3.5" />
               <span className="font-medium">{currentPoint ? Math.round(currentPoint.speed) : 0} km/h</span>
             </div>
-            <div className="flex items-center gap-1.5 text-gray-600">
+            <div className="flex items-center gap-1.5 text-ink-soft">
               <Clock className="w-3.5 h-3.5" />
               <span className="font-medium">{Math.round(progress)}%</span>
             </div>
@@ -337,8 +337,8 @@ export default function TripHistoryPlayer({ trip, onClose }: TripHistoryPlayerPr
       </div>
 
       {/* Speed Graph */}
-      <div className="px-4 pb-3 bg-gray-50">
-        <p className="text-xs text-gray-500 mb-1">Speed Profile</p>
+      <div className="px-4 pb-3 bg-surface-alt">
+        <p className="text-xs text-ink-soft mb-1">Speed Profile</p>
         <div className="flex items-end gap-[1px] h-12">
           {speedBars.map((bar, i) => (
             <div
@@ -348,10 +348,10 @@ export default function TripHistoryPlayer({ trip, onClose }: TripHistoryPlayerPr
                 height: `${(bar.speed / maxBarSpeed) * 100}%`,
                 minHeight: bar.speed > 0 ? "2px" : "1px",
                 backgroundColor: bar.isCurrent
-                  ? "#3b82f6"
+                  ? "#8B5CF6"
                   : bar.speed === 0
-                  ? "#fbbf24"
-                  : "#86efac",
+                  ? "#FBBF24"
+                  : "#34D399",
               }}
             />
           ))}
@@ -359,28 +359,28 @@ export default function TripHistoryPlayer({ trip, onClose }: TripHistoryPlayerPr
       </div>
 
       {/* Trip Info Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 p-4 border-t border-gray-200">
-        <div className="bg-green-50 rounded-lg p-3">
-          <p className="text-xs text-gray-500 mb-1">Start</p>
-          <p className="font-semibold text-sm text-gray-900">{trip.fromCity}</p>
-          <p className="text-xs text-gray-600">{formatDateTime(trip.startTime)}</p>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 p-4 border-t border-line">
+        <div className="bg-success/10 rounded-lg p-3">
+          <p className="text-xs text-ink-soft mb-1">Start</p>
+          <p className="font-semibold text-sm text-ink">{trip.fromCity}</p>
+          <p className="text-xs text-ink-soft">{formatDateTime(trip.startTime)}</p>
         </div>
-        <div className="bg-red-50 rounded-lg p-3">
-          <p className="text-xs text-gray-500 mb-1">End</p>
-          <p className="font-semibold text-sm text-gray-900">{trip.toCity}</p>
-          <p className="text-xs text-gray-600">{trip.endTime ? formatDateTime(trip.endTime) : "In Progress"}</p>
+        <div className="bg-danger/10 rounded-lg p-3">
+          <p className="text-xs text-ink-soft mb-1">End</p>
+          <p className="font-semibold text-sm text-ink">{trip.toCity}</p>
+          <p className="text-xs text-ink-soft">{trip.endTime ? formatDateTime(trip.endTime) : "In Progress"}</p>
         </div>
-        <div className="bg-blue-50 rounded-lg p-3">
-          <p className="text-xs text-gray-500 mb-1">ETA vs Actual</p>
-          <p className="font-semibold text-sm text-gray-900">{formatTime12(trip.etaOriginal)}</p>
-          <p className={`text-xs ${trip.status === "delayed" ? "text-red-600" : "text-green-600"}`}>
+        <div className="bg-info/10 rounded-lg p-3">
+          <p className="text-xs text-ink-soft mb-1">ETA vs Actual</p>
+          <p className="font-semibold text-sm text-ink">{formatTime12(trip.etaOriginal)}</p>
+          <p className={`text-xs ${trip.status === "delayed" ? "text-danger" : "text-success"}`}>
             {trip.endTime ? `Actual: ${formatTime12(trip.endTime)}` : "In Progress"}
           </p>
         </div>
-        <div className="bg-purple-50 rounded-lg p-3">
-          <p className="text-xs text-gray-500 mb-1">Trip Stats</p>
-          <p className="font-semibold text-sm text-gray-900">{trip.totalDistance} km</p>
-          <p className="text-xs text-gray-600">
+        <div className="bg-purple-400/10 rounded-lg p-3">
+          <p className="text-xs text-ink-soft mb-1">Trip Stats</p>
+          <p className="font-semibold text-sm text-ink">{trip.totalDistance} km</p>
+          <p className="text-xs text-ink-soft">
             Avg {trip.avgSpeed} km/h &middot; Max {trip.maxSpeed} km/h
           </p>
         </div>
@@ -388,23 +388,23 @@ export default function TripHistoryPlayer({ trip, onClose }: TripHistoryPlayerPr
 
       {/* Stops Timeline */}
       {trip.stops.length > 0 && (
-        <div className="p-4 border-t border-gray-200">
-          <h4 className="font-semibold text-sm text-gray-900 mb-3">Stops ({trip.stops.length})</h4>
+        <div className="p-4 border-t border-line">
+          <h4 className="font-semibold text-sm text-ink mb-3">Stops ({trip.stops.length})</h4>
           <div className="space-y-2">
             {trip.stops.map((stop, idx) => (
               <div key={idx} className="flex items-start gap-3 text-sm">
                 <div className="flex flex-col items-center">
-                  <div className="w-6 h-6 rounded-full bg-amber-100 border-2 border-amber-400 flex items-center justify-center text-xs font-bold text-amber-700">
+                  <div className="w-6 h-6 rounded-full bg-warning/15 border-2 border-warning/60 flex items-center justify-center text-xs font-bold text-warning">
                     {idx + 1}
                   </div>
-                  {idx < trip.stops.length - 1 && <div className="w-0.5 h-6 bg-gray-200 mt-1" />}
+                  {idx < trip.stops.length - 1 && <div className="w-0.5 h-6 bg-line mt-1" />}
                 </div>
                 <div className="flex-1">
-                  <p className="font-medium text-gray-900">{stop.city}</p>
-                  <p className="text-xs text-gray-500">
+                  <p className="font-medium text-ink">{stop.city}</p>
+                  <p className="text-xs text-ink-soft">
                     {formatTime12(stop.arrivalTime)} → {formatTime12(stop.departureTime)} &middot; {stop.duration} min stop
                   </p>
-                  <p className="text-xs text-gray-400">
+                  <p className="text-xs text-ink-faint">
                     +{stop.parcelsLoaded} loaded, -{stop.parcelsUnloaded} unloaded
                   </p>
                 </div>
@@ -415,7 +415,7 @@ export default function TripHistoryPlayer({ trip, onClose }: TripHistoryPlayerPr
       )}
 
       {/* Duration footer */}
-      <div className="flex items-center justify-between p-3 bg-gray-100 border-t border-gray-200 text-xs text-gray-500">
+      <div className="flex items-center justify-between p-3 bg-surface-alt border-t border-line text-xs text-ink-soft">
         <span>Total Duration: {formatDuration(trip.startTime, trip.endTime || trip.etaOriginal)}</span>
         <span>{trip.totalParcels} parcels &middot; {trip.stops.length} stops</span>
       </div>

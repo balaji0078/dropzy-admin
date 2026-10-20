@@ -161,28 +161,28 @@ function DisputeBody({ id }: { id: string }) {
           <div className="xl:col-span-2 space-y-4">
             <Card title={<span className="font-mono">{d.caseNumber}</span>} actions={d.status && <StatusBadge status={d.status} kind="generic" />}>
               <KV cols={3} items={[
-                ["Shipment", d.shipmentId ? <Link key="s" className="font-mono text-blue-700 hover:underline" href={`/shipments/${d.shipmentId}`}>{d.dcn}</Link> : d.dcn],
+                ["Shipment", d.shipmentId ? <Link key="s" className="font-mono text-primary-light hover:text-gold hover:underline" href={`/shipments/${d.shipmentId}`}>{d.dcn}</Link> : d.dcn],
                 ["Reason", humanize(d.reasonCode)],
                 ["Opened", formatIST(d.createdAt)],
                 ["Hold placed", d.holdPlaced ? "Yes — DISPUTE hold" : "No (paid quote: refund-only review)"],
                 ["Assigned to", d.assignedTo ? (d.assignedTo === me?.id ? "Me" : shortId(d.assignedTo)) : "Unassigned"],
-                ["Linked ticket", d.supportTicketId ? <Link key="t" className="text-blue-700 hover:underline" href={`/support?ticket=${d.supportTicketId}`}>Open ticket</Link> : "—"],
+                ["Linked ticket", d.supportTicketId ? <Link key="t" className="text-primary-light hover:text-gold hover:underline" href={`/support?ticket=${d.supportTicketId}`}>Open ticket</Link> : "—"],
               ]} />
-              <p className="mt-3 text-[13px] text-gray-800 whitespace-pre-wrap">{d.description}</p>
+              <p className="mt-3 text-[13px] text-ink whitespace-pre-wrap">{d.description}</p>
               {d.status === "RESOLVED" && (
-                <div className="mt-3 rounded-lg bg-gray-50 p-3 text-[13px]">
+                <div className="mt-3 rounded-lg bg-surface-alt p-3 text-[13px]">
                   <p><strong>Outcome:</strong> {humanize(d.outcome)} · {formatIST(d.resolvedAt)}</p>
-                  {d.resolutionReason && <p className="text-gray-700 mt-1">{d.resolutionReason}</p>}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2"><div><p className="text-[11px] text-gray-500">Before</p><JsonBlock value={d.beforeValues} /></div><div><p className="text-[11px] text-gray-500">After</p><JsonBlock value={d.afterValues} /></div></div>
+                  {d.resolutionReason && <p className="text-ink mt-1">{d.resolutionReason}</p>}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2"><div><p className="text-[11px] text-ink-soft">Before</p><JsonBlock value={d.beforeValues} /></div><div><p className="text-[11px] text-ink-soft">After</p><JsonBlock value={d.afterValues} /></div></div>
                 </div>
               )}
             </Card>
             <Card title="Preserved snapshot">
               {breakdown ? <SurchargeBreakdownView breakdown={breakdown} quote={quote ? { version: quote.version, status: quote.status, taxRateBps: quote.taxRateBps } : null} title="Disputed charge (as quoted)" /> : <JsonBlock value={snap} />}
-              {quote && <p className="mt-2 text-[12px] text-gray-600">Quote v{quote.version} is now <StatusBadge status={quote.status} kind="generic" />{currentQuote && currentQuote.id !== quote.id ? ` · current quote v${currentQuote.version} (${formatPaise(currentQuote.totalPaise)})` : ""}</p>}
+              {quote && <p className="mt-2 text-[12px] text-ink-soft">Quote v{quote.version} is now <StatusBadge status={quote.status} kind="generic" />{currentQuote && currentQuote.id !== quote.id ? ` · current quote v${currentQuote.version} (${formatPaise(currentQuote.totalPaise)})` : ""}</p>}
             </Card>
             <Card title="Evidence">
-              {(d.evidenceIds || []).length === 0 ? <p className="text-[13px] text-gray-500">No evidence attached.</p> : (
+              {(d.evidenceIds || []).length === 0 ? <p className="text-[13px] text-ink-soft">No evidence attached.</p> : (
                 <div className="flex flex-wrap gap-3">{d.evidenceIds!.map((e) => <EvidenceThumb key={e} id={e} size={96} />)}</div>
               )}
             </Card>
@@ -213,7 +213,7 @@ function DisputeBody({ id }: { id: string }) {
                         <div className="w-24"><SelectField label="Unit" value={unit} onChange={(v) => setUnit(v as "g" | "kg")} options={[{ value: "kg", label: "kg" }, { value: "g", label: "g" }]} /></div>
                       </div>
                       <div className="space-y-1">
-                        <p className="text-[12px] font-semibold text-gray-600">Evidence (at least one) *</p>
+                        <p className="text-[12px] font-semibold text-ink-soft">Evidence (at least one) *</p>
                         {(d.evidenceIds || []).map((e) => (
                           <CheckboxField key={e} label={<span className="font-mono text-[12px]">Attach {shortId(e)}</span>} checked={chosenEvidence.includes(e)} onChange={(v) => setChosenEvidence((x) => (v ? [...x, e] : x.filter((y) => y !== e)))} />
                         ))}
@@ -228,10 +228,10 @@ function DisputeBody({ id }: { id: string }) {
                   <TextAreaField label="Reason (min 10 characters)" value={reason} onChange={setReason} required maxLength={1000} hint={`${reason.trim().length}/1000`}
                     error={reason && reason.trim().length < 10 ? "Enter at least 10 characters." : undefined} />
                   {outcome && (
-                    <div className="rounded-lg border border-gray-200 p-3 text-[13px]" aria-live="polite">
-                      <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 mb-1">Before → after</p>
+                    <div className="rounded-lg border border-line p-3 text-[13px]" aria-live="polite">
+                      <p className="text-[11px] font-semibold uppercase tracking-wider text-ink-soft mb-1">Before → after</p>
                       <p className="flex flex-wrap items-center gap-2"><span>{formatPaise(beforeTotal)}</span><ArrowRight className="w-3.5 h-3.5" aria-hidden /><span className="font-semibold">{afterText}</span></p>
-                      {outcome === "REWEIGH_ADJUSTED" && <p className="text-[11px] text-gray-500 mt-1">Server preview with tariff v{breakdown?.tariffVersion ?? "—"}. For a paid quote only the difference is billed or refunded.</p>}
+                      {outcome === "REWEIGH_ADJUSTED" && <p className="text-[11px] text-ink-soft mt-1">Server preview with tariff v{breakdown?.tariffVersion ?? "—"}. For a paid quote only the difference is billed or refunded.</p>}
                     </div>
                   )}
                   <div className="flex justify-end"><button type="submit" className={btnPrimary} disabled={!valid || busy}>Resolve dispute</button></div>

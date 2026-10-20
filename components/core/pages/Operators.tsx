@@ -74,12 +74,12 @@ function OperatorsBody() {
       {!canWrite && <Notice tone="info">Read-only: only an admin can change operators.</Notice>}
       <ErrorBanner error={q.error} onRetry={q.reload} />
       <DataTable caption="Operators" rowKey={(o) => o.id} data={q.data || []} loading={q.loading && !q.data} emptyMessage="No operators" columns={[
-        { key: "name", label: "Operator", render: (o: Operator) => <div><p className="font-medium text-gray-900">{o.displayName}</p><p className="text-xs text-gray-500">{o.legalName} · {o.code}</p></div> },
+        { key: "name", label: "Operator", render: (o: Operator) => <div><p className="font-medium text-ink">{o.displayName}</p><p className="text-xs text-ink-soft">{o.legalName} · {o.code}</p></div> },
         { key: "status", label: "Status", render: (o: Operator) => (o.status ? <StatusBadge status={o.status} kind="generic" /> : "—") },
         { key: "gst", label: "GST", render: (o: Operator) => <span className="font-mono text-[12px]">{o.gstNumber || "—"}</span> },
         { key: "phone", label: "Contact", render: (o: Operator) => o.contactPhone || "—" },
         { key: "settlement", label: "Settlement", render: (o: Operator) => <span className="text-[12px]">Commission {formatBps(o.settlementConfig?.commissionBps)} · surcharge share {formatBps(o.settlementConfig?.surchargeOperatorShareBps)} · {o.settlementConfig?.payoutCycle?.toLowerCase() || "—"}</span> },
-        { key: "ops", label: "Operations", render: (o: Operator) => (canWrite ? <button className={rowAction("indigo")} onClick={() => setEditing(o)}>Edit</button> : <span className="text-gray-400">—</span>) },
+        { key: "ops", label: "Operations", render: (o: Operator) => (canWrite ? <button className={rowAction("indigo")} onClick={() => setEditing(o)}>Edit</button> : <span className="text-ink-faint">—</span>) },
       ]} />
       {editing && <OperatorForm op={editing === "new" ? null : editing} onClose={() => setEditing(null)} onSaved={() => { setEditing(null); q.reload(); }} />}
     </>
