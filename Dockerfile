@@ -17,6 +17,9 @@ ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 # Make the Marketplace pages hit the live backend instead of in-memory mock
 ARG NEXT_PUBLIC_MARKETPLACE_LIVE=true
 ENV NEXT_PUBLIC_MARKETPLACE_LIVE=$NEXT_PUBLIC_MARKETPLACE_LIVE
+# PRD v2 staff portal (phone OTP + core APIs); off unless the build arg is true
+ARG NEXT_PUBLIC_CORE_API=false
+ENV NEXT_PUBLIC_CORE_API=$NEXT_PUBLIC_CORE_API
 ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN npm run build
